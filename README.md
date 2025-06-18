@@ -611,12 +611,14 @@ vboxuser@vbox:~$ immuadmin database list --tokenfile ~/immuadmin_token
 
 # redis-queue_consumer_to_immudb.py
 
-Script python che consuma la coda "redis-queue-immudb" e inserisce i log nel database immutabile (successivamente diventerà un service): 
+Script python che consuma la coda "redis-queue-immudb" e inserisce i log nel database immutabile (successivamente diventerà un service).
+
+Lo script redis_reader.py è progettato per leggere log da redis-queue-immudb e inserirli in una tabella relazionale all’interno del database immutabile immudb. Il funzionamento si basa su un ciclo continuo che, in modalità bloccante, attende messaggi JSON dalla coda Redis. Ogni log ricevuto viene validato, serializzato in modo deterministico (ordinando le chiavi del JSON) e sottoposto ad hashing tramite l’algoritmo SHA-256. Il risultato di questo hash viene utilizzato come chiave primaria (log_key) nella tabella logs, dove viene salvata anche la rappresentazione testuale del log (value). La persistenza avviene tramite le funzionalità SQL di immudb, non nel modello chiave-valore. Questo approccio garantisce l'integrità dei dati, evita duplicazioni e sfrutta le proprietà immutabili di immudb per assicurare la non alterabilità dei log una volta scritti.
 
 ```python
-# -----------------------------------------------------------------------------
+# -----------------------------------------------------------------------------------------------
 # Script per la lettura di log da una coda Redis e l'inserimento nel database immutabile immudb.
-# -----------------------------------------------------------------------------
+# -----------------------------------------------------------------------------------------------
 
 import redis
 import json
@@ -632,14 +634,14 @@ from immudb.client import ImmudbClient
 # Parametri di connessione a Redis
 REDIS_HOST = '192.168.56.10'
 REDIS_PORT = 6379
-REDIS_PASSWORD = 'whyareyourunning?'
+REDIS_PASSWORD = ''
 REDIS_QUEUE_NAME = 'redis-queue-immudb'  # Nome della coda Redis da cui leggere i log
 
 # Parametri di connessione a immudb
 IMMUD_HOST = '127.0.0.1'
 IMMUD_PORT = 3322
-IMMUD_USER = 'immudb'
-IMMUD_PASSWORD = 'immudbcaps'
+IMMUD_USER = ''
+IMMUD_PASSWORD = ''
 IMMUD_DATABASE = 'logs_immudb'  # Nome del database immudb in cui verranno scritti i log
 
 # -------------------
@@ -743,6 +745,51 @@ if __name__ == '__main__':
     except KeyboardInterrupt:
         logging.info("Script interrotto manualmente.")
 ```
+## Output atteso
+```bash
+vboxuser@vbox:/$ source /home/vboxuser/my-venv/bin/activate
+(my-venv) vboxuser@vbox:/$ /home/vboxuser/my-venv/bin/python /home/vboxuser/Documents/redis_reader.py
+2025-06-18 15:45:36,783 - INFO - In ascolto su Redis 'redis-queue-immudb' e scrittura su immudb (database 'logs_immudb')...
+2025-06-18 15:45:36,854 - INFO - [KEY] Chiave immudb generata e inserita: 149cf3c7024285a6539433d1f84b17411f0527b67da963ddf4b421e5ee2c540c
+...
+...
+...
+```
+
+## Visualizzazione in immudb
+```bash
++--------------------------------------------------------------------+-----------------------------------------------------------------+
+|                           (key.value)                              |                         (logs.value)                            |
++--------------------------------------------------------------------+-----------------------------------------------------------------+
+|                                                                    | "{"@timestamp": "2025-06-18 15:45:36,854.089Z",                 |
+|                                                                    | "@version": "1", "agent": {"ephemeral_id":                      |
+|                                                                    | "70d8b8eb-8915-459e-badf-05c9118e73c6", "hostname":             |
+|                                                                    | "WIN-S", "id": "c156a342-40dc-47ca-977a-f100ebd8e89f",          |
+|                                                                    | "name": "WIN-S", "type": "winlogbeat", "version":               |
+| "149cf3c7024285a6539433d1f84b17411f0527b67da963ddf4b421e5ee2c540c" | "7.17.7"}, "ecs": {"version": "1.12.0"},                        |
+|                                                                    | "event": {"action": "Logon", "code": "4624",                    |
+|                                                                    | "created": "2025-06-17T12:02:18.364Z", "kind":                  |
+|                                                                    | "event", "outcome": "success", "provider":                      |
+|                                                                    | "Microsoft-Windows-Security-Auditing"}, "host":                 |
+|                                                                    |                          ...                                    |
+|                                                                    |                          ...                                    |
+|                                                                    |                          ...                                    |
++--------------------------------------------------------------------+-----------------------------------------------------------------+
+```
+
+## Verifica in redis: Consumazione coda
+```bash
+vboxuser@vbox:/$ redis-cli -h 192.168.56.10
+192.168.56.10> auth inserisci_la_tua_password
+OK
+192.168.56.10> keys *
+1) "redis-queue-elastic"
+192.168.56.10> LLEN "redis-queue-immudb"
+(integer) 0
+```
+La coda è stata consumata in modo corretto e i log sono salvati in immudb
+
+---
 
 
 
