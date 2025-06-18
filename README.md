@@ -430,7 +430,9 @@ Nel contesto di questa infrastruttura, Logstash riceve eventi in formato JSON da
 ---
 
 ## pipelines.yml
-Definizione di due pipeline distinte per Logstash
+Definizione delle due pipeline distinte per Logstash
+  - main: pipeline utlizziata per immudb,
+  - elastic-pipeline: utilizzata per elasticsearch.
 
 ```yaml                                                     
 # This file is where you define your pipelines. You can define multiple.
@@ -445,6 +447,28 @@ Definizione di due pipeline distinte per Logstash
 - pipeline.id: elastic-pipeline
   path.config: "/etc/logstash/conf.d/logstash1.conf"
 ```
+
+---
+
+# logstash.yml
+File di configurazione principale di Logstash che definisce le impostazioni globali del sistema.
+
+```yaml                                                     
+# ------------ Data path ------------
+# Which directory should be used by logstash and its plugins
+#for any persistent needs. Defaults to LOGSTASH_HOME/data
+#
+path.data: /var/lib/logstash
+#
+```
+In questo caso contiene solo la configurazione che specifica la directory di archiviazione dei dati interni di Logstash (checkpoint, file temporanei).
+Le restanti impostazioni sono lasciate ai valori predefiniti di Logstash.
+
+---
+
+
+
+
 
 
 
