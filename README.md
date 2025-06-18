@@ -413,7 +413,7 @@ Nel contesto di questa infrastruttura, Logstash riceve eventi in formato JSON da
 
 ---
 
-## Gerarchia directory (Logstashcd)
+## Gerarchia directory (Logstash)
 
 ```
 /etc/logstash/
@@ -425,6 +425,22 @@ Nel contesto di questa infrastruttura, Logstash riceve eventi in formato JSON da
     ├── logstash.yml
     ├── pipelines.yml
     └── startup.options
+```
+
+---
+
+##pipelines.yml
+
+```GNU nano 7.2                                                        
+# This file is where you define your pipelines. You can define multiple.
+# For more information on multiple pipelines, see the documentation:
+#   https://www.elastic.co/guide/en/logstash/current/multiple-pipelines.html
+
+- pipeline.id: main
+  path.config: "/etc/logstash/conf.d/logstash.conf"
+
+- pipeline.id: elastic-pipeline
+  path.config: "/etc/logstash/conf.d/logstash1.conf"
 ```
 
 
