@@ -434,10 +434,10 @@ Nel contesto di questa infrastruttura, Logstash riceve eventi in formato JSON da
 ### logstash.conf
 Snippet Logstash impostato per ricevere i log da Winlogbeat (via Beats protocol sulla porta 5044) e per duplicare i dati su due code Redis distinte.
 
-```
+```yaml
 # Input: riceve dati da Winlogbeat tramite protocollo Beats sulla porta 5044
 input {
-  beats {
+    beats {
     port => 5044
   }
 }
@@ -453,7 +453,7 @@ output {
   redis {
     host => "192.168.56.10"
     port => 6379
-    password => "whyareyourunning?"
+    password => ""
     key => "redis-queue-elastic"
     data_type => "list"
     db => 0
@@ -463,19 +463,18 @@ output {
   redis {
     host => "192.168.56.10"
     port => 6379
-    password => "whyareyourunning?"
+    password => ""
     key => "redis-queue-immudb"
     data_type => "list"
     db => 0
   }
 }
 ```
----
 
 ### logstash1.conf
-Pipeline Logstash per leggere da Redis e inviare ad Elasticsearch
+Pipeline Logstash per leggere da Redis e inviare ad Elasticsearch.
 
-```
+```yaml
 input {
         redis {
                 # Indirizzo del server Redis dove leggere la coda
@@ -491,9 +490,9 @@ input {
                 key => "redis-queue-elastic"
 
                 # PSW key Redis
-                password => "whyareyourunning?"
+                password => ""
 
-                # Codec usato per decodificare i dati ricevuti da Redis: formato JSON, quindi Logstash li trasforma automaticamente in ogge>
+                # Codec usato per decodificare i dati ricevuti da Redis: formato JSON, quindi Logstash li trasforma automaticamente in oggetti leggibili e filtrabili
                 codec => json
         }
 }
@@ -512,8 +511,8 @@ output {
                         index => "from-redis-%{+YYYY.MM.dd}"
 
                         # Autenticazione Elasticsearch
-                        #user => "cambialodai"
-                        #password => "cambiamianchemedai"
+                        #user => ""
+                        #password => ""
         }
         stdout{
                 codec => rubydebug
