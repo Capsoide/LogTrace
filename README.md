@@ -430,15 +430,18 @@ Nel contesto di questa infrastruttura, Logstash riceve eventi in formato JSON da
 ---
 
 ## pipelines.yml
+Definizione di due pipeline distinte per Logstash
 
-```GNU nano 7.2                                                        
+```nano                                                     
 # This file is where you define your pipelines. You can define multiple.
 # For more information on multiple pipelines, see the documentation:
 #   https://www.elastic.co/guide/en/logstash/current/multiple-pipelines.html
 
+#pipeline immudb
 - pipeline.id: main
   path.config: "/etc/logstash/conf.d/logstash.conf"
 
+#pipeline elasticsearch
 - pipeline.id: elastic-pipeline
   path.config: "/etc/logstash/conf.d/logstash1.conf"
 ```
