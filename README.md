@@ -787,7 +787,7 @@ OK
 192.168.56.10> LLEN "redis-queue-immudb"
 (integer) 0
 ```
-La coda è stata consumata in modo corretto e i log sono salvati in immudb
+La coda è stata consumata in modo corretto e i log sono salvati in immudb.
 
 ---
 
