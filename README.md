@@ -416,47 +416,16 @@ Nel contesto di questa infrastruttura, Logstash riceve eventi in formato JSON da
 ## Gerarchia directory (Logstashcd)
 
 ```
-/etc
-├── logstash
-    └── conf.d
-    └── jvm.opyions
-└── 
-└── config/
-└── config/
-└── config/
-
-
-
-
-
-
-├── winlogbeat.yml
-├── winlogbeat.reference.yml
-├── install-service-winlogbeat.ps1
-├── uninstall-service-winlogbeat.ps1
-├── fields.yml
-├── LICENSE.txt, NOTICE.txt, README.md
-├── .build_hash.txt
-├── winlogbeat.yml_bk
-├── data/
-│   ├── .winlogbeat.yml
-│   └── meta.json
-├── kibana/
-│   └── 7/
-│       ├── dashboard/
-│       ├── search/
-│       └── visualization/
-└── module/
-    ├── powershell/
-    │   └── config/
-    │       └── winlogbeat-powershell.js
-    ├── security/
-    │   ├── dashboards.yml
-    │   └── config/
-    │       └── winlogbeat-security.js
-    └── sysmon/
-        └── config/
-            └── winlogbeat-sysmon.js
+/etc/logstash/
+    ├── conf.d/
+    │   ├── logstash.conf
+    │   └── logstash1.conf
+    ├── jvm.options
+    ├── log4j2.properties
+    ├── logstash.yml
+    ├── pipelines.yml
+    └── startup.options
+```
 
 
 
