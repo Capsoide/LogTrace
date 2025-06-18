@@ -429,6 +429,51 @@ Nel contesto di questa infrastruttura, Logstash riceve eventi in formato JSON da
 
 ---
 
+## conf.d/
+
+###logstash.conf
+Snippet Logstash impostato per ricevere i log da Winlogbeat (via Beats protocol sulla porta 5044) e per duplicare i dati su due code Redis distinte.
+
+```
+# Input: riceve dati da Winlogbeat tramite protocollo Beats sulla porta 5044
+input {
+  beats {
+    port => 5044
+  }
+}
+
+# Filter: qui puoi aggiungere regole per elaborare o filtrare i dati prima dell’output
+filter {
+  # Inserisci qui eventuali filtri o parsing (ad esempio, grok, mutate, ecc.)
+}
+
+# Output: invia i dati processati verso due code Redis diverse (duplicazione)
+output {
+# Primo output: manda i dati alla coda Redis "redis-queue-elastic"
+  redis {
+    host => "192.168.56.10"
+    port => 6379
+    password => "whyareyourunning?"
+    key => "redis-queue-elastic"
+    data_type => "list"
+    db => 0
+  }
+
+  # Secondo output: manda gli stessi dati alla coda Redis "redis-queue-immudb"
+  redis {
+    host => "192.168.56.10"
+    port => 6379
+    password => "whyareyourunning?"
+    key => "redis-queue-immudb"
+    data_type => "list"
+    db => 0
+  }
+}
+```
+
+
+---
+
 ## pipelines.yml
 Definizione delle due pipeline distinte per Logstash
   - main: pipeline utlizziata per immudb,
@@ -450,7 +495,7 @@ Definizione delle due pipeline distinte per Logstash
 
 ---
 
-# logstash.yml
+## logstash.yml
 File di configurazione principale di Logstash che definisce le impostazioni globali del sistema.
 
 ```yaml                                                     
@@ -465,6 +510,7 @@ In questo caso contiene solo la configurazione che specifica la directory di arc
 Le restanti impostazioni sono lasciate ai valori predefiniti di Logstash.
 
 ---
+
 
 
 
