@@ -558,7 +558,7 @@ Definizione delle due pipeline distinte per Logstash
 ---
 
 # Accesso e verifica delle code Redis
-Accedere al server Redis remoto ed elencare le chiavi disponibili per verificare la presenza delle due code (redis-queue-immudb e redis-queue-elastic)
+Accedere al server Redis remoto ed elencare le chiavi disponibili per verificare la presenza delle due code:
 
 ```bash
 vboxuser@vbox:/$ redis-cli -h 192.168.56.10
@@ -569,7 +569,7 @@ OK
 2) "redis-queue-elastic
 ```
 
-Verificare che i log siano stati inseriti correttamente nelle due code Redis tramite il comando LLEN, che mostra il numero di elementi per ciascuna lista
+Verificare che i log siano stati inseriti correttamente nelle due code Redis tramite il comando LLEN, che mostra il numero di elementi per ciascuna lista:
 
 ```bash
 192.168.56.10> LLEN redis-queue-immudb
@@ -577,6 +577,37 @@ Verificare che i log siano stati inseriti correttamente nelle due code Redis tra
 192.168.56.10> LLEN redis-queue-elastic
 (integer) 144
 ```
+
+---
+
+# Immudb
+## Login
+
+```bash
+vboxuser@vbox:~$ immuadmin login inerisci_tuo_username
+Password:
+logged in
+```
+## Creazione nuovo database con retention time period
+
+```bash
+vboxuser@vbox:~$ immuadmin database create nome_database --retention-period=24h --tokenfile ~/immuadmin_token
+```
+
+## Listare database esistenti
+
+```bash
+vboxuser@vbox:~$ immuadmin database list --tokenfile ~/immuadmin_token
+2 database(s)
+-  --------------  ----------  ----------  ------  ----------  ---------  ------------
+#  Databases Name  Created At  Created By  Status  Is Replica  Disk Size  Transactions
+-  --------------  ----------  ----------  ------  ----------  ---------  ------------
+1  defaultdb       2025-06-18  systemdb    LOADED  FALSE       21.3 MB    6045
+2  logs_immudb     2025-06-17  nome_utente LOADED  FALSE       1.8 MB     184
+-  --------------  ----------  ----------  ------  ----------  ---------  ------------
+```
+
+---
 
 
 
