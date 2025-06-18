@@ -581,6 +581,23 @@ Verificare che i log siano stati inseriti correttamente nelle due code Redis tra
 ---
 
 # Immudb
+
+## Gerarchia directory (immudb)
+/etc/immudb/
+    ├── immudb.toml
+
+## immudb.toml
+File di configurazione principale per il servizio immudb, il database immutabile sviluppato da Codenotary.
+
+```yaml
+# Porta, directory dei dati, autenticazione
+
+address = "0.0.0.0"
+port = 3322
+dir = "/var/lib/immudb"
+auth = true
+```
+
 ## Login
 
 ```bash
