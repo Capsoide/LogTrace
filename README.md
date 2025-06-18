@@ -429,7 +429,7 @@ Nel contesto di questa infrastruttura, Logstash riceve eventi in formato JSON da
 
 ---
 
-##pipelines.yml
+## pipelines.yml
 
 ```GNU nano 7.2                                                        
 # This file is where you define your pipelines. You can define multiple.
