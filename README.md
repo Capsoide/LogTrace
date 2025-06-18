@@ -431,7 +431,7 @@ Nel contesto di questa infrastruttura, Logstash riceve eventi in formato JSON da
 
 ## conf.d/
 
-###logstash.conf
+### logstash.conf
 Snippet Logstash impostato per ricevere i log da Winlogbeat (via Beats protocol sulla porta 5044) e per duplicare i dati su due code Redis distinte.
 
 ```
@@ -470,7 +470,56 @@ output {
   }
 }
 ```
+---
 
+### logstash1.conf
+Pipeline Logstash per leggere da Redis e inviare ad Elasticsearch
+
+```
+input {
+        redis {
+                # Indirizzo del server Redis dove leggere la coda
+                host => "192.168.56.10"
+
+                # Tipo struttura dati usata in Redis: lista
+                data_type => "list"
+
+                # Porta del server Redis: 6379 è quella di default
+                port => 6379
+
+                # Key Redis: nome lista Redis da cui Logstash legge i dati
+                key => "redis-queue-elastic"
+
+                # PSW key Redis
+                password => "whyareyourunning?"
+
+                # Codec usato per decodificare i dati ricevuti da Redis: formato JSON, quindi Logstash li trasforma automaticamente in ogge>
+                codec => json
+        }
+}
+
+filter {
+        #Qui è possibile inserire eventuali filtri per elaborare o arricchire i dati ricevuti prima di inviarli ad Elastic,
+        #Ad esempio: parsing, timestamp, normalizzazione dei campi, aggiunta di tag, ...
+}
+
+output {
+        elasticsearch {
+                        # Indirizzo del cluster Elasticsearch (modifica in base all'ambiente che si utilizza)
+                        hosts => ["http://192.168.56.10:9200"]
+
+                        # Nome dell'indice su Elasticsearch. Viene usata una data dinamica per indicizzazione giornaliera
+                        index => "from-redis-%{+YYYY.MM.dd}"
+
+                        # Autenticazione Elasticsearch
+                        #user => "cambialodai"
+                        #password => "cambiamianchemedai"
+        }
+        stdout{
+                codec => rubydebug
+        }
+}
+```
 
 ---
 
