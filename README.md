@@ -1,1 +1,411 @@
-# LogTrace
+# Sistema di monitoraggio Audit Logs
+## Introduzione
+Il sistema descritto si occupa dell'acquisizione automatica dei log di audit relativi agli accessi amministrativi ai sistemi Windows, con l'obiettivo di garantire tracciabilità, integrità e conformità alle normative vigenti in materia di sicurezza informatica (ISO/IEC 27001, Direttiva NIS2 e disposizioni ACN).
+
+Il processo viene realizzato attraverso una pipeline composta dai seguenti componenti:
+
+- **Winlogbeat**, installato su un'istanza Windows Server, è il servizio responsabile del recupero e dell'invio degli eventi log di audit raccolti da Event Viewer.
+- **Logstash**, in esecuzione su un sistema Debian, riceve i log da Winlogbeat processandoli e duplicandoli in due differenti code Redis.
+- **Redis** funge da sistema di gestione delle code, permettendo la separazione dei flussi di log:
+  - La **coda 0** (`redis-queue-elastic`) invia i log a **Elasticsearch** per l'indicizzazione e la visualizzazione tramite interfaccia front-end (come Kibana).
+  - La **coda 1** (`redis-queue-immudb`)  è dedicata alla persistenza dei log in un database immutabile (immudb), progettato per garantire integrità, non ripudiabilità e conservazione a lungo termine. In questo contesto, è configurata una retention time pari a 1 giorno.
+
+Questa architettura garantisce la duplicazione dei dati per scopi distinti: analisi e conservazione forense. 
+I singoli componenti svolgono i seguenti ruoli:
+
+- `Winlogbeat`: acquisizione dei log da Event Viewer.
+- `Logstash`: duplicazione dei flussi di log e invio alle rispettive code Redis.
+- `Redis`: gestione dei buffer dei dati.
+- `Immudb`: archiviazione sicura e immutabile dei log.
+- `Elasticsearch`: indicizzazione e analisi interattiva dei log.
+
+L'intero sistema è progettato per soddisfare i requisiti normativi previsti dalle direttive **ACN**, **ISO/IEC 27001** e **NIS2**, che impongono il tracciamento, la conservazione e l’integrità dei log di sicurezza:
+
+- [**ACN**](https://www.acn.gov.it/portale/nis/aggiornamento-informazioni) (Agenzia per la Cybersicurezza Nazionale) stabilisce standard per la sicurezza delle infrastrutture critiche italiane.
+- [**ISO/IEC 27001**](https://edirama.org/wp-content/uploads/2023/10/document-1.pdf) è uno standard internazionale per la gestione della sicurezza delle informazioni (ISMS), che richiede la registrazione e l’analisi degli eventi di accesso.
+- [**NIS2**](https://www.acn.gov.it/portale/nis) è la direttiva europea sulla sicurezza delle reti e dei sistemi informativi, che impone obblighi di logging, conservazione e risposta agli incidenti per gli operatori di servizi essenziali.
+
+---
+
+# Collegamento tra Windows Server e Ubuntu/Debian via VirtualBox
+
+Questa guida descrive come creare una rete locale tra due macchine virtuali (VM) usando **VirtualBox** con una rete **Host-Only**.
+
+---
+
+## Topologia di rete
+
+| Sistema Operativo | IP            | Ruolo                   |
+|------------------|---------------|-------------------------|
+| Windows Server   | 192.168.56.2  | Sender (Winlogbeat)     |
+| Ubuntu/Debian    | 192.168.56.10 | Receiver (Redis, Logstash) |
+
+---
+
+## Configurazione VirtualBox
+
+### Creazione e configurazione dell'adattatore Host-Only
+
+#### 1. Aprire **VirtualBox** → `File` > `Host Network Manager`
+#### 2. Cliccare su **Crea** per aggiungere un nuovo adattatore
+#### 3. Configurazione:
+   - **IP**: `192.168.56.1`
+   - **Subnet Mask**: `255.255.255.0`
+   - **DHCP**: disabilitato
+#### 4. Assegnare l’adattatore come **Adattatore 2** alle VM:
+   - Modalità: `Solo host (Host-Only)`
+   - Nome: ad esempio `vboxnet0`
+
+---
+
+## Configurazione degli IP Statici
+
+### Windows Server
+
+#### 1. Aprire `Centro connessioni di rete` > `Modificare impostazioni scheda`
+#### 2. Scegliere l’interfaccia collegata a `vboxnet0` (“Ethernet 2”)
+#### 3. Cliccare su `Proprietà` > `TCP/IPv4` e impostare:
+   - **IP**: `192.168.56.2`
+   - **Subnet mask**: `255.255.255.0`
+   - **Gateway**: lascia vuoto
+#### 4. Verificare con:
+
+```powershell
+C:\Users\vboxuser> ipconfig
+Windows IP Configuration
+
+
+Ethernet adapter Ethernet:
+
+   Connection-specific DNS Suffix  . : sigmaspa.lan
+   IPv6 Address. . . . . . . . . . . : fd00::be82:30db:2cc8:18ab
+   Link-local IPv6 Address . . . . . : fe80::b789:33f2:febd:1d7%14
+   IPv4 Address. . . . . . . . . . . : 10.0.2.15
+   Subnet Mask . . . . . . . . . . . : 255.255.255.0
+   Default Gateway . . . . . . . . . : fe80::2%14
+                                       10.0.2.2
+
+Ethernet adapter Ethernet 2:
+
+   Connection-specific DNS Suffix  . :
+   Link-local IPv6 Address . . . . . : fe80::6894:81ba:3678:5341%13
+   IPv4 Address. . . . . . . . . . . : 192.168.56.2
+   Subnet Mask . . . . . . . . . . . : 255.255.255.0
+   Default Gateway . . . . . . . . . :
+```
+
+---
+
+## Configurazione interfacce di rete in `/etc/network/interfaces` (Ubuntu/Debian)
+
+Se il sistema non utilizza Netplan (come accade spesso su Debian o alcune versioni legacy di Ubuntu), è possibile configurare le interfacce di rete modificando direttamente il file /etc/network/interfaces.
+
+### Aprire il file interfaces (descrive le interfacce di rete presenti nel sistema e definisce come devono essere attivate)
+```bash
+vboxuser@vbox:~$ sudo nano /etc/network/interfaces
+```
+### Modificare il file come segue assicurandosi che i nomi delle interfacce (es. enp0s3, enp0s8) corrispondano a quelli presenti nel sistema
+```text
+# Include configurazioni aggiuntive (se presenti)
+source /etc/network/interfaces.d/*
+
+# Interfaccia loopback
+auto lo
+iface lo inet loopback
+
+# Interfaccia NAT (internet)
+auto enp0s3
+iface enp0s3 inet dhcp
+
+# Interfaccia Host-Only (rete interna con VirtualBox)
+auto enp0s8
+iface enp0s8 inet static
+    address 192.168.56.10
+    netmask 255.255.255.0
+```
+#### Per verificare le interfacce utilizzare il seguente comando
+```bash
+vboxuser@vbox:~$ ip link
+1: lo: <LOOPBACK,UP,LOWER_UP> mtu 65536 qdisc noqueue state UNKNOWN mode DEFAULT group default qlen 1000
+    link/loopback 00:00:00:00:00:00 brd 00:00:00:00:00:00
+2: enp0s3: <BROADCAST,MULTICAST,UP,LOWER_UP> mtu 1500 qdisc fq_codel state UP mode DEFAULT group default qlen 1000
+    link/ether 08:00:27:e0:87:cc brd ff:ff:ff:ff:ff:ff
+3: enp0s8: <BROADCAST,MULTICAST,UP,LOWER_UP> mtu 1500 qdisc fq_codel state UP mode DEFAULT group default qlen 1000
+    link/ether 08:00:27:9d:3a:10 brd ff:ff:ff:ff:ff:ff
+```
+
+### Applicare le modifiche
+```bash
+vboxuser@vbox:~$ sudo systemctl restart networking
+```
+#### Se necessario utilizzare il seguente comando (o in alternativa riavviare la macchina virtuale)
+```bash
+vboxuser@vbox:~$ sudo ifdown enp0s8 && sudo ifup enp0s8
+```
+
+### Verificare che l'indirizzo sia stato applicato correttamente
+```bash
+vboxuser@vbox:~$ ip a
+1: lo: <LOOPBACK,UP,LOWER_UP> mtu 65536 qdisc noqueue state UNKNOWN group default qlen 1000
+    link/loopback 00:00:00:00:00:00 brd 00:00:00:00:00:00
+    inet 127.0.0.1/8 scope host lo
+       valid_lft forever preferred_lft forever
+    inet6 ::1/128 scope host noprefixroute 
+       valid_lft forever preferred_lft forever
+2: enp0s3: <BROADCAST,MULTICAST,UP,LOWER_UP> mtu 1500 qdisc fq_codel state UP group default qlen 1000
+    link/ether 08:00:27:e0:87:cc brd ff:ff:ff:ff:ff:ff
+    inet 10.0.2.15/24 brd 10.0.2.255 scope global dynamic enp0s3
+       valid_lft 84997sec preferred_lft 84997sec
+    inet6 fd00::a00:27ff:fee0:87cc/64 scope global dynamic mngtmpaddr 
+       valid_lft 86245sec preferred_lft 14245sec
+    inet6 fe80::a00:27ff:fee0:87cc/64 scope link 
+       valid_lft forever preferred_lft forever
+3: enp0s8: <BROADCAST,MULTICAST,UP,LOWER_UP> mtu 1500 qdisc fq_codel state UP group default qlen 1000
+    link/ether 08:00:27:9d:3a:10 brd ff:ff:ff:ff:ff:ff
+    inet 192.168.56.10/24 brd 192.168.56.255 scope global enp0s8
+       valid_lft forever preferred_lft forever
+    inet6 fe80::a00:27ff:fe9d:3a10/64 scope link 
+       valid_lft forever preferred_lft forever
+```
+---
+
+## Creare regola firewall per ermettere il ping da Debian a Windows Server
+E' necessario creare una regola per Windows Server, perchè il firewall (di Windows) blocca di default i pacchetti ICMP Echo Request (ping) in ingresso, anche se la macchina Debian invia correttamente i pacchetti; 
+### Passaggi per creare la regola firewall su Windows:
+#### 1. Aprire Windows Defender Firewall con sicurezza avanzata
+   
+    Premere il tasto Windows, digitare "Windows Defender Firewall with Advanced Security", successivamente aprire l’app.
+  	
+#### 2. Selezionare “Regole in ingresso” (Inbound Rules)
+   
+    Nel pannello a sinistra, cliccare su Inbound Rules.
+  	
+#### 3. Creare una nuova regola
+   
+    Nel pannello a destra, cliccare su New Rule... (Nuova regola).
+  	
+#### 4. Scegliere il tipo di regola
+   
+    Selezionare Custom (Personalizzata), poi cliccare su Avanti.
+  	
+#### 5. Selezionare il protocollo
+    
+    Alla voce “Protocol and Ports” (Protocollo e porte), scegliere ICMPv4 dal menu a tendina “Protocol type”.
+  	
+#### 6. Specificare il tipo di pacchetto ICMP
+   
+    Cliccare sul pulsante Customize accanto a ICMP Settings.
+  	
+    Selezionare Echo Request (il tipo usato dal ping).
+  	
+    Confermare con OK.
+  	
+#### 7. Indirizzi IP
+   
+    Nella schermata “Scope” lasciare l’opzione “Any IP address” (qualsiasi indirizzo) sia per origine sia per destinazione (, o limita all’IP del Debian se si vuole maggiore sicurezza).
+  	
+#### 8. Azione della regola
+    
+    Selezionare Allow the connection (Consenti la connessione).
+   	
+#### 9. Quando applicare la regola
+    
+    Spuntare tutte le caselle: Domain, Private, Public.
+   	
+#### 10. Dare un nome alla regola
+    
+    Scrivere un nome tipo "Consenti ping ICMP Echo Request" e confermare.
+
+## Verifica finale
+### Ping da Debian a Windows Server
+```bash
+vboxuser@vbox:~$ ping -c 192.168.56.2
+PING 192.168.56.2 (192.168.56.2) 56(84) bytes of data.
+64 bytes from 192.168.56.2: icmp_seq=1 ttl=128 time=6.43 ms
+64 bytes from 192.168.56.2: icmp_seq=2 ttl=128 time=1.18 ms
+64 bytes from 192.168.56.2: icmp_seq=3 ttl=128 time=1.16 ms
+
+--- 192.168.56.2 ping statistics ---
+3 packets transmitted, 3 received, 0% packet loss, time 2003ms
+rtt min/avg/max/mdev = 1.160/2.923/6.434/2.482 ms
+```
+### Ping da Windows Server a Debian
+```powershell
+C:\Users\vboxuser>ping 192.168.56.10
+Pinging 192.168.56.10 with 32 bytes of data:
+Reply from 192.168.56.10: bytes=32 time=1ms TTL=64
+Reply from 192.168.56.10: bytes=32 time=1ms TTL=64
+Reply from 192.168.56.10: bytes=32 time=1ms TTL=64
+Reply from 192.168.56.10: bytes=32 time=1ms TTL=64
+
+Ping statistics for 192.168.56.10:
+    Packets: Sent = 4, Received = 4, Lost = 0 (0% loss),
+Approximate round trip times in milli-seconds:
+    Minimum = 1ms, Maximum = 1ms, Average = 1ms
+```
+
+# Winlogbeat Windows Service
+
+## Overview
+
+Winlogbeat è un lightweight shipper, ovvero un piccolo agente software sviluppato da Elastic, pensato specificamente per raccogliere e inviare gli eventi del Registro Eventi di Windows (Windows Event Log) verso sistemi di raccolta dati come Elasticsearch, Logstash, Redis o altri endpoint compatibili.
+
+Fa parte della famiglia di Beats, una suite di data shipper leggeri che fanno da collettori di dati nei sistemi distribuiti, ed è ottimizzato per ambienti Windows (client e server).
+
+### Cosa fa Winlogbeat?
+
+1. **Monitoraggio del Registro Eventi**: legge in tempo reale eventi da log come `Security`, `System`, `Application`, `ForwardedEvents`, e altri.
+2. **Filtraggio intelligente**: raccoglie solo specifici `event_id`, provider o livelli, riducendo il rumore.
+3. **Spedizione dei log**: inoltra i dati verso Logstash, Elasticsearch o Redis.
+4. **Supporto ECS**: normalizza i dati secondo l’Elastic Common Schema.
+5. **Dashboard Kibana integrate**: fornisce visualizzazioni pronte all’uso.
+
+Questa documentazione descrive in dettaglio come usare la versione personalizzata contenuta nella cartella `Winlogbeat_712x`.
+
+---
+
+## Gerarchia directory (Winlogbeat)
+
+```
+Winlogbeat/
+├── winlogbeat.exe
+├── winlogbeat.yml
+├── winlogbeat.reference.yml
+├── install-service-winlogbeat.ps1
+├── uninstall-service-winlogbeat.ps1
+├── fields.yml
+├── LICENSE.txt, NOTICE.txt, README.md
+├── .build_hash.txt
+├── winlogbeat.yml_bk
+├── data/
+│   ├── .winlogbeat.yml
+│   └── meta.json
+├── kibana/
+│   └── 7/
+│       ├── dashboard/
+│       ├── search/
+│       └── visualization/
+└── module/
+    ├── powershell/
+    │   └── config/
+    │       └── winlogbeat-powershell.js
+    ├── security/
+    │   ├── dashboards.yml
+    │   └── config/
+    │       └── winlogbeat-security.js
+    └── sysmon/
+        └── config/
+            └── winlogbeat-sysmon.js
+```
+
+---
+
+## Configurazione (`winlogbeat.yml`)
+
+```yaml
+winlogbeat.event_logs:
+  - name: Security
+    event_id: 4624, 4634
+  - name: System
+  - name: Application
+
+output.redis:
+  hosts: ["192.168.56.10:6379"]
+  key: "winlogbeat"
+  db: 0
+  timeout: 5
+
+setup.template.enabled: false
+setup.ilm.enabled: false
+
+logging:
+  level: info
+  to_files: true
+  files:
+    path: C:/ProgramData/winlogbeat/Logs
+    name: winlogbeat.log
+    keepfiles: 7
+```
+
+---
+
+## Moduli avanzati
+
+### Security
+
+```yaml
+winlogbeat.modules:
+  - module: security
+    enabled: true
+```
+
+### PowerShell
+
+```yaml
+winlogbeat.modules:
+  - module: powershell
+    enabled: true
+```
+
+### Sysmon
+
+```yaml
+winlogbeat.modules:
+  - module: sysmon
+    enabled: true
+```
+
+---
+
+## Installazione come Servizio Windows
+
+```powershell
+cd C:\\Winlogbeat
+.\install-service-winlogbeat.ps1
+Start-Service winlogbeat
+Set-Service -Name winlogbeat -StartupType Automatic
+```
+
+### Disinstallazione
+
+```powershell
+Stop-Service winlogbeat
+.\uninstall-service-winlogbeat.ps1
+```
+
+---
+
+## Debug e Verifica
+
+- **Log locale**: `C:\\ProgramData\\winlogbeat\\Logs\\winlogbeat.log`
+- **Verifica output Redis**:
+  ```bash
+  redis-cli -h 192.168.56.10 -p 6379
+  LRANGE winlogbeat 0 0
+  ```
+- **Test manuale**:
+  ```powershell
+  .\winlogbeat.exe -c winlogbeat.yml -e -v
+  ```
+
+---
+
+## Sicurezza
+
+- Proteggi il file `winlogbeat.yml`
+- Limita accesso a Redis/Logstash
+- Esegui come SYSTEM
+
+---
+
+## Setup Dashboard Kibana
+
+1. Copia i file da `kibana/7/`
+2. Importali via Kibana GUI
+3. Usa indice `winlogbeat-*`
+
+---
+
+
+
+
