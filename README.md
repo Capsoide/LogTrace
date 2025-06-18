@@ -521,7 +521,21 @@ output {
 ```
 
 ---
+## logstash.yml
+File di configurazione principale di Logstash che definisce le impostazioni globali del sistema.
 
+```yaml                                                     
+# ------------ Data path ------------
+# Which directory should be used by logstash and its plugins
+#for any persistent needs. Defaults to LOGSTASH_HOME/data
+#
+path.data: /var/lib/logstash
+#
+```
+In questo caso contiene solo la configurazione che specifica la directory di archiviazione dei dati interni di Logstash (checkpoint, file temporanei).
+Le restanti impostazioni sono lasciate ai valori predefiniti di Logstash.
+
+---
 ## pipelines.yml
 Definizione delle due pipeline distinte per Logstash
   - main: pipeline utlizziata per immudb,
@@ -543,21 +557,29 @@ Definizione delle due pipeline distinte per Logstash
 
 ---
 
-## logstash.yml
-File di configurazione principale di Logstash che definisce le impostazioni globali del sistema.
+# Accesso e verifica delle code Redis
+Accedere al server Redis remoto ed elencare le chiavi disponibili per verificare la presenza delle due code (redis-queue-immudb e redis-queue-elastic)
 
-```yaml                                                     
-# ------------ Data path ------------
-# Which directory should be used by logstash and its plugins
-#for any persistent needs. Defaults to LOGSTASH_HOME/data
-#
-path.data: /var/lib/logstash
-#
+```bash
+vboxuser@vbox:/$ redis-cli -h 192.168.56.10
+192.168.56.10> auth inserisci_la_tua_password
+OK
+192.168.56.10> keys *
+1) "redis-queue-immudb"
+2) "redis-queue-elastic
 ```
-In questo caso contiene solo la configurazione che specifica la directory di archiviazione dei dati interni di Logstash (checkpoint, file temporanei).
-Le restanti impostazioni sono lasciate ai valori predefiniti di Logstash.
 
----
+Verificare che i log siano stati inseriti correttamente nelle due code Redis tramite il comando LLEN, che mostra il numero di elementi per ciascuna lista
+
+```bash
+192.168.56.10> LLEN redis-queue-immudb
+(integer) 144
+192.168.56.10> LLEN redis-queue-elastic
+(integer) 144
+```
+
+
+
 
 
 
