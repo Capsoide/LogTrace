@@ -609,11 +609,11 @@ vboxuser@vbox:~$ immuadmin database list --tokenfile ~/immuadmin_token
 
 ---
 
-# redis-queue_consumer_to_immudb.py
+# redis_queue_consumer_to_immudb.py
 
 Script python che consuma la coda "redis-queue-immudb" e inserisce i log nel database immutabile (successivamente diventerà un service).
 
-Lo script redis_reader.py è progettato per leggere log da redis-queue-immudb e inserirli in una tabella relazionale all’interno del database immutabile immudb. Il funzionamento si basa su un ciclo continuo che, in modalità bloccante, attende messaggi JSON dalla coda Redis. Ogni log ricevuto viene validato, serializzato in modo deterministico (ordinando le chiavi del JSON) e sottoposto ad hashing tramite l’algoritmo SHA-256. Il risultato di questo hash viene utilizzato come chiave primaria (log_key) nella tabella logs, dove viene salvata anche la rappresentazione testuale del log (value). La persistenza avviene tramite le funzionalità SQL di immudb, non nel modello chiave-valore. Questo approccio garantisce l'integrità dei dati, evita duplicazioni e sfrutta le proprietà immutabili di immudb per assicurare la non alterabilità dei log una volta scritti.
+Lo script redis_queue_consumer_to_immudb.py.py è progettato per leggere log da redis-queue-immudb e inserirli in una tabella relazionale all’interno del database immutabile immudb. Il funzionamento si basa su un ciclo continuo che, in modalità bloccante, attende messaggi JSON dalla coda Redis. Ogni log ricevuto viene validato, serializzato in modo deterministico (ordinando le chiavi del JSON) e sottoposto ad hashing tramite l’algoritmo SHA-256. Il risultato di questo hash viene utilizzato come chiave primaria (log_key) nella tabella logs, dove viene salvata anche la rappresentazione testuale del log (value). La persistenza avviene tramite le funzionalità SQL di immudb, non nel modello chiave-valore. Questo approccio garantisce l'integrità dei dati, evita duplicazioni e sfrutta le proprietà immutabili di immudb per assicurare la non alterabilità dei log una volta scritti.
 
 ```python
 # -----------------------------------------------------------------------------------------------
