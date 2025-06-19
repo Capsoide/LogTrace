@@ -659,7 +659,7 @@ vboxuser@vbox:~$ immuadmin database list --tokenfile ~/immuadmin_token
 
 # queue_consumer.py
 
-Script python che consuma la coda "redis-queue-immudb" e inserisce i log nel database immutabile (successivamente diventerà un service).
+Script python che consuma la coda "redis-queue-immudb" e inserisce i log nel database immutabile (successivamente diventerà un servizio).
 
 Lo script redis_queue_consumer_to_immudb.py legge i log dalla redis-queue-immudb per poi inserirli in una tabella relazionale all’interno del database immutabile immudb. Il funzionamento si basa su un ciclo continuo che, in modalità bloccante, attende messaggi JSON dalla coda Redis. Ogni log ricevuto viene validato, serializzato in modo deterministico (ordinando le chiavi del JSON) e sottoposto ad hashing tramite l’algoritmo SHA-256. Il risultato di questo hash viene utilizzato come chiave primaria (log_key) nella tabella logs, dove viene salvata anche la rappresentazione testuale del log (value). La persistenza avviene tramite le funzionalità SQL di immudb, non nel modello chiave-valore. Questo approccio garantisce l'integrità dei dati, evita duplicazioni e sfrutta le proprietà immutabili di immudb per assicurare la non alterabilità dei log una volta scritti.
 
@@ -865,6 +865,34 @@ OK
 La coda è stata consumata in modo corretto e i log sono salvati in immudb.
 
 ---
+
+# queue_consumer.service
+
+Percorso: ```/etc/systemd/system/queue_consumer.service```
+
+Servizio associato allo script ```queue_consumer.py```. Viene eseguito periodicamente per la lettura e il consumo continuo dei log dalla coda **redis-queue-immudb**, con successiva scrittura su immuDB.
+
+```
+[Unit]
+Description=Servizio queue_consumer Python con virtualenv
+After=network.target
+
+[Service]
+Type=simple
+User=vboxuser
+WorkingDirectory=/var/consumer-immudb
+ExecStart=/home/vboxuser/my-venv/bin/python /var/consumer-immudb/queue_consumer.py
+Restart=on-failure
+RestartSec=5s
+
+[Install]
+WantedBy=multi-user.target
+
+```
+
+
+
+
 
 
 
