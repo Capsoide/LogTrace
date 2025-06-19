@@ -657,7 +657,7 @@ vboxuser@vbox:~$ immuadmin database list --tokenfile ~/immuadmin_token
 
 ---
 
-# redis_queue_consumer_to_immudb.py
+# queue_consumer.py
 
 Script python che consuma la coda "redis-queue-immudb" e inserisce i log nel database immutabile (successivamente diventerà un service).
 
