@@ -132,7 +132,7 @@ vboxuser@vbox:~$ ip link
     link/ether 08:00:27:9d:3a:10 brd ff:ff:ff:ff:ff:ff
 ```
 
-### Applicare le modifiche
+#### Applicare le modifiche
 
 ```bash
 vboxuser@vbox:~$ sudo systemctl restart networking
@@ -144,7 +144,7 @@ vboxuser@vbox:~$ sudo systemctl restart networking
 vboxuser@vbox:~$ sudo ifdown enp0s8 && sudo ifup enp0s8
 ```
 
-### Verificare che l'indirizzo sia stato applicato correttamente
+#### Verificare che l'indirizzo sia stato applicato correttamente
 
 ```bash
 vboxuser@vbox:~$ ip a
@@ -171,7 +171,7 @@ vboxuser@vbox:~$ ip a
 ```
 ---
 
-## Creare regola firewall per permettere il ping da Debian a Windows Server
+## Regola firewall per permettere il ping da Debian a Windows Server
 
 E' necessario creare una regola per Windows Server, perchè il firewall (di Windows) blocca di default i pacchetti ICMP Echo Request (ping) in ingresso. 
 ### Passaggi per creare la regola firewall su Windows:
@@ -449,7 +449,9 @@ output {
 }
 ```
 
-### logstash1.conf
+---
+
+## logstash1.conf
 
 Percorso: ```/etc/logstash/conf.d/logstash1.conf```
 
@@ -828,11 +830,6 @@ vboxuser@vbox:/$ source /home/vboxuser/my-venv/bin/activate
 (my-venv) vboxuser@vbox:/$ /home/vboxuser/my-venv/bin/python /home/vboxuser/Documents/redis_reader.py
 2025-06-18 15:45:36,783 - INFO - In ascolto su Redis 'redis-queue-immudb' e scrittura su immudb (database 'logs_immudb')...
 2025-06-18 15:45:36,854 - INFO - [KEY] Chiave immudb generata e inserita: 149cf3c7024285a6539433d1f84b17411f0527b67da963ddf4b421e5ee2c540c
-                                                          ...
-                                                          ...
-                                                          ...
-                                                          ...
-                                                          ...
 ```
 
 ## Visualizzazione in immuDB
