@@ -106,7 +106,7 @@ Se il sistema non utilizza Netplan (come accade spesso su Debian o alcune versio
 vboxuser@vbox:~$ sudo nano /etc/network/interfaces
 ```
 
-### Modificare il file come segue, assicurandosi che i nomi delle interfacce (es. enp0s3, enp0s8) corrispondano a quelli presenti nel sistema
+#### Modificare il file come segue, assicurandosi che i nomi delle interfacce (es. enp0s3, enp0s8) corrispondano a quelli presenti nel sistema
 
 ```text
 # Include configurazioni aggiuntive (se presenti)
