@@ -30,8 +30,6 @@ L'intero sistema è progettato per soddisfare i requisiti normativi previsti dal
 
 In questa prima parte si descrive come creare una rete locale tra due macchine virtuali (VM) usando **VirtualBox** con una rete **Host-Only**.
 
----
-
 ## Topologia di rete
 
 | Sistema Operativo |       IP      |           Ruolo            | 
