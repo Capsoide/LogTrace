@@ -406,7 +406,7 @@ Stop-Service winlogbeat
 
 ---
 
-#Logstash
+# Logstash
 Logstash è una pipeline open source sviluppata da Elastic per l’ingestione, elaborazione e inoltro in tempo reale di dati provenienti da diverse fonti verso una o più destinazioni.
 
 Nel contesto di questa infrastruttura, Logstash riceve eventi in formato JSON da Winlogbeat installato su Windows Server, li processa e infine invia i dati in output a due code Redis distinte, permettendo la duplicazione del flusso: una coda destinata all’ingestione in Elasticsearch per analisi, e una seconda per la storicizzazione immutabile in immudb.
@@ -582,12 +582,12 @@ Verificare che i log siano stati inseriti correttamente nelle due code Redis tra
 
 # Immudb
 
-## Gerarchia directory (immudb)
+## Gerarchia directory (file configurazione di immudb)
 /etc/immudb/
     ├── immudb.toml
 
 ## immudb.toml
-File di configurazione principale per il servizio immudb, il database immutabile sviluppato da Codenotary.
+File di configurazione principale per il servizio immudb.
 
 ```yaml
 # Porta, directory dei dati, autenticazione
@@ -610,12 +610,31 @@ pidfile = '/var/lib/immudb/immudb.pid'
 PKEY = ''
 log-level = "DEBUG"
 ```
+Nel file di configurazione di immudb (tipicamente immudb.toml), sono specificati diversi path fondamentali per il funzionamento del database. 
+
+*/var/lib/immudb* directory principale dei dati. Contiene:
+
+- I database configurati ed utilizzati (*defaultdb* e *logs_immudb*);
+- Le strutture immutabili dei dati (Merkle tree, indici, log transazionali);
+- All'interno della cartella immulog è presente il file immudb-log che contiene tutte le informazioni di esecuzione del server immudb. È utile per verificare i path effettivamente utilizzati (dati, log, configurazione, PID), lo stato del servizio, le connessioni, le operazioni di scrittura e lettura, eventuali errori, e può essere consultato per il debug o il monitoraggio del sistema.
+
+Tutti i file che servono a garantire l’integrità e l’immutabilità dei dati.
+```
+/var/lib/immudb
+         ├── defaultdb
+         ├── logs_immudb           --> db usato per immutabilità logs registrati
+         ├── immudb.identifier
+         ├── immudb.pid            --> contiene il Process ID (PID) del processo immudb attualmente in esecuzione
+         ├── immulog
+                   ├──immudb.log
+         ├── systemdb
+```
 
 ## Login
 
 ```bash
 vboxuser@vbox:~$ immuadmin login inerisci_tuo_username
-Password:
+Password: inserisci_la_tua_password
 logged in
 ```
 ## Creazione nuovo database con retention time period
