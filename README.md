@@ -1,5 +1,4 @@
 # Sistema di monitoraggio Audit Logs
----
 ## Introduzione
 Il sistema descritto si occupa dell'acquisizione automatica dei log di audit relativi agli accessi amministrativi ai sistemi Windows, con l'obiettivo di garantire tracciabilità, integrità e conformità alle normative vigenti in materia di sicurezza informatica.
 
