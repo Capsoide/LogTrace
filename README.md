@@ -33,7 +33,7 @@ In questa prima parte si descrive come creare una rete locale tra due macchine v
 ---
 
 ## Topologia di rete
-+-------------------+---------------+----------------------------+
+
 | Sistema Operativo |       IP      |           Ruolo            | 
 |-------------------|---------------|----------------------------|
 | Windows Server    | 192.168.56.2  | Sender (Winlogbeat)        |
