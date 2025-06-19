@@ -865,12 +865,15 @@ OK
 La coda è stata consumata in modo corretto e i log sono salvati in immudb.
 
 ---
+# Configurazione dei servizi con systemd
 
-# queue_consumer.service
+Per orchestrare l'intero sistema di raccolta, archiviazione e visualizzazione dei log, vengono utilizzate diverse unità systemd che automatizzano e gestiscono l'esecuzione periodica degli script E il database immutabile immuDB.
+
+## queue_consumer.service
 
 Percorso: ```/etc/systemd/system/queue_consumer.service```
 
-Servizio associato allo script ```queue_consumer.py```. Viene eseguito periodicamente per la lettura e il consumo continuo dei log dalla coda **redis-queue-immudb**, con successiva scrittura su immuDB.
+Servizio associato allo script ```queue_consumer.py```. Viene eseguito periodicamente per la lettura e il consumo continuo dei log dalla coda ```redis-queue-immudb```, con successiva scrittura su immuDB.
 
 ```
 [Unit]
