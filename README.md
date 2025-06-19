@@ -98,7 +98,7 @@ Ethernet adapter Ethernet 2:
 
 Se il sistema non utilizza Netplan (come accade spesso su Debian o alcune versioni legacy di Ubuntu), è possibile configurare le interfacce di rete modificando direttamente il file ```/etc/network/interfaces```.
 
-### Aprire il file interfaces (descrive le interfacce di rete presenti nel sistema e definisce come devono essere attivate)
+#### Aprire il file interfaces (descrive le interfacce di rete presenti nel sistema e definisce come devono essere attivate)
 
 ```bash
 vboxuser@vbox:~$ sudo nano /etc/network/interfaces
