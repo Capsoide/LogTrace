@@ -38,7 +38,6 @@ In questa prima parte si descrive come creare una rete locale tra due macchine v
 |-------------------|---------------|----------------------------|
 | Windows Server    | 192.168.56.2  | Sender (Winlogbeat)        |
 | Ubuntu/Debian     | 192.168.56.10 | Receiver (Redis, Logstash) |
-+-------------------+---------------+----------------------------+
 
 ---
 
