@@ -950,6 +950,7 @@ WantedBy=multi-user.target
 Alias=redis.service
 ```
 
+![image](https://github.com/user-attachments/assets/d7cfd3e4-bec2-4ef3-b94b-ed717b759fa7)
 
 
 
