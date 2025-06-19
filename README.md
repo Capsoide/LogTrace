@@ -57,9 +57,7 @@ In questa prima parte si descrive come creare una rete locale tra due macchine v
 
 ---
 
-## Configurazione degli IP Statici
-
-### Windows Server
+## Configurazione degli IP Statici (Windows Server)
 
 #### 1. Aprire `Centro connessioni di rete` > `Modificare impostazioni scheda`
 #### 2. Scegliere l’interfaccia collegata a `vboxnet0` (“Ethernet 2”)
