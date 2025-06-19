@@ -614,9 +614,9 @@ log-level = "DEBUG"
 ```
 Nel file di configurazione di immudb (tipicamente immudb.toml), sono specificati diversi path fondamentali per il funzionamento del database. 
 
-*/var/lib/immudb* directory principale dei dati. Contiene:
+**/var/lib/immudb** directory principale dei dati. Contiene:
 
-- I database configurati ed utilizzati (*defaultdb* e *logs_immudb*);
+- I database configurati ed utilizzati (**defaultdb** e **logs_immudb**);
 - Le strutture immutabili dei dati (Merkle tree, indici, log transazionali);
 - All'interno della cartella immulog è presente il file immudb-log che contiene tutte le informazioni di esecuzione del server immudb. È utile per verificare i path effettivamente utilizzati (dati, log, configurazione, PID), lo stato del servizio, le connessioni, le operazioni di scrittura e lettura, eventuali errori, e può essere consultato per il debug o il monitoraggio del sistema.
 
