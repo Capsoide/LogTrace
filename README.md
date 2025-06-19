@@ -432,7 +432,7 @@ Nel contesto di questa infrastruttura, Logstash riceve eventi in formato JSON da
 ## conf.d/
 
 ### logstash.conf
-Snippet Logstash impostato per ricevere i log da Winlogbeat (via Beats protocol sulla porta 5044) e per duplicare i dati su due code Redis distinte.
+Snippet Logstash impostato per ricevere i log da ```Winlogbeat``` (via Beats protocol sulla porta 5044) e duplicare i dati su due code Redis.
 
 ```yaml
 # Input: riceve dati da Winlogbeat tramite protocollo Beats sulla porta 5044
@@ -532,14 +532,13 @@ File di configurazione principale di Logstash che definisce le impostazioni glob
 path.data: /var/lib/logstash
 #
 ```
-In questo caso contiene solo la configurazione che specifica la directory di archiviazione dei dati interni di Logstash (checkpoint, file temporanei).
-Le restanti impostazioni sono lasciate ai valori predefiniti di Logstash.
+In questo caso contiene solo la configurazione che specifica la directory di archiviazione dei dati interni di Logstash. Le restanti impostazioni sono lasciate ai valori predefiniti di Logstash.
 
 ---
 ## pipelines.yml
 Definizione delle due pipeline distinte per Logstash
-  - main: pipeline utlizziata per immudb,
-  - elastic-pipeline: utilizzata per elasticsearch.
+  - ```main```: pipeline utlizziata per immudb,
+  - ```elastic-pipeline```: utilizzata per elasticsearch.
 
 ```yaml                                                     
 # This file is where you define your pipelines. You can define multiple.
@@ -569,7 +568,7 @@ OK
 2) "redis-queue-elastic
 ```
 
-Verificare che i log siano stati inseriti correttamente nelle due code Redis tramite il comando LLEN, che mostra il numero di elementi per ciascuna lista:
+Verificare che i log siano stati inseriti correttamente nelle due code Redis tramite il comando ```LLEN```:
 
 ```bash
 192.168.56.10> LLEN redis-queue-immudb
@@ -614,7 +613,7 @@ log-level = "DEBUG"
 ```
 Nel file di configurazione immudb.toml, sono specificati i path fondamentali per il funzionamento del database; **/var/lib/immudb** è directory principale dei dati che contiene:
 
-- I database configurati ed utilizzati (**defaultdb** e **logs_immudb**);
+- I database configurati ed utilizzati (```defaultdb``` e ```logs_immudb```);
 - Le strutture immutabili dei dati (Merkle tree, indici, log transazionali);
 - All'interno della cartella immulog è presente il file immudb-log che contiene tutte le informazioni di esecuzione del server immudb. È utile per verificare i path effettivamente utilizzati (dati, log, configurazione, PID), lo stato del servizio, le connessioni, le operazioni di scrittura e lettura, eventuali errori, e può essere consultato per il debug o il monitoraggio del sistema.
 
@@ -659,9 +658,9 @@ vboxuser@vbox:~$ immuadmin database list --tokenfile ~/immuadmin_token
 
 # queue_consumer.py
 
-Script python che consuma la coda "redis-queue-immudb" e inserisce i log nel database immutabile (successivamente diventerà un servizio).
+Script python che consuma la coda ```redis-queue-immudb``` e inserisce i log in immuDB (successivamente diventerà un servizio).
 
-Lo script redis_queue_consumer_to_immudb.py legge i log dalla redis-queue-immudb per poi inserirli in una tabella relazionale all’interno del database immutabile immudb. Il funzionamento si basa su un ciclo continuo che, in modalità bloccante, attende messaggi JSON dalla coda Redis. Ogni log ricevuto viene validato, serializzato in modo deterministico (ordinando le chiavi del JSON) e sottoposto ad hashing tramite l’algoritmo SHA-256. Il risultato di questo hash viene utilizzato come chiave primaria (log_key) nella tabella logs, dove viene salvata anche la rappresentazione testuale del log (value). La persistenza avviene tramite le funzionalità SQL di immudb, non nel modello chiave-valore. Questo approccio garantisce l'integrità dei dati, evita duplicazioni e sfrutta le proprietà immutabili di immudb per assicurare la non alterabilità dei log una volta scritti.
+Lo script ```redis_queue_consumer_to_immudb.py``` legge i log dalla redis-queue-immudb per poi inserirli in una tabella relazionale all’interno di immuDB. Il funzionamento si basa su un ciclo continuo che, in modalità bloccante, attende messaggi JSON dalla coda Redis. Ogni log ricevuto viene validato, serializzato in modo deterministico (ordinando le chiavi del JSON) e sottoposto ad hashing tramite l’algoritmo ```SHA-256```. Il risultato di questo hash viene utilizzato come chiave primaria (log_key) nella tabella logs, dove viene salvata anche la rappresentazione testuale del log (value). La persistenza avviene tramite le funzionalità SQL di immudb, non nel modello chiave-valore. Questo approccio garantisce l'integrità dei dati, evita duplicazioni e sfrutta le proprietà immutabili di immudb per assicurare la non alterabilità dei log una volta scritti.
 
 ```python
 # -----------------------------------------------------------------------------------------------
@@ -893,6 +892,59 @@ WantedBy=multi-user.target
 
 ```
 
+## redis.service
+
+Percorso: ```/etc/systemd/system/redis.service```
+
+Servizio systemd che esegue il demone redis-server utilizzando il file di configurazione ```/etc/redis/redis.conf```, con tipo notify per integrazione corretta con systemd.
+Include meccanismi di sicurezza avanzati (isolamento delle risorse, restrizioni di privilegio, protezione del filesystem) e supporto al riavvio automatico.
+
+```
+[Unit]
+Description=Advanced key-value store
+After=network.target
+Documentation=http://redis.io/documentation, man:redis-server(1)
+
+[Service]
+Type=notify
+ExecStart=/usr/bin/redis-server /etc/redis/redis.conf
+TimeoutStopSec=0
+Restart=always
+User=redis
+Group=redis
+RuntimeDirectory=redis
+RuntimeDirectoryMode=2755
+
+UMask=007
+PrivateTmp=yes
+LimitNOFILE=65535
+PrivateDevices=yes
+ProtectHome=yes
+ReadOnlyDirectories=/
+ReadWriteDirectories=-/var/lib/redis
+ReadWriteDirectories=-/var/log/redis
+ReadWriteDirectories=-/run/redis
+
+NoNewPrivileges=true
+CapabilityBoundingSet=CAP_SYS_RESOURCE
+RestrictAddressFamilies=AF_INET AF_INET6 AF_UNIX
+MemoryDenyWriteExecute=true
+ProtectKernelModules=true
+ProtectKernelTunables=true
+ProtectControlGroups=true
+RestrictRealtime=true
+RestrictNamespaces=true
+
+# redis-server can write to its own config file when in cluster mode so we
+# permit writing there by default. If you are not using this feature, it is
+# recommended that you replace the following lines with "ProtectSystem=full".
+ProtectSystem=true
+ReadWriteDirectories=-/etc/redis
+
+[Install]
+WantedBy=multi-user.target
+Alias=redis.service
+```
 
 
 
