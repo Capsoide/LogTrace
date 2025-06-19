@@ -45,7 +45,7 @@ In questa prima parte si descrive come creare una rete locale tra due macchine v
 
 ### Creazione e configurazione dell'adattatore Host-Only
 
-#### 1. Aprire **VirtualBox** → `File` > `Host Network Manager`
+#### 1. Aprire **VirtualBox** → `File` → `Host Network Manager`
 #### 2. Cliccare su **Crea** per aggiungere un nuovo adattatore
 #### 3. Configurazione:
    - **IP**: `192.168.56.1`
