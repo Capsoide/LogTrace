@@ -593,9 +593,22 @@ File di configurazione principale per il servizio immudb, il database immutabile
 # Porta, directory dei dati, autenticazione
 
 address = "0.0.0.0"
-port = 3322
-dir = "/var/lib/immudb"
+admin-password = 'xxx'
 auth = true
+certificate = ''
+clientcas = ''
+dbname = 'logs_immudb'
+detached = 'false'
+devmode = true
+dir = '/var/lib/immudb'
+network = 'tcp'
+port 3322
+# Log path with filename
+logfile = 'immudb.log'
+mtls = false
+pidfile = '/var/lib/immudb/immudb.pid'
+PKEY = ''
+log-level = "DEBUG"
 ```
 
 ## Login
