@@ -661,7 +661,7 @@ vboxuser@vbox:~$ immuadmin database list --tokenfile ~/immuadmin_token
 
 Script python che consuma la coda "redis-queue-immudb" e inserisce i log nel database immutabile (successivamente diventerà un service).
 
-Lo script redis_queue_consumer_to_immudb.py.py è progettato per leggere log da redis-queue-immudb e inserirli in una tabella relazionale all’interno del database immutabile immudb. Il funzionamento si basa su un ciclo continuo che, in modalità bloccante, attende messaggi JSON dalla coda Redis. Ogni log ricevuto viene validato, serializzato in modo deterministico (ordinando le chiavi del JSON) e sottoposto ad hashing tramite l’algoritmo SHA-256. Il risultato di questo hash viene utilizzato come chiave primaria (log_key) nella tabella logs, dove viene salvata anche la rappresentazione testuale del log (value). La persistenza avviene tramite le funzionalità SQL di immudb, non nel modello chiave-valore. Questo approccio garantisce l'integrità dei dati, evita duplicazioni e sfrutta le proprietà immutabili di immudb per assicurare la non alterabilità dei log una volta scritti.
+Lo script redis_queue_consumer_to_immudb.py legge i log dalla redis-queue-immudb per poi inserirli in una tabella relazionale all’interno del database immutabile immudb. Il funzionamento si basa su un ciclo continuo che, in modalità bloccante, attende messaggi JSON dalla coda Redis. Ogni log ricevuto viene validato, serializzato in modo deterministico (ordinando le chiavi del JSON) e sottoposto ad hashing tramite l’algoritmo SHA-256. Il risultato di questo hash viene utilizzato come chiave primaria (log_key) nella tabella logs, dove viene salvata anche la rappresentazione testuale del log (value). La persistenza avviene tramite le funzionalità SQL di immudb, non nel modello chiave-valore. Questo approccio garantisce l'integrità dei dati, evita duplicazioni e sfrutta le proprietà immutabili di immudb per assicurare la non alterabilità dei log una volta scritti.
 
 ```python
 # -----------------------------------------------------------------------------------------------
@@ -673,6 +673,8 @@ import json
 import hashlib
 import time
 import logging
+import signal
+import sys
 from immudb.client import ImmudbClient
 
 # ----------------------
@@ -698,6 +700,24 @@ IMMUD_DATABASE = 'logs_immudb'  # Nome del database immudb in cui verranno scrit
 
 # Imposta il livello di logging e il formato dei messaggi
 logging.basicConfig(level=logging.INFO, format='%(asctime)s - %(levelname)s - %(message)s')
+
+# Flag globale per controllare l'esecuzione del ciclo principale
+running = True
+
+def cleanup_and_exit(signum, frame):
+    """
+    Funzione chiamata alla ricezione dei segnali SIGINT e SIGTERM.
+    Imposta la flag globale 'running' a False per terminare ordinatamente il ciclo principale.
+    Qui si possono inserire operazioni di cleanup come chiusura di file,
+    connessioni al database o flush di buffer.
+    """
+    global running
+    logging.info(f"Segnale ricevuto ({signum}), avvio cleanup e terminazione...")
+    running = False
+
+# Registrazione dei segnali SIGINT (Ctrl+C) e SIGTERM (systemctl stop)
+signal.signal(signal.SIGINT, cleanup_and_exit)
+signal.signal(signal.SIGTERM, cleanup_and_exit)
 
 # -------------------
 # FUNZIONI DI SUPPORTO
@@ -750,7 +770,8 @@ def process_and_print():
 
     logging.info(f"In ascolto su Redis '{REDIS_QUEUE_NAME}' e scrittura su immudb (database '{IMMUD_DATABASE}')...")
 
-    while True:
+    global running
+    while running:
         try:
             # Legge un elemento dalla coda (attende massimo 5 secondi)
             item = r.blpop(REDIS_QUEUE_NAME, timeout=5)
@@ -783,6 +804,9 @@ def process_and_print():
             logging.error(f"Errore generale: {e}")
             time.sleep(2)
 
+    # Cleanup finale se serve
+    logging.info("Pulizia finale eseguita, uscita script.")
+
 # -------------------
 # AVVIO DELLO SCRIPT
 # -------------------
@@ -790,8 +814,11 @@ def process_and_print():
 if __name__ == '__main__':
     try:
         process_and_print()
-    except KeyboardInterrupt:
-        logging.info("Script interrotto manualmente.")
+    except Exception as e:
+        logging.error(f"Errore inatteso: {e}")
+    finally:
+        logging.info("Script terminato.")
+
 ```
 ## Output atteso
 ```bash
