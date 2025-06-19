@@ -1,13 +1,13 @@
 # Sistema di monitoraggio Audit Logs
+
 ## Introduzione
-Il sistema descritto si occupa dell'acquisizione automatica dei log di audit relativi agli accessi amministrativi ai sistemi Windows, con l'obiettivo di garantire tracciabilità, integrità e conformità alle normative vigenti in materia di sicurezza informatica (ISO/IEC 27001, Direttiva NIS2 e disposizioni ACN).
+Il sistema descritto si occupa dell'acquisizione automatica dei log di audit relativi agli accessi amministrativi ai sistemi Windows, con l'obiettivo di garantire tracciabilità, integrità e conformità alle normative vigenti in materia di sicurezza informatica.
 
 Il processo viene realizzato attraverso una pipeline composta dai seguenti componenti:
-
-- **Winlogbeat**, installato su un'istanza Windows Server, è il servizio responsabile del recupero e dell'invio degli eventi log di audit raccolti da Event Viewer.
-- **Logstash**, in esecuzione su un sistema Debian, riceve i log da Winlogbeat processandoli e duplicandoli in due differenti code Redis.
-- **Redis** funge da sistema di gestione delle code, permettendo la separazione dei flussi di log:
-  - La **coda 0** (`redis-queue-elastic`) invia i log a **Elasticsearch** per l'indicizzazione e la visualizzazione tramite interfaccia front-end (come Kibana).
+- ```**Winlogbeat**```, installato su un'istanza Windows Server, è il servizio responsabile del recupero e dell'invio degli eventi log di audit raccolti da Event Viewer.
+- ```**Logstash**```, in esecuzione su un sistema Debian, riceve i log da Winlogbeat processandoli e duplicandoli in due differenti code Redis.
+- ```**Redis**```, funge da sistema di gestione delle code, permettendo la separazione dei flussi di log:
+  - La **coda 0** (`redis-queue-elastic`) invia i log a **Elasticsearch** per l'indicizzazione e la visualizzazione tramite interfaccia front-end.
   - La **coda 1** (`redis-queue-immudb`)  è dedicata alla persistenza dei log in un database immutabile (immudb), progettato per garantire integrità, non ripudiabilità e conservazione a lungo termine. In questo contesto, è configurata una retention time pari a 1 giorno.
 
 Questa architettura garantisce la duplicazione dei dati per scopi distinti: analisi e conservazione forense. 
@@ -17,7 +17,7 @@ I singoli componenti svolgono i seguenti ruoli:
 - `Logstash`: duplicazione dei flussi di log e invio alle rispettive code Redis.
 - `Redis`: gestione dei buffer dei dati.
 - `Immudb`: archiviazione sicura e immutabile dei log.
-- `Elasticsearch`: indicizzazione e analisi interattiva dei log.
+- `Elasticsearch`: indicizzazione e front-end per analisi interattiva dei log.
 
 L'intero sistema è progettato per soddisfare i requisiti normativi previsti dalle direttive **ACN**, **ISO/IEC 27001** e **NIS2**, che impongono il tracciamento, la conservazione e l’integrità dei log di sicurezza:
 
@@ -27,18 +27,19 @@ L'intero sistema è progettato per soddisfare i requisiti normativi previsti dal
 
 ---
 
-# Collegamento tra Windows Server e Ubuntu/Debian via VirtualBox
+# Comunicazione tra Windows Server e Ubuntu/Debian via VirtualBox
 
-Questa guida descrive come creare una rete locale tra due macchine virtuali (VM) usando **VirtualBox** con una rete **Host-Only**.
+In questa prima parte si descrive come creare una rete locale tra due macchine virtuali (VM) usando **VirtualBox** con una rete **Host-Only**.
 
 ---
 
 ## Topologia di rete
-
-| Sistema Operativo | IP            | Ruolo                   |
-|------------------|---------------|-------------------------|
-| Windows Server   | 192.168.56.2  | Sender (Winlogbeat)     |
-| Ubuntu/Debian    | 192.168.56.10 | Receiver (Redis, Logstash) |
++-------------------+---------------+----------------------------+
+| Sistema Operativo |       IP      |           Ruolo            | 
+|-------------------|---------------|----------------------------|
+| Windows Server    | 192.168.56.2  | Sender (Winlogbeat)        |
+| Ubuntu/Debian     | 192.168.56.10 | Receiver (Redis, Logstash) |
++-------------------+---------------+----------------------------+
 
 ---
 
@@ -68,7 +69,8 @@ Questa guida descrive come creare una rete locale tra due macchine virtuali (VM)
    - **IP**: `192.168.56.2`
    - **Subnet mask**: `255.255.255.0`
    - **Gateway**: lascia vuoto
-#### 4. Verificare con:
+
+#### 4. Verificare con ```ipconfig``` 
 
 ```powershell
 C:\Users\vboxuser> ipconfig
@@ -89,8 +91,8 @@ Ethernet adapter Ethernet 2:
 
    Connection-specific DNS Suffix  . :
    Link-local IPv6 Address . . . . . : fe80::6894:81ba:3678:5341%13
-   IPv4 Address. . . . . . . . . . . : 192.168.56.2
-   Subnet Mask . . . . . . . . . . . : 255.255.255.0
+   IPv4 Address. . . . . . . . . . . : 192.168.56.2    <--
+   Subnet Mask . . . . . . . . . . . : 255.255.255.0   <--
    Default Gateway . . . . . . . . . :
 ```
 
@@ -98,13 +100,16 @@ Ethernet adapter Ethernet 2:
 
 ## Configurazione interfacce di rete in `/etc/network/interfaces` (Ubuntu/Debian)
 
-Se il sistema non utilizza Netplan (come accade spesso su Debian o alcune versioni legacy di Ubuntu), è possibile configurare le interfacce di rete modificando direttamente il file /etc/network/interfaces.
+Se il sistema non utilizza Netplan (come accade spesso su Debian o alcune versioni legacy di Ubuntu), è possibile configurare le interfacce di rete modificando direttamente il file ```/etc/network/interfaces```.
 
 ### Aprire il file interfaces (descrive le interfacce di rete presenti nel sistema e definisce come devono essere attivate)
+
 ```bash
 vboxuser@vbox:~$ sudo nano /etc/network/interfaces
 ```
-### Modificare il file come segue assicurandosi che i nomi delle interfacce (es. enp0s3, enp0s8) corrispondano a quelli presenti nel sistema
+
+### Modificare il file come segue, assicurandosi che i nomi delle interfacce (es. enp0s3, enp0s8) corrispondano a quelli presenti nel sistema
+
 ```text
 # Include configurazioni aggiuntive (se presenti)
 source /etc/network/interfaces.d/*
@@ -120,30 +125,36 @@ iface enp0s3 inet dhcp
 # Interfaccia Host-Only (rete interna con VirtualBox)
 auto enp0s8
 iface enp0s8 inet static
-    address 192.168.56.10
-    netmask 255.255.255.0
+    address 192.168.56.10   <--
+    netmask 255.255.255.0   <--
 ```
-#### Per verificare le interfacce utilizzare il seguente comando
+
+#### Verifica delle interfacce
+
 ```bash
 vboxuser@vbox:~$ ip link
 1: lo: <LOOPBACK,UP,LOWER_UP> mtu 65536 qdisc noqueue state UNKNOWN mode DEFAULT group default qlen 1000
     link/loopback 00:00:00:00:00:00 brd 00:00:00:00:00:00
 2: enp0s3: <BROADCAST,MULTICAST,UP,LOWER_UP> mtu 1500 qdisc fq_codel state UP mode DEFAULT group default qlen 1000
     link/ether 08:00:27:e0:87:cc brd ff:ff:ff:ff:ff:ff
-3: enp0s8: <BROADCAST,MULTICAST,UP,LOWER_UP> mtu 1500 qdisc fq_codel state UP mode DEFAULT group default qlen 1000
+3: enp0s8: <BROADCAST,MULTICAST,UP,LOWER_UP> mtu 1500 qdisc fq_codel state UP mode DEFAULT group default qlen 1000   <--
     link/ether 08:00:27:9d:3a:10 brd ff:ff:ff:ff:ff:ff
 ```
 
 ### Applicare le modifiche
+
 ```bash
 vboxuser@vbox:~$ sudo systemctl restart networking
 ```
+
 #### Se necessario utilizzare il seguente comando (o in alternativa riavviare la macchina virtuale)
+
 ```bash
 vboxuser@vbox:~$ sudo ifdown enp0s8 && sudo ifup enp0s8
 ```
 
 ### Verificare che l'indirizzo sia stato applicato correttamente
+
 ```bash
 vboxuser@vbox:~$ ip a
 1: lo: <LOOPBACK,UP,LOWER_UP> mtu 65536 qdisc noqueue state UNKNOWN group default qlen 1000
@@ -162,16 +173,18 @@ vboxuser@vbox:~$ ip a
        valid_lft forever preferred_lft forever
 3: enp0s8: <BROADCAST,MULTICAST,UP,LOWER_UP> mtu 1500 qdisc fq_codel state UP group default qlen 1000
     link/ether 08:00:27:9d:3a:10 brd ff:ff:ff:ff:ff:ff
-    inet 192.168.56.10/24 brd 192.168.56.255 scope global enp0s8
+    inet 192.168.56.10/24 brd 192.168.56.255 scope global enp0s8   <--
        valid_lft forever preferred_lft forever
     inet6 fe80::a00:27ff:fe9d:3a10/64 scope link 
        valid_lft forever preferred_lft forever
 ```
 ---
 
-## Creare regola firewall per ermettere il ping da Debian a Windows Server
-E' necessario creare una regola per Windows Server, perchè il firewall (di Windows) blocca di default i pacchetti ICMP Echo Request (ping) in ingresso, anche se la macchina Debian invia correttamente i pacchetti; 
+## Creare regola firewall per permettere il ping da Debian a Windows Server
+
+E' necessario creare una regola per Windows Server, perchè il firewall (di Windows) blocca di default i pacchetti ICMP Echo Request (ping) in ingresso. 
 ### Passaggi per creare la regola firewall su Windows:
+
 #### 1. Aprire Windows Defender Firewall con sicurezza avanzata
    
     Premere il tasto Windows, digitare "Windows Defender Firewall with Advanced Security", successivamente aprire l’app.
@@ -217,7 +230,9 @@ E' necessario creare una regola per Windows Server, perchè il firewall (di Wind
     Scrivere un nome tipo "Consenti ping ICMP Echo Request" e confermare.
 
 ## Verifica finale
+
 ### Ping da Debian a Windows Server
+
 ```bash
 vboxuser@vbox:~$ ping -c 192.168.56.2
 PING 192.168.56.2 (192.168.56.2) 56(84) bytes of data.
@@ -226,10 +241,12 @@ PING 192.168.56.2 (192.168.56.2) 56(84) bytes of data.
 64 bytes from 192.168.56.2: icmp_seq=3 ttl=128 time=1.16 ms
 
 --- 192.168.56.2 ping statistics ---
-3 packets transmitted, 3 received, 0% packet loss, time 2003ms
+3 packets transmitted, 3 received, 0% packet loss, time 2003ms   <--
 rtt min/avg/max/mdev = 1.160/2.923/6.434/2.482 ms
 ```
+
 ### Ping da Windows Server a Debian
+
 ```powershell
 C:\Users\vboxuser>ping 192.168.56.10
 Pinging 192.168.56.10 with 32 bytes of data:
@@ -239,32 +256,28 @@ Reply from 192.168.56.10: bytes=32 time=1ms TTL=64
 Reply from 192.168.56.10: bytes=32 time=1ms TTL=64
 
 Ping statistics for 192.168.56.10:
-    Packets: Sent = 4, Received = 4, Lost = 0 (0% loss),
+    Packets: Sent = 4, Received = 4, Lost = 0 (0% loss),   <---
 Approximate round trip times in milli-seconds:
     Minimum = 1ms, Maximum = 1ms, Average = 1ms
 ```
 
-# Winlogbeat Windows Service
+# Winlogbeat
 
 ## Overview
 
-Winlogbeat è un lightweight shipper, ovvero un piccolo agente software sviluppato da Elastic, pensato specificamente per raccogliere e inviare gli eventi del Registro Eventi di Windows (Windows Event Log) verso sistemi di raccolta dati come Elasticsearch, Logstash, Redis o altri endpoint compatibili.
+Winlogbeat è un lightweight shipper, ovvero un piccolo agente software, il quale raccoglie e invia i Windows Event Log verso endpoint **Redis**, **Logstash** ed **Elasticsearch**.
 
-Fa parte della famiglia di Beats, una suite di data shipper leggeri che fanno da collettori di dati nei sistemi distribuiti, ed è ottimizzato per ambienti Windows (client e server).
-
-### Cosa fa Winlogbeat?
+### Azioni Winlogbeat
 
 1. **Monitoraggio del Registro Eventi**: legge in tempo reale eventi da log come `Security`, `System`, `Application`, `ForwardedEvents`, e altri.
 2. **Filtraggio intelligente**: raccoglie solo specifici `event_id`, provider o livelli, riducendo il rumore.
-3. **Spedizione dei log**: inoltra i dati verso Logstash, Elasticsearch o Redis.
+3. **Spedizione dei log**: inoltra i dati verso Redis, Logstash ed Elasticsearch.
 4. **Supporto ECS**: normalizza i dati secondo l’Elastic Common Schema.
 5. **Dashboard Kibana integrate**: fornisce visualizzazioni pronte all’uso.
 
-Questa documentazione descrive in dettaglio come usare la versione personalizzata contenuta nella cartella `Winlogbeat_712x`.
-
 ---
 
-## Gerarchia directory (Winlogbeat)
+## Gerarchia directory: Winlogbeat
 
 ```
 Winlogbeat/
@@ -278,7 +291,7 @@ Winlogbeat/
 ├── .build_hash.txt
 ├── winlogbeat.yml_bk
 ├── data/
-│   ├── .winlogbeat.yml
+│   ├── winlogbeat.yml
 │   └── meta.json
 ├── kibana/
 │   └── 7/
@@ -300,7 +313,9 @@ Winlogbeat/
 
 ---
 
-## Configurazione (`winlogbeat.yml`)
+## winlogbeat.yml
+
+Percorso: ```/Winlogbeat/data/winlogbeat.yml```
 
 ```yaml
 winlogbeat.event_logs:
@@ -329,34 +344,6 @@ logging:
 
 ---
 
-## Moduli avanzati
-
-### Security
-
-```yaml
-winlogbeat.modules:
-  - module: security
-    enabled: true
-```
-
-### PowerShell
-
-```yaml
-winlogbeat.modules:
-  - module: powershell
-    enabled: true
-```
-
-### Sysmon
-
-```yaml
-winlogbeat.modules:
-  - module: sysmon
-    enabled: true
-```
-
----
-
 ## Installazione come Servizio Windows
 
 ```powershell
@@ -378,12 +365,16 @@ Stop-Service winlogbeat
 ## Debug e Verifica
 
 - **Log locale**: `C:\\ProgramData\\winlogbeat\\Logs\\winlogbeat.log`
+
 - **Verifica output Redis**:
+
   ```bash
   redis-cli -h 192.168.56.10 -p 6379
   LRANGE winlogbeat 0 0
   ```
+
 - **Test manuale**:
+
   ```powershell
   .\winlogbeat.exe -c winlogbeat.yml -e -v
   ```
@@ -392,28 +383,23 @@ Stop-Service winlogbeat
 
 ## Sicurezza
 
-- Proteggi il file `winlogbeat.yml`
-- Limita accesso a Redis/Logstash
-- Esegui come SYSTEM
-
----
-
-## Setup Dashboard Kibana
-
-1. Copia i file da `kibana/7/`
-2. Importali via Kibana GUI
-3. Usa indice `winlogbeat-*`
+- Proteggi il file `winlogbeat.yml`.
+- Limita accesso a Redis/Logstash.
+- Esegui come `SYSTEM`.
 
 ---
 
 # Logstash
-Logstash è una pipeline open source sviluppata da Elastic per l’ingestione, elaborazione e inoltro in tempo reale di dati provenienti da diverse fonti verso una o più destinazioni.
 
-Nel contesto di questa infrastruttura, Logstash riceve eventi in formato JSON da Winlogbeat installato su Windows Server, li processa e infine invia i dati in output a due code Redis distinte, permettendo la duplicazione del flusso: una coda destinata all’ingestione in Elasticsearch per analisi, e una seconda per la storicizzazione immutabile in immudb.
+Logstash è una pipeline open source utilizzata per  la gestion, elaborazione e inoltro in tempo reale di dati provenienti da diverse fonti verso una o più destinazioni.
+
+Nel contesto di questa infrastruttura, Logstash riceve eventi in formato JSON da Winlogbeat, li processa e infine invia i dati in output a due code Redis distinte, permettendo la duplicazione del flusso: 
+- una prima coda destinata all’ingestione in Elasticsearch per analisi;
+- una seconda coda per la storicizzazione in immuDB.
 
 ---
 
-## Gerarchia directory (Logstash)
+## Gerarchia directory: Logstash
 
 ```
 /etc/logstash/
@@ -429,10 +415,11 @@ Nel contesto di questa infrastruttura, Logstash riceve eventi in formato JSON da
 
 ---
 
-## conf.d/
+## logstash.conf
 
-### logstash.conf
-Snippet Logstash impostato per ricevere i log da ```Winlogbeat``` (via Beats protocol sulla porta 5044) e duplicare i dati su due code Redis.
+Percorso: ```/etc/logstash/conf.d/logstash.conf```
+
+Snippet Logstash impostato per ricevere i log da ```Winlogbeat``` (via Beats protocol sulla porta 5044) e per la duplicazione dei log su due code Redis.
 
 ```yaml
 # Input: riceve dati da Winlogbeat tramite protocollo Beats sulla porta 5044
@@ -472,7 +459,10 @@ output {
 ```
 
 ### logstash1.conf
-Pipeline Logstash per leggere da Redis e inviare ad Elasticsearch.
+
+Percorso: ```/etc/logstash/conf.d/logstash1.conf```
+
+Pipeline Logstash per leggere da ```Redis``` e inviare ad ```Elasticsearch```.
 
 ```yaml
 input {
@@ -522,7 +512,10 @@ output {
 
 ---
 ## logstash.yml
-File di configurazione principale di Logstash che definisce le impostazioni globali del sistema.
+
+Percorso: ```/etc/logstash/logstash.yml```
+
+File di configurazione principale di Logstash che definisce le impostazioni globali del sistema: contiene solo la configurazione che specifica la directory di archiviazione dei dati interni di Logstash. Le restanti impostazioni sono lasciate ai valori predefiniti di Logstash.
 
 ```yaml                                                     
 # ------------ Data path ------------
@@ -532,10 +525,12 @@ File di configurazione principale di Logstash che definisce le impostazioni glob
 path.data: /var/lib/logstash
 #
 ```
-In questo caso contiene solo la configurazione che specifica la directory di archiviazione dei dati interni di Logstash. Le restanti impostazioni sono lasciate ai valori predefiniti di Logstash.
 
 ---
 ## pipelines.yml
+
+Percorso: ```/etc/logstash/pipelines.yml```
+
 Definizione delle due pipeline distinte per Logstash
   - ```main```: pipeline utlizziata per immudb,
   - ```elastic-pipeline```: utilizzata per elasticsearch.
@@ -557,6 +552,7 @@ Definizione delle due pipeline distinte per Logstash
 ---
 
 # Accesso e verifica delle code Redis
+
 Accedere al server Redis remoto ed elencare le chiavi disponibili per verificare la presenza delle due code:
 
 ```bash
@@ -568,7 +564,7 @@ OK
 2) "redis-queue-elastic
 ```
 
-Verificare che i log siano stati inseriti correttamente nelle due code Redis tramite il comando ```LLEN```:
+Verificare che i log siano stati inseriti correttamente nelle due code Redis tramite ```LLEN```:
 
 ```bash
 192.168.56.10> LLEN redis-queue-immudb
@@ -588,6 +584,9 @@ Verificare che i log siano stati inseriti correttamente nelle due code Redis tra
 ```
 
 ## immudb.toml
+
+Percorso: ```/etc/immudb/immudb.toml```
+
 File di configurazione principale per il servizio immudb.
 
 ```yaml
@@ -611,11 +610,10 @@ pidfile = '/var/lib/immudb/immudb.pid'
 PKEY = ''
 log-level = "DEBUG"
 ```
-Nel file di configurazione immudb.toml, sono specificati i path fondamentali per il funzionamento del database; **/var/lib/immudb** è directory principale dei dati che contiene:
+Nel file di configurazione ```immudb.toml```, sono specificati i path fondamentali per il funzionamento del database: ```**/var/lib/immudb**``` è la directory principale dei dati che contiene:
 
-- I database configurati ed utilizzati (```defaultdb``` e ```logs_immudb```);
-- Le strutture immutabili dei dati (Merkle tree, indici, log transazionali);
-- All'interno della cartella immulog è presente il file immudb-log che contiene tutte le informazioni di esecuzione del server immudb. È utile per verificare i path effettivamente utilizzati (dati, log, configurazione, PID), lo stato del servizio, le connessioni, le operazioni di scrittura e lettura, eventuali errori, e può essere consultato per il debug o il monitoraggio del sistema.
+- I database configurati ed utilizzati (```defaultdb``` e ```logs_immudb```).
+- Le strutture immutabili dei dati (Merkle tree, indici, log transazionali).
 
 ```
 /var/lib/immudb
@@ -628,6 +626,15 @@ Nel file di configurazione immudb.toml, sono specificati i path fondamentali per
          ├── systemdb
 ```
 
+
+Il file ```immudb-log``` contiene tutte le informazioni di esecuzione del server immudb: 
+- path utilizzati (dati, log, configurazione, PID),
+- stato del servizio;
+- connessioni;
+- operazioni di scrittura e lettura;
+- eventuali errori;
+- debug/monitoraggio del sistema.
+
 ## Login
 
 ```bash
@@ -635,7 +642,8 @@ vboxuser@vbox:~$ immuadmin login inerisci_tuo_username
 Password: inserisci_la_tua_password
 logged in
 ```
-## Creazione nuovo database con retention time period
+
+## Creazione di un nuovo database con retention time period = 24h 
 
 ```bash
 vboxuser@vbox:~$ immuadmin database create nome_database --retention-period=24h --tokenfile ~/immuadmin_token
@@ -658,7 +666,9 @@ vboxuser@vbox:~$ immuadmin database list --tokenfile ~/immuadmin_token
 
 # queue_consumer.py
 
-Script python che consuma la coda ```redis-queue-immudb``` e inserisce i log in immuDB (successivamente diventerà un servizio).
+Percorso: ```/var/consumer-immudb/queue_consumer.py```
+
+Script che consuma la coda ```redis-queue-immudb``` e inserisce i log in immuDB (successivamente diventerà un servizio).
 
 Lo script ```redis_queue_consumer_to_immudb.py``` legge i log dalla redis-queue-immudb per poi inserirli in una tabella relazionale all’interno di immuDB. Il funzionamento si basa su un ciclo continuo che, in modalità bloccante, attende messaggi JSON dalla coda Redis. Ogni log ricevuto viene validato, serializzato in modo deterministico (ordinando le chiavi del JSON) e sottoposto ad hashing tramite l’algoritmo ```SHA-256```. Il risultato di questo hash viene utilizzato come chiave primaria (log_key) nella tabella logs, dove viene salvata anche la rappresentazione testuale del log (value). La persistenza avviene tramite le funzionalità SQL di immudb, non nel modello chiave-valore. Questo approccio garantisce l'integrità dei dati, evita duplicazioni e sfrutta le proprietà immutabili di immudb per assicurare la non alterabilità dei log una volta scritti.
 
@@ -819,39 +829,45 @@ if __name__ == '__main__':
         logging.info("Script terminato.")
 
 ```
+
 ## Output atteso
+
 ```bash
 vboxuser@vbox:/$ source /home/vboxuser/my-venv/bin/activate
 (my-venv) vboxuser@vbox:/$ /home/vboxuser/my-venv/bin/python /home/vboxuser/Documents/redis_reader.py
 2025-06-18 15:45:36,783 - INFO - In ascolto su Redis 'redis-queue-immudb' e scrittura su immudb (database 'logs_immudb')...
 2025-06-18 15:45:36,854 - INFO - [KEY] Chiave immudb generata e inserita: 149cf3c7024285a6539433d1f84b17411f0527b67da963ddf4b421e5ee2c540c
-...
-...
-...
+                                                          ...
+                                                          ...
+                                                          ...
+                                                          ...
+                                                          ...
 ```
 
-## Visualizzazione in immudb
+## Visualizzazione in immuDB
+
 ```bash
-+--------------------------------------------------------------------+-----------------------------------------------------------------+
-|                           (key.value)                              |                         (logs.value)                            |
-+--------------------------------------------------------------------+-----------------------------------------------------------------+
-|                                                                    | "{"@timestamp": "2025-06-18 15:45:36,854.089Z",                 |
-|                                                                    | "@version": "1", "agent": {"ephemeral_id":                      |
-|                                                                    | "70d8b8eb-8915-459e-badf-05c9118e73c6", "hostname":             |
-|                                                                    | "WIN-S", "id": "c156a342-40dc-47ca-977a-f100ebd8e89f",          |
-|                                                                    | "name": "WIN-S", "type": "winlogbeat", "version":               |
-| "149cf3c7024285a6539433d1f84b17411f0527b67da963ddf4b421e5ee2c540c" | "7.17.7"}, "ecs": {"version": "1.12.0"},                        |
-|                                                                    | "event": {"action": "Logon", "code": "4624",                    |
-|                                                                    | "created": "2025-06-17T12:02:18.364Z", "kind":                  |
-|                                                                    | "event", "outcome": "success", "provider":                      |
-|                                                                    | "Microsoft-Windows-Security-Auditing"}, "host":                 |
-|                                                                    |                          ...                                    |
-|                                                                    |                          ...                                    |
-|                                                                    |                          ...                                    |
-+--------------------------------------------------------------------+-----------------------------------------------------------------+
++--------------------------------------------------------------------+------------------------------------------------------------+
+|                           (key.value)                              |                         (logs.value)                       |    
++--------------------------------------------------------------------+------------------------------------------------------------+
+|                                                                    | "{"@timestamp": "2025-06-18 15:45:36,854.089Z",            |    
+|                                                                    | "@version": "1", "agent": {"ephemeral_id":                 |    
+|                                                                    | "70d8b8eb-8915-459e-badf-05c9118e73c6", "hostname":        |     
+|                                                                    | "WIN-S", "id": "c156a342-40dc-47ca-977a-f100ebd8e89f",     |     
+|                                                                    | "name": "WIN-S", "type": "winlogbeat", "version":          |     
+| "149cf3c7024285a6539433d1f84b17411f0527b67da963ddf4b421e5ee2c540c" | "7.17.7"}, "ecs": {"version": "1.12.0"},                   |     
+|                                                                    | "event": {"action": "Logon", "code": "4624",               |     
+|                                                                    | "created": "2025-06-17T12:02:18.364Z", "kind":             |     
+|                                                                    | "event", "outcome": "success", "provider":                 |     
+|                                                                    | "Microsoft-Windows-Security-Auditing"}, "host":            |     
+|                                                                    |                          ...                               |     
+|                                                                    |                          ...                               |     
+|                                                                    |                          ...                               |     
++--------------------------------------------------------------------+------------------------------------------------------------+
 ```
 
 ## Verifica in redis: Consumazione coda
+
 ```bash
 vboxuser@vbox:/$ redis-cli -h 192.168.56.10
 192.168.56.10> auth inserisci_la_tua_password
@@ -861,7 +877,7 @@ OK
 192.168.56.10> LLEN "redis-queue-immudb"
 (integer) 0
 ```
-La coda è stata consumata in modo corretto e i log sono salvati in immudb.
+La coda è stata consumata in modo corretto e i log sono salvati in immuDB.
 
 ---
 # Configurazione dei servizi con systemd
