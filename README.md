@@ -672,9 +672,30 @@ vboxuser@vbox:~$ immuadmin database list --tokenfile ~/immuadmin_token
 
 Percorso: ```/var/consumer-immudb/queue_consumer.py```
 
-Script che consuma la coda ```redis-queue-immudb``` e inserisce i log in immuDB (successivamente diventerà un servizio).
+## Descrizione
 
-Lo script ```redis_queue_consumer_to_immudb.py``` legge i log dalla redis-queue-immudb per poi inserirli in una tabella relazionale all’interno di immuDB. Il funzionamento si basa su un ciclo continuo che, in modalità bloccante, attende messaggi JSON dalla coda Redis. Ogni log ricevuto viene validato, serializzato in modo deterministico (ordinando le chiavi del JSON) e sottoposto ad hashing tramite l’algoritmo ```SHA-256```. Il risultato di questo hash viene utilizzato come chiave primaria (log_key) nella tabella logs, dove viene salvata anche la rappresentazione testuale del log (value). La persistenza avviene tramite le funzionalità SQL di immudb, non nel modello chiave-valore. Questo approccio garantisce l'integrità dei dati, evita duplicazioni e sfrutta le proprietà immutabili di immudb per assicurare la non alterabilità dei log una volta scritti.
+Questo script (`redis_queue_consumer_to_immudb.py`) consuma log JSON da una coda Redis (`redis-queue-immudb`) e li inserisce nella tabella `logs` di immudb usando le API SQL.
+
+## Funzionamento
+
+- I log vengono letti in modalità bloccante da Redis.
+- Ogni log viene serializzato con ordinamento delle chiavi.
+- Si calcola un hash SHA-256 del contenuto: è usato come chiave primaria (`log_key`).
+- Il log completo viene salvato come stringa (`value`).
+
+## Modello Dati
+
+```sql
+CREATE TABLE IF NOT EXISTS logs (
+    log_key VARCHAR(64) PRIMARY KEY,
+    value VARCHAR(10000)
+);
+```
+
+## Vantaggi
+
+- L’hash garantisce **unicità** e **integrità**.
+- immudb assicura la **non alterabilità** dei dati (immutabilità).
 
 ```python
 # -----------------------------------------------------------------------------------------------
