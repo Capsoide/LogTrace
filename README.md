@@ -374,7 +374,7 @@ Stop-Service winlogbeat
 
 # Logstash
 
-Logstash è una pipeline open source utilizzata per  la gestion, elaborazione e inoltro in tempo reale di dati provenienti da diverse fonti verso una o più destinazioni.
+Logstash è una pipeline open source utilizzata per  la gestione, elaborazione e inoltro in tempo reale di dati provenienti da diverse fonti verso una o più destinazioni.
 
 Nel contesto di questa infrastruttura, Logstash riceve eventi in formato JSON da Winlogbeat, li processa e infine invia i dati in output a due code Redis distinte, permettendo la duplicazione del flusso: 
 - una prima coda destinata all’ingestione in Elasticsearch per analisi;
