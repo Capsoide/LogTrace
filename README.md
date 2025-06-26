@@ -7,9 +7,9 @@ Il processo viene realizzato attraverso una pipeline composta dai seguenti compo
 - ```Logstash```, in esecuzione su un sistema Debian, riceve i log da Winlogbeat processandoli e duplicandoli in due differenti code Redis.
 - ```Redis```, funge da sistema di gestione delle code, permettendo la separazione dei flussi di log:
   - La **coda 0** (`redis-queue-elastic`) invia i log a **Elasticsearch** per l'indicizzazione e la visualizzazione tramite interfaccia front-end.
-  - La **coda 1** (`redis-queue-immudb`)  è dedicata alla persistenza dei log in un database immutabile (immudb), progettato per garantire integrità, non ripudiabilità e conservazione a lungo termine. In questo contesto, è configurata una retention time pari a 1 giorno.
+  - La **coda 1** (`redis-queue-immudb`)  è dedicata alla persistenza dei log in un database immutabile (immudb), progettato per garantire integrità, non ripudiabilità e conservazione a lungo termine. In questo contesto, è configurata una retention time pari a 24 ore.
 
-Questa architettura garantisce la duplicazione dei dati per scopi distinti: analisi e conservazione forense. 
+Questa architettura garantisce la duplicazione dei dati per scopi distinti come analisi e conservazione forense in modo tale da garantirne l'integrità e l'inalterabilità nel tempo. 
 I singoli componenti svolgono i seguenti ruoli:
 
 - `Winlogbeat`: acquisizione dei log da Event Viewer.
