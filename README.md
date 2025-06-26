@@ -889,7 +889,7 @@ Percorso: ```/etc/systemd/system/queue_consumer.service```
 
 Servizio associato allo script ```queue_consumer.py```. Viene eseguito periodicamente per la lettura e il consumo continuo dei log dalla coda ```redis-queue-immudb```, con successiva scrittura su immuDB.
 
-```
+```bash
 [Unit]
 Description=Servizio queue_consumer Python con virtualenv
 After=network.target
@@ -914,7 +914,7 @@ Percorso: ```/etc/systemd/system/redis.service```
 Servizio systemd che esegue il demone redis-server utilizzando il file di configurazione ```/etc/redis/redis.conf```, con tipo notify per integrazione corretta con systemd.
 Include meccanismi di sicurezza avanzati (isolamento delle risorse, restrizioni di privilegio, protezione del filesystem) e supporto al riavvio automatico.
 
-```
+```bash
 [Unit]
 Description=Advanced key-value store
 After=network.target
@@ -969,7 +969,8 @@ Percorso: ```/etc/systemd/system/immudb.service```
 Servizio systemd che avvia il demone immudb, un database immutabile, utilizzando il file di configurazione ```/etc/immudb/immudb.toml```.
 Configura l’avvio automatico al boot, con gestione del riavvio in caso di fallimenti.
 Esegue il processo con l’utente e gruppo dedicati immudb, e indirizza log e errori al syslog con identificatore immudb per una facile tracciabilità.
-```
+
+```bash
 [Unit]
 Description=immudb immutable database
 After=network.target
@@ -985,6 +986,41 @@ SyslogIdentifier=immudb
 
 [Install]
 WantedBy=multi-user.target
+
+```
+
+## logstash.service
+
+Percorso: ```/etc/systemd/system/logstash.service ```
+
+Servizio systemd che avvia il demone Logstash con configurazione in ```/etc/logstash```, eseguito con privilegi limitati dall’utente e gruppo logstash. Garantisce il riavvio automatico in caso di fallimento, imposta priorità CPU bassa (nice=19) e un limite massimo di file aperti pari a 16384 per gestire grandi carichi di lavoro.
+
+```bash
+[Unit]
+Description=logstash
+
+[Service]
+Type=simple
+User=logstash
+Group=logstash
+# Load env vars from /etc/default/ and /etc/sysconfig/ if they exist.
+# Prefixing the path with '-' makes it try to load, but if the file doesn't
+# exist, it continues onward.
+EnvironmentFile=-/etc/default/logstash
+EnvironmentFile=-/etc/sysconfig/logstash
+ExecStart=/usr/share/logstash/bin/logstash "--path.settings" "/etc/logstash"
+Restart=always
+WorkingDirectory=/
+Nice=19
+LimitNOFILE=16384
+
+# When stopping, how long to wait before giving up and sending SIGKILL?
+# Keep in mind that SIGKILL on a process can cause data loss.
+TimeoutStopSec=infinity
+
+[Install]
+WantedBy=multi-user.target
+
 ```
 
 ![image](https://github.com/user-attachments/assets/d7cfd3e4-bec2-4ef3-b94b-ed717b759fa7)
