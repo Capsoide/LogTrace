@@ -600,7 +600,7 @@ tables = [
 ]
 
 ```
-Nel file di configurazione ```immudb.toml```, sono specificati i path fondamentali per il funzionamento del database: ```**/var/lib/immudb**``` è la directory principale dei dati che contiene:
+Nel file di configurazione ```immudb.toml```, sono specificati i path fondamentali per il funzionamento del database: ```/var/lib/immudb``` è la directory principale dei dati che contiene:
 
 - I database configurati ed utilizzati (```defaultdb``` e ```logs_immudb```).
 - Le strutture immutabili dei dati (Merkle tree, indici, log transazionali).
