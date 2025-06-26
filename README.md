@@ -674,8 +674,8 @@ Questo script (`redis_queue_consumer_to_immudb.py`) consuma log JSON da una coda
 - Ogni log viene serializzato con ordinamento delle chiavi.
 - Si calcola un hash SHA-256 del contenuto: è usato come chiave primaria (`log_key`).
 - Il log completo viene salvato come stringa (`value`).
-- 
-## Modello Dati
+
+## Definizione tabella `logs`
 
 ```sql
 CREATE TABLE IF NOT EXISTS logs (
@@ -683,9 +683,9 @@ CREATE TABLE IF NOT EXISTS logs (
     value VARCHAR(10000)
 );
 ```
+- log_key: campo di tipo VARCHAR(64) che funge da chiave primaria. In questo caso contiene l’hash SHA-256 calcolato dal contenuto del log, che assicura unicità e integrità.
 
-- L’hash garantisce **unicità** e **integrità**.
-- immudb assicura la **non alterabilità** dei dati (immutabilità).
+- value: campo di tipo VARCHAR(10000) che contiene il log serializzato in formato JSON (come stringa).
 
 ```python
 # -----------------------------------------------------------------------------------------------
