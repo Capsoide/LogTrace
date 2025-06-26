@@ -881,7 +881,7 @@ La coda è stata consumata in modo corretto e i log sono salvati in immuDB.
 ---
 # Configurazione dei servizi con systemd
 
-Per orchestrare l'intero sistema di raccolta, archiviazione e visualizzazione dei log, vengono utilizzate diverse unità systemd che automatizzano e gestiscono l'esecuzione periodica degli script E il database immutabile immuDB.
+Per orchestrare l'intero sistema di raccolta, archiviazione e visualizzazione dei log, vengono utilizzate diverse unità systemd che automatizzano e gestiscono l'esecuzione periodica degli script e il database immutabile immuDB.
 
 ## queue_consumer.service
 
@@ -959,6 +959,32 @@ ReadWriteDirectories=-/etc/redis
 [Install]
 WantedBy=multi-user.target
 Alias=redis.service
+
+```
+
+## immudb.service
+
+Percorso: ```/etc/systemd/system/immudb.service```
+
+Servizio systemd che avvia il demone immudb, un database immutabile, utilizzando il file di configurazione ```/etc/immudb/immudb.toml```.
+Configura l’avvio automatico al boot, con gestione del riavvio in caso di fallimenti.
+Esegue il processo con l’utente e gruppo dedicati immudb, e indirizza log e errori al syslog con identificatore immudb per una facile tracciabilità.
+```
+[Unit]
+Description=immudb immutable database
+After=network.target
+
+[Service]
+ExecStart=/usr/local/bin/immudb --config /etc/immudb/immudb.toml
+Restart=on-failure
+User=immudb
+Group=immudb
+StandardOutput=syslog
+StandardError=syslog
+SyslogIdentifier=immudb
+
+[Install]
+WantedBy=multi-user.target
 ```
 
 ![image](https://github.com/user-attachments/assets/d7cfd3e4-bec2-4ef3-b94b-ed717b759fa7)
