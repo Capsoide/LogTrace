@@ -372,14 +372,6 @@ Stop-Service winlogbeat
 
 ---
 
-## Sicurezza
-
-- Proteggi il file `winlogbeat.yml`.
-- Limita accesso a Redis/Logstash.
-- Esegui come `SYSTEM`.
-
----
-
 # Logstash
 
 Logstash è una pipeline open source utilizzata per  la gestion, elaborazione e inoltro in tempo reale di dati provenienti da diverse fonti verso una o più destinazioni.
@@ -683,6 +675,9 @@ Questo script (`redis_queue_consumer_to_immudb.py`) consuma log JSON da una coda
 - Si calcola un hash SHA-256 del contenuto: è usato come chiave primaria (`log_key`).
 - Il log completo viene salvato come stringa (`value`).
 
+- L’hash garantisce **unicità** e **integrità**.
+- immudb assicura la **non alterabilità** dei dati (immutabilità).
+
 ## Modello Dati
 
 ```sql
@@ -691,11 +686,6 @@ CREATE TABLE IF NOT EXISTS logs (
     value VARCHAR(10000)
 );
 ```
-
-## Vantaggi
-
-- L’hash garantisce **unicità** e **integrità**.
-- immudb assicura la **non alterabilità** dei dati (immutabilità).
 
 ```python
 # -----------------------------------------------------------------------------------------------
