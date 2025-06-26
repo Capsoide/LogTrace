@@ -633,6 +633,12 @@ Il file ```immudb-log``` contiene tutte le informazioni di esecuzione del server
 - eventuali errori;
 - debug/monitoraggio del sistema.
 
+## Verifica log generati
+
+```bash
+vboxuser@vbox:~$ sudo tail -n 50 /var/lib/immudb/immulog/immudb.log
+```
+
 ## Login
 
 ```bash
@@ -641,7 +647,7 @@ Password: inserisci_la_tua_password
 logged in
 ```
 
-## Creazione di un nuovo database con retention time period = 24h 
+## Creazione di un nuovo database con retention time period
 
 ```bash
 vboxuser@vbox:~$ immuadmin database create nome_database --retention-period=24h --tokenfile ~/immuadmin_token
