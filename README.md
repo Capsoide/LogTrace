@@ -1259,6 +1259,8 @@ La dashboard è pensata per offrire uno strumento di controllo centralizzato e i
 
 ---
 
+# Mappa IP/Porte dei Moduli di Logging
+
 | **Modulo**         | **IP**           | **Porta/e**                       | **Protocollo** | **Note**                                                                 |
 |--------------------|------------------|-----------------------------------|----------------|--------------------------------------------------------------------------|
 | **Winlogbeat**     | 192.168.56.2     | 5044                              | TCP            | Invia i log a Logstash sulla porta Beats (5044)                          |
