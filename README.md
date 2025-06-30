@@ -1034,6 +1034,128 @@ WantedBy=multi-user.target
 
 ```
 
+## kibana.service
+
+Percorso: ```/etc/systemd/system/kibana.service ```
+
+Servizio systemd che avvia il demone Kibana con configurazione in ```/etc/kibana```, fornisce l’interfaccia web per visualizzare, analizzare e interrogare i dati presenti in Elasticsearch. Questo file systemd definisce l'avvio automatico di Kibana come processo in background, configurandone utente, percorso di esecuzione, variabili d’ambiente e log. È essenziale per rendere Kibana disponibile agli utenti tramite browser.
+
+```bash
+[Unit]
+Description=Kibana
+Documentation=https://www.elastic.co
+Wants=network-online.target
+After=network-online.target
+
+[Service]
+Type=simple
+User=kibana
+Group=kibana
+
+Environment=KBN_HOME=/usr/share/kibana
+Environment=KBN_PATH_CONF=/etc/kibana
+
+EnvironmentFile=-/etc/default/kibana
+EnvironmentFile=-/etc/sysconfig/kibana
+
+ExecStart=/usr/share/kibana/bin/kibana --logging.dest="/var/log/kibana/kibana.log" --pid.file="/run/kibana/kibana.pid" --deprecation.skip_d>
+
+Restart=on-failure
+RestartSec=3
+
+StartLimitBurst=3
+StartLimitInterval=60
+
+WorkingDirectory=/usr/share/kibana
+
+StandardOutput=journal
+StandardError=inherit
+
+[Install]
+WantedBy=multi-user.target
+
+```
+
+## elasticsearch.service
+
+Percorso: ```/lib/systemd/system/elasticsearch.service```
+
+Servizio systemd che avvia il demone Kibana con configurazione in ```/etc/kibana```, fornisce l’interfaccia web per visualizzare, analizzare e interrogare i dati presenti in Elasticsearch. Questo file systemd definisce l'avvio automatico di Kibana come processo in background, configurandone utente, percorso di esecuzione, variabili d’ambiente e log. È essenziale per rendere Kibana disponibile agli utenti tramite browser.
+
+Servizio systemd che avvia il demone elasticsearch, il binario di avvio è systemd-entrypoint, che supporta notifiche systemd con configurazione in ```/etc/elasticsearch```. Servizio definito come unità di tipo notify per l'integrazione con systemd e consente l'avvio controllato del nodo Elasticsearch. Utilizza un proprio utente (elasticsearch) per l’isolamento dei privilegi, configura risorse di sistema elevate (limiti su file, processi e memoria), e imposta un avvio lento tollerando fino a 900 secondi (TimeoutStartSec=900). I log vengono inviati a journalctl, ma Elasticsearch scrive anche su file propri in ```/var/log/elasticsearch```. 
+
+```bash
+[Unit]
+Description=Elasticsearch
+Documentation=https://www.elastic.co
+Wants=network-online.target
+After=network-online.target
+
+[Service]
+Type=notify
+RuntimeDirectory=elasticsearch
+PrivateTmp=true
+Environment=ES_HOME=/usr/share/elasticsearch
+Environment=ES_PATH_CONF=/etc/elasticsearch
+Environment=PID_DIR=/var/run/elasticsearch
+Environment=ES_SD_NOTIFY=true
+EnvironmentFile=-/etc/default/elasticsearch
+
+WorkingDirectory=/usr/share/elasticsearch
+
+User=elasticsearch
+Group=elasticsearch
+
+ExecStart=/usr/share/elasticsearch/bin/systemd-entrypoint -p ${PID_DIR}/elasticsearch.pid --quiet
+
+# StandardOutput is configured to redirect to journalctl since
+# some error messages may be logged in standard output before
+# elasticsearch logging system is initialized. Elasticsearch
+# stores its logs in /var/log/elasticsearch and does not use
+# journalctl by default. If you also want to enable journalctl
+# logging, you can simply remove the "quiet" option from ExecStart.
+StandardOutput=journal
+StandardError=inherit
+
+# Specifies the maximum file descriptor number that can be opened by this process
+LimitNOFILE=65535
+
+# Specifies the maximum number of processes
+LimitNPROC=4096
+
+# Specifies the maximum size of virtual memory
+LimitAS=infinity
+
+# Specifies the maximum file size
+LimitFSIZE=infinity
+
+# Disable timeout logic and wait until process is stopped
+TimeoutStopSec=0
+
+# SIGTERM signal is used to stop the Java process
+KillSignal=SIGTERM
+
+# Send the signal only to the JVM rather than its control group
+KillMode=process
+
+# Java process is never killed
+SendSIGKILL=no
+
+# When a JVM receives a SIGTERM signal it exits with code 143
+SuccessExitStatus=143
+
+# Allow a slow startup before the systemd notifier module kicks in to extend the timeout
+TimeoutStartSec=900
+
+[Install]
+WantedBy=multi-user.target
+
+# Built for packages-7.17.29 (packages)
+
+```
+
+
+
 ![image](https://github.com/user-attachments/assets/d7cfd3e4-bec2-4ef3-b94b-ed717b759fa7)
 
 
