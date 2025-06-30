@@ -1164,7 +1164,7 @@ Per verificare che Elasticsearch sia correttamente avviato e accessibile in HTTP
 3. Se tutto è configurato correttamente, il servizio risponde con un JSON simile al seguente, che conferma l’avvio del nodo e le informazioni sul cluster:
 
 <div align="center" style="border:1px solid #ccc; padding:10px; display: inline-block;">
-  <img src="https://github.com/user-attachments/assets/4e6b1fce-867c-4ab3-a6dd-af69465ec2ed" alt="image" />
+  <img src="https://github.com/user-attachments/assets/bb6dae70-b76e-43b7-a4ee-08df1f13c2c8" alt="image" />
 </div>
 
 
