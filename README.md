@@ -1080,9 +1080,13 @@ WantedBy=multi-user.target
 
 Percorso: ```/lib/systemd/system/elasticsearch.service```
 
-Servizio systemd che avvia il demone Kibana con configurazione in ```/etc/kibana```, fornisce l’interfaccia web per visualizzare, analizzare e interrogare i dati presenti in Elasticsearch. Questo file systemd definisce l'avvio automatico di Kibana come processo in background, configurandone utente, percorso di esecuzione, variabili d’ambiente e log. È essenziale per rendere Kibana disponibile agli utenti tramite browser.
+Servizio systemd che gestisce l'avvio del demone Elasticsearch, utilizzando il binario systemd-entrypoint, che supporta le notifiche a systemd (Type=notify) per un'integrazione corretta con il sistema di init.
 
-Servizio systemd che avvia il demone elasticsearch, il binario di avvio è systemd-entrypoint, che supporta notifiche systemd con configurazione in ```/etc/elasticsearch```. Servizio definito come unità di tipo notify per l'integrazione con systemd e consente l'avvio controllato del nodo Elasticsearch. Utilizza un proprio utente (elasticsearch) per l’isolamento dei privilegi, configura risorse di sistema elevate (limiti su file, processi e memoria), e imposta un avvio lento tollerando fino a 900 secondi (TimeoutStartSec=900). I log vengono inviati a journalctl, ma Elasticsearch scrive anche su file propri in ```/var/log/elasticsearch```. 
+La configurazione principale del servizio si trova in ```/etc/elasticsearch```. Il servizio viene eseguito con l'utente dedicato elasticsearch per motivi di sicurezza e isolamento dei privilegi.
+
+Sono definiti limiti di sistema elevati (come LimitNOFILE=65535, LimitNPROC=4096, memoria e file illimitati) per garantire performance e stabilità. L'avvio del nodo può richiedere tempo: systemd è configurato per attendere fino a 900 secondi (TimeoutStartSec=900) prima di considerarlo fallito.
+
+I log iniziali vengono inviati a journalctl tramite StandardOutput=journal, ma Elasticsearch mantiene anche i propri file di log in ```/var/log/elasticsearch```.
 
 ```bash
 [Unit]
