@@ -1201,7 +1201,7 @@ Di seguito, un esempio reale dell’interfaccia Discover in uso:
 
 ## Dashboard custom: : Analisi eventi di audit Windows
 
-La dashboard è stata realizzata per fornire una panoramica dettagliata e immediatamente leggibile degli eventi di sicurezza raccolti dai log di audit di Windows, ricevuti attraverso la pipeline Redis → Logstash → Elasticsearch. I dati vengono poi visualizzati tramite Kibana in modo strutturato e comprensibile.
+La dashboard è stata realizzata per fornire una panoramica dettagliata e immediatamente leggibile degli eventi di sicurezza raccolti dai log di audit di Windows.
 
 ## Tabella generale degli eventi
 La parte superiore della dashboard mostra una tabella dinamica in cui ogni riga rappresenta un evento di audit. Le colonne visualizzano informazioni fondamentali per l’analisi e la tracciabilità degli eventi:
@@ -1217,17 +1217,17 @@ La parte superiore della dashboard mostra una tabella dinamica in cui ogni riga 
   <img src="https://github.com/user-attachments/assets/9d44f6b4-6096-4573-a31b-fb38fcd97ee5" alt="image" /> 
 </div>
 
-Questa tabella consente di monitorare in tempo reale cosa accade sui vari host della rete, rendendo immediata l’individuazione di accessi sospetti o anomalie.
+Questa tabella consente di monitorare in tempo reale cosa accade sui vari host della rete, rendendo immediata l’individuazione di accessi sospetti e anomali.
 
 ## Grafico a torta: distribuzione eventi
-Al centro della dashboard è presente un grafico a torta (donut chart) che mostra la distribuzione percentuale degli Event ID raccolti. Questo permette di avere una visione aggregata su quali tipi di eventi si verificano più frequentemente e se vi sono anomalie (ad esempio, un numero elevato di login falliti o tentativi di accesso non autorizzati).
+Successivamente è presente un grafico a torta (donut chart) che mostra la distribuzione percentuale degli Event ID raccolti. Questo permette di avere una visione aggregata su quali tipi di eventi si verificano più frequentemente e se vi sono anomalie (ad esempio, un numero elevato di login falliti o tentativi di accesso non autorizzati).
 
 <div align="center" style="border:1px solid #ccc; padding:10px; display: inline-block;"> 
   <img src="https://github.com/user-attachments/assets/6448ae63-4761-4006-b38f-f5ce82c53f9e" alt="image" /> 
 </div>
 
 ## Tabella di descrizione Event ID
-In basso a destra è presente una tabella che associa ogni Event ID a una descrizione sintetica e, se noto, al relativo tipo di evento. Questa sezione è particolarmente utile per chi non conosce a memoria il significato dei codici evento di Windows, poiché consente una rapida identificazione del contesto.
+Di seguito è presente una tabella che associa ogni Event ID a una descrizione sintetica e, se noto, al relativo tipo di evento. Questa sezione è particolarmente utile per chi non conosce a memoria il significato dei codici evento di Windows, poiché consente una rapida identificazione del contesto.
 
 <div align="center" style="border:1px solid #ccc; padding:10px; display: inline-block;"> 
   <img src="https://github.com/user-attachments/assets/363044c5-7698-48d6-9819-bc4feb7f9571" alt="image" /> 
@@ -1241,7 +1241,6 @@ Infine, la dashboard presenta un grafico a barre che mostra i Top Event ID ricev
 </div>
 
 La dashboard è pensata per offrire uno strumento di controllo centralizzato e immediatamente fruibile anche da chi non è esperto di analisi log. È utile sia per il monitoraggio costante che per analisi forensi su eventi passati. Grazie alla categorizzazione e visualizzazione intuitiva dei dati, ogni componente può essere utilizzato in fase investigativa, operativa o preventiva.
-
 
 ---
 # Configurazione dei servizi con systemd
