@@ -1261,15 +1261,15 @@ La dashboard è pensata per offrire uno strumento di controllo centralizzato e i
 
 # Mappa IP/Porte dei Moduli di Logging
 
-| **Modulo**         | **IP**           | **Porta/e**                       | **Protocollo** | **Note**                                                                 |
-|--------------------|------------------|-----------------------------------|----------------|--------------------------------------------------------------------------|
-| **Winlogbeat**     | 192.168.56.2     | 5044                              | TCP            | Invia i log a Logstash sulla porta Beats (5044)                          |
-| **Logstash**       | 192.168.56.10    | 5044 (input), 6379 (output)       | TCP            | Riceve log da Winlogbeat e li inoltra su Redis (più code)                |
-| **Redis (redis-queue elastic)**| 192.168.56.10    | 6379                              | TCP            | Coda letta da Elasticsearch per analisi                                  |
-| **Redis (redis-queue-immudb)**| 192.168.56.10    | 6379                              | TCP            | Coda duplicata per immudb; stesso server/porta, DB o chiave differente   |
-| **Elasticsearch**  | 192.168.56.10    | 9200 (REST API), 9300 (transport) | HTTP/TCP       | Riceve dati da Logstash tramite Redis; usato da Kibana                   |
-| **Kibana**         | 192.168.56.10    | 5601                              | HTTP           | Interfaccia web per Elasticsearch                                        |
-| **immudb**         | 192.168.56.10    | 3322 (default), 9497 (gRPC API)   | TCP            | Legge i log dalla seconda coda Redis per storicizzazione immutabile      |
+| **Modulo**                      | **IP**           | **Porta/e**                       | **Protocollo**     | **Note**                                                                 |
+|---------------------------------|------------------|-----------------------------------|---------------------|--------------------------------------------------------------------------|
+| **Winlogbeat**                  | 192.168.56.2     | 5044                              | TCP                 | Invia log a Logstash tramite il modulo Beats                            |
+| **Logstash**                    | 192.168.56.10    | 5044 (input), 6379 (output)       | TCP, Beats          | Riceve i log da Winlogbeat e li duplica in due code Redis distinte      |
+| **Redis (coda per Elasticsearch)** | 192.168.56.10 | 6379                              | TCP, RESP           | Coda letta da Logstash per inviare i log a Elasticsearch                |
+| **Redis (coda per immudb)**        | 192.168.56.10 | 6379                              | TCP, RESP           | Coda duplicata per immudb (chiave o DB separato)                        |
+| **Elasticsearch**               | 192.168.56.10    | 9200 (REST API), 9300 (transport) | HTTP/HTTPS/TCP/TLS  | Espone l’API REST e comunica tra nodi tramite protocollo interno        |
+| **Kibana**                      | 192.168.56.10    | 5601                              | HTTPS/TCP/TLS        | Interfaccia grafica per interrogare Elasticsearch                       |
+| **immudb**                      | 192.168.56.10    | 3322 (default), 9497 (gRPC API)   | TCP/gRPC            | Legge i log dalla coda Redis per la storicizzazione immutabile          |
 
 ---
 # Configurazione dei servizi con systemd
