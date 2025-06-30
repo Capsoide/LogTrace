@@ -1157,14 +1157,34 @@ systemctl start kibana
 
 ## Verifica e funzionamento
 
+### Elasticsearch
+
 Per verificare che Elasticsearch sia correttamente avviato e accessibile in HTTPS con autenticazione:
 
-1. Aprire un browser e accedere all'indirizzo ``https://192.168.56.10:9200``;
+1. Aprire il browser e accedere all'indirizzo ``https://192.168.56.10:9200``;
 2. Inserire le credenziali di autenticazione (username e password) quando richiesto;
-3. Se tutto è configurato correttamente, il servizio risponde con un JSON simile al seguente, che conferma l’avvio del nodo e le informazioni sul cluster:
+3. Se tutto è configurato correttamente (TLS e certificati), il servizio risponde con un JSON simile al seguente, che conferma l’avvio del nodo e le informazioni sul cluster:
 
 <div align="center" style="border:1px solid #ccc; padding:10px; display: inline-block;">
   <img src="https://github.com/user-attachments/assets/bb6dae70-b76e-43b7-a4ee-08df1f13c2c8" alt="image" />
+</div>
+
+### Kibana
+
+1. Aprire il browser e accedere all'indirizzo ``https://192.168.56.10:5601``;
+2. Inserire le credenziali di autenticazione (username e password) quando richiesto;
+3. Se tutto è configurato correttamente (TLS e certificati), sarà possibile visualizzare dashboard, log e strumenti di analisi collegati a Elasticsearch.
+
+## Visualizzazione dashboard
+
+### Dashboard Discover
+
+La dashboard Discover di Kibana consente di esplorare i dati indicizzati in Elasticsearch in tempo reale. È lo strumento principale per visualizzare i log e i documenti ricevuti, ordinati cronologicamente. Attraverso l’interfaccia è possibile effettuare ricerche, applicare filtri e analizzare i dati tramite query personalizzate. Ogni documento può essere visualizzato sia in formato JSON che in forma tabellare, facilitando l'ispezione delle singole voci. Discover è particolarmente utile per il monitoraggio, la verifica dei log in ingresso e per individuare rapidamente eventi rilevanti.
+
+Di seguito, un esempio reale dell’interfaccia Discover in uso:
+
+<div align="center" style="border:1px solid #ccc; padding:10px; display: inline-block;"> 
+  <img src="https://github.com/user-attachments/assets/bb6dae70-b76e-43b7-a4ee-08df1f13c2c8" alt="image" /> 
 </div>
 
 
