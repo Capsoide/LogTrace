@@ -1177,7 +1177,7 @@ Per verificare che Elasticsearch sia correttamente avviato e accessibile in HTTP
 2. Inserire le credenziali di autenticazione (username e password) quando richiesto;
 3. Se tutto è configurato correttamente (TLS e certificati), il servizio risponde con un JSON simile al seguente, che conferma l’avvio del nodo e le informazioni sul cluster:
 
-```json
+```bash
 name:	                                        "vbox-node"
 cluster_name:	                                "my-audit-log"
 cluster_uuid:	                                "eNKo8m_4Ra6YkKBC7Kx-Ag"
