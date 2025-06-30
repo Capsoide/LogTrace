@@ -875,6 +875,306 @@ OK
 La coda è stata consumata in modo corretto e i log sono salvati in immuDB.
 
 ---
+
+# Analisi Log e UX Grafica con Elasticsearch e Kibana
+
+# Elasticsearch 
+
+### Gerarchia directory (file configurazione di Elasticsearch)
+
+```
+/etc/elasticsearch/
+├── certs/
+│   ├── ca.crt                 # Certificato pubblico della Certificate Authority (CA) usata per firmare gli altri certificati.
+│   ├── ca.key                 # Chiave privata della CA (va tenuta segreta).
+│   ├── ca.srl                 # Seriale CA, tiene traccia dei certificati già emessi.
+│   ├── elasticsearch.crt      # Certificato pubblico di Elasticsearch, firmato dalla CA.
+│   ├── elasticsearch.csr      # Richiesta di firma del certificato per Elasticsearch.
+│   ├── elasticsearch.key      # Chiave privata di Elasticsearch, usata per TLS.
+│   ├── kibana.crt             # Certificato pubblico di Kibana, firmato dalla CA.
+│   ├── kibana.csr             # Richiesta di firma del certificato per Kibana.
+│   └── kibana.key             # Chiave privata di Kibana (usata da Kibana, ma conservata qui).
+├── elasticsearch.keystore     # File keystore sicuro con segreti (es. password, token).
+├── elasticsearch-plugins.example.yml
+├── elasticsearch.yml          # File principale di configurazione di Elasticsearch.
+├── jvm.options                # Opzioni JVM (heap size, GC, ecc.).
+├── jvm.options.d/             # Directory per opzioni JVM aggiuntive.
+├── log4j2.properties          # Configurazione logging di Elasticsearch.
+├── role_mapping.yml           # Mappatura ruoli utenti.
+├── roles.yml                  # Definizione dei ruoli RBAC.
+├── users                      # File contenente gli utenti locali (realm `file`).
+└── users_roles                # Associazione tra utenti e ruoli.
+```
+
+Elasticsearch è un motore di ricerca e analisi distribuito, progettato per archiviare grandi volumi di dati e permettere ricerche molto veloci e flessibili. In questo caso Elasticsearch raccoglie e indicizza i log per permettere analisi approfondite e visualizzazioni in tempo reale tramite Kibana. I dati, che arrivano in formato JSON da altri componenti, vengono indicizzati per essere rapidamente consultabili con query flessibili, ad esempio per event.code, host.name, @timestamp e altri campi.
+
+Come spiegato in precedenza i log nella coda Redis ``redis-queue-elastic`` vengono consumati da Logstash, il quale li elabora e li invia a Elasticsearch per l’archiviazione e la ricerca dei log di sistema.
+
+# Kibana
+
+## Gerarchia directory (file configurazione di Kibana)
+
+```
+/etc/elasticsearch/
+    ├── certs/
+    │   ├── ca.crt                 # Certificato della CA usato da Kibana per validare Elasticsearch.
+    │   ├── kibana.crt             # Certificato pubblico usato da Kibana per TLS.
+    │   └── kibana.key             # Chiave privata associata al certificato di Kibana.
+    |
+    ├── kibana.keystore           # File keystore per password e token sensibili.
+    ├── kibana.yml                # File principale di configurazione di Kibana.
+    └── node.options              # Opzioni del nodo Kibana (es. parametri Node.js).
+```
+
+Kibana è l’interfaccia grafica di Elasticsearch. Permette di visualizzare, esplorare e analizzare i dati archiviati su Elasticsearch tramite dashboard, grafici e strumenti interattivi (come Discover, Visualize, Dashboard, Alerting).
+
+Kibana è utilizzato per:
+
+- Visualizzare i log raccolti dai sistemi monitorati;
+- filtrare eventi per codici o intervalli temporali;
+- creare dashboard personalizzate per la sicurezza e l'analisi degli audit-log;
+- configurare alert (tramite il modulo Watcher) per notificare condizioni anomale (es. tentativi di accesso sospetti).
+
+## Generazione DEI certificati TLS 
+
+### Creazione di una Certificate Authority (CA) e i certificati per Elasticsearch e Kibana 
+
+```bash
+# Entra nella cartella dei certificati
+mkdir -p /etc/elasticsearch/certs /etc/kibana/certs
+cd /etc/elasticsearch/certs
+
+# Crea la chiave privata della CA
+openssl genrsa -out ca.key 4096
+
+# Crea il certificato autofirmato della CA
+openssl req -x509 -new -nodes -key ca.key -sha256 -days 3650 -out ca.crt \
+  -subj "/C=IT/ST=Italy/L=Torino/O=AuditSecure/OU=IT/CN=ElasticCA"
+
+# Crea chiave e richiesta CSR per Elasticsearch
+openssl genrsa -out elasticsearch.key 2048
+openssl req -new -key elasticsearch.key -out elasticsearch.csr \
+  -subj "/C=IT/ST=Italy/L=Torino/O=AuditSecure/OU=IT/CN=elasticsearch"
+
+# Firma il certificato per Elasticsearch
+openssl x509 -req -in elasticsearch.csr -CA ca.crt -CAkey ca.key \
+  -CAcreateserial -out elasticsearch.crt -days 365 -sha256
+
+# Copia i certificati anche per Kibana
+cp ca.crt /etc/kibana/certs/
+cp /etc/elasticsearch/certs/elasticsearch.crt /etc/kibana/certs/kibana.crt
+cp /etc/elasticsearch/certs/elasticsearch.key /etc/kibana/certs/kibana.key
+
+```
+
+### Impostazione dei permessi sicuri
+
+Le seguenti istruzioni vengono utilizzate per assegnare i permessi corretti ai certificati TLS di Elasticsearch e Kibana, garantendo:
+
+- che solo i rispettivi servizi possano accedere alle proprie chiavi private;
+- la protezione dei file sensibili da accessi non autorizzati;
+- il corretto funzionamento dei servizi in ambiente TLS/HTTPS.
+
+```bash
+# Elasticsearch
+chown elasticsearch:elasticsearch /etc/elasticsearch/certs/*
+chmod 600 /etc/elasticsearch/certs/*.key
+chmod 644 /etc/elasticsearch/certs/*.crt
+
+# Kibana
+chown kibana:kibana /etc/kibana/certs/*
+chmod 600 /etc/kibana/certs/*.key
+chmod 644 /etc/kibana/certs/*.crt
+```
+
+## elasticsearch.yml
+
+Percorso: ```/etc/elasticsearch/elasticsearch.yml```
+
+File di configurazione principale per il servizio elasticsearch.
+
+```yaml
+# ======================== Elasticsearch Configuration =========================
+#
+# NOTE: Elasticsearch comes with reasonable defaults for most settings.
+#       Before you set out to tweak and tune the configuration, make sure you
+#       understand what are you trying to accomplish and the consequences.
+#
+# The primary way of configuring a node is via this file. This template lists
+# the most important settings you may want to configure for a production cluster.
+#
+# Please consult the documentation for further information on configuration options:
+# https://www.elastic.co/guide/en/elasticsearch/reference/index.html
+#
+# ---------------------------------- Cluster -----------------------------------
+#
+# Use a descriptive name for your cluster:
+#
+cluster.name: my-audit-log
+#
+# ------------------------------------ Node ------------------------------------
+#
+# Use a descriptive name for the node:
+#
+node.name: vbox-node
+#
+# Add custom attributes to the node:
+#
+#node.attr.rack: r1
+#
+# ----------------------------------- Paths ------------------------------------
+#
+# Path to directory where to store the data (separate multiple locations by comma):
+#
+path.data: /var/lib/elasticsearch
+#
+# Path to log files:
+#
+path.logs: /var/log/elasticsearch
+#
+# ----------------------------------- Memory -----------------------------------
+#
+# Lock the memory on startup:
+#
+#bootstrap.memory_lock: true
+#
+# Make sure that the heap size is set to about half the memory available
+# on the system and that the owner of the process is allowed to use this
+# limit.
+#
+# Elasticsearch performs poorly when the system is swapping the memory.
+#
+# ---------------------------------- Network -----------------------------------
+#
+# By default Elasticsearch is only accessible on localhost. Set a different
+# address here to expose this node on the network:
+#
+network.host: 192.168.56.10
+#
+# By default Elasticsearch listens for HTTP traffic on the first free port it
+# finds starting at 9200. Set a specific HTTP port here:
+#
+http.port: 9200
+#
+# For more information, consult the network module documentation.
+#
+# --------------------------------- Discovery ----------------------------------
+#
+# Pass an initial list of hosts to perform discovery when this node is started:
+# The default list of hosts is ["127.0.0.1", "[::1]"]
+#
+discovery.type: single-node
+#
+#discovery.seed_hosts: ["host1", "host2"]
+#
+# Bootstrap the cluster using an initial set of master-eligible nodes:
+#
+#cluster.initial_master_nodes: ["node-1", "node-2"]
+#
+# For more information, consult the discovery and cluster formation module documentation.
+#
+# ---------------------------------- Various -----------------------------------
+#
+# Require explicit names when deleting indices:
+#
+#action.destructive_requires_name: true
+#
+# ---------------------------------- Security ----------------------------------
+#
+#                                 *** WARNING ***
+#
+# Elasticsearch security features are not enabled by default.
+# These features are free, but require configuration changes to enable them.
+# This means that users don't have to provide credentials and can get full access
+# to the cluster. Network connections are also not encrypted.
+#
+# To protect your data, we strongly encourage you to enable the Elasticsearch security features. 
+# Refer to the following documentation for instructions.
+#
+# https://www.elastic.co/guide/en/elasticsearch/reference/7.16/configuring-stack-security.html
+
+xpack.security.enabled: true
+
+xpack.security.http.ssl.enabled: true
+xpack.security.http.ssl.key: /etc/elasticsearch/certs/elasticsearch.key
+xpack.security.http.ssl.certificate: /etc/elasticsearch/certs/elasticsearch.crt
+xpack.security.http.ssl.certificate_authorities: [ "/etc/elasticsearch/certs/ca.crt" ]
+
+```
+
+## kibana.yml
+
+Percorso: ```/etc/kibana/kibana.yml```
+
+File di configurazione principale per il servizio kibana.
+
+```yaml
+# Kibana is served by a back end server. This setting specifies the port to use.
+server.port: 5601
+
+# Specifies the address to which the Kibana server will bind. IP addresses and host names are both valid values.
+# The default is 'localhost', which usually means remote machines will not be able to connect.
+# To allow connections from remote users, set this parameter to a non-loopback address.
+server.host: "192.168.56.10"
+
+# The URLs of the Elasticsearch instances to use for all your queries.
+elasticsearch.hosts: ["https://192.168.56.10:9200"]
+
+# If your Elasticsearch is protected with basic authentication, these settings provide
+# the username and password that the Kibana server uses to perform maintenance on the Kibana
+# index at startup. Your Kibana users still need to authenticate with Elasticsearch, which
+# is proxied through the Kibana server.
+elasticsearch.username: ""
+elasticsearch.password: ""
+
+# Enables SSL and paths to the PEM-format SSL certificate and SSL key files, respectively.
+# These settings enable SSL for outgoing requests from the Kibana server to the browser.
+server.ssl.enabled: true
+server.ssl.certificate: /etc/kibana/certs/kibana.crt
+server.ssl.key: /etc/kibana/certs/kibana.key
+
+# Optional setting that enables you to specify a path to the PEM file for the certificate
+# authority for your Elasticsearch instance.
+elasticsearch.ssl.certificateAuthorities: ["/etc/kibana/certs/ca.crt"]
+
+# To disregard the validity of SSL certificates, change this setting's value to 'none'.
+elasticsearch.ssl.verificationMode: certificate
+
+```
+
+## Avvio e abilitazione
+
+```bash
+systemctl daemon-reexec
+systemctl daemon-reload
+systemctl enable elasticsearch
+systemctl start elasticsearch
+
+systemctl enable kibana
+systemctl start kibana
+
+```
+
+## Verifica e funzionamento
+
+Per verificare che Elasticsearch sia correttamente avviato e accessibile in HTTPS con autenticazione:
+
+1. Aprire un browser e accedere all'indirizzo ``https://192.168.56.10:9200``;
+2. Inserire le credenziali di autenticazione (username e password) quando richiesto;
+3. Se tutto è configurato correttamente, il servizio risponde con un JSON simile al seguente, che conferma l’avvio del nodo e le informazioni sul cluster:
+
+<div align="center" style="border:1px solid #ccc; padding:10px; display: inline-block;">
+  <img src="[https://example.com/immagine.png](https://github.com/user-attachments/assets/7d3f57ee-6728-4ad2-95b5-0e7649a25733)" alt="Diagramma Progetto" width="400" />
+</div>
+
+
+
+
+
+
+
+
+---
 # Configurazione dei servizi con systemd
 
 Per orchestrare l'intero sistema di raccolta, archiviazione e visualizzazione dei log, vengono utilizzate diverse unità systemd che automatizzano e gestiscono l'esecuzione periodica degli script e il database immutabile immuDB.
