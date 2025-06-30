@@ -666,7 +666,7 @@ Percorso: ```/var/consumer-immudb/queue_consumer.py```
 
 ## Descrizione
 
-Questo script (`redis_queue_consumer_to_immudb.py`) consuma log JSON da una coda Redis (`redis-queue-immudb`) e li inserisce nella tabella `logs` di immudb usando le API SQL.
+Questo script (`queue_consumer.py`) consuma log JSON da una coda Redis (`redis-queue-immudb`) e li inserisce nella tabella `logs` di immudb usando le API SQL.
 
 ## Funzionamento
 
