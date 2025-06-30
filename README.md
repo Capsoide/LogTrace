@@ -29,7 +29,7 @@ L'intero sistema è progettato per soddisfare i requisiti normativi previsti dal
 
 # Schema infrastruttura
 <div align="center" style="border:1px solid #ccc; padding:10px; display: inline-block;"> 
-  <img src="https://github.com/user-attachments/assets/dd544591-88a3-4b67-bc04-d987249f71f4" alt="image" /> 
+  <img src="https://github.com/user-attachments/assets/3b569849-e174-4c83-98fe-94728fbd4156" alt="image" /> 
 </div>
 
 ---
