@@ -1189,7 +1189,7 @@ Per verificare che Elasticsearch sia correttamente avviato e accessibile in HTTP
 
 ## Visualizzazione dashboard
 
-### Dashboard Discover
+## Dashboard Discover
 
 La dashboard Discover di Kibana consente di esplorare i dati indicizzati in Elasticsearch in tempo reale. È lo strumento principale per visualizzare i log e i documenti ricevuti, ordinati cronologicamente. Attraverso l’interfaccia è possibile effettuare ricerche, applicare filtri e analizzare i dati tramite query personalizzate. Ogni documento può essere visualizzato sia in formato JSON che in forma tabellare, facilitando l'ispezione delle singole voci. Discover è particolarmente utile per il monitoraggio, la verifica dei log in ingresso e per individuare rapidamente eventi rilevanti.
 
@@ -1198,12 +1198,12 @@ Di seguito, un esempio reale dell’interfaccia Discover in uso:
 <div align="center" style="border:1px solid #ccc; padding:10px; display: inline-block;"> 
   <img src="https://github.com/user-attachments/assets/a9aaa176-db37-4f84-aa42-147515be21e0" alt="image" /> 
 </div>
----
-### Dashboard custom: : Analisi eventi di audit Windows
+
+## Dashboard custom: : Analisi eventi di audit Windows
 
 La dashboard è stata realizzata per fornire una panoramica dettagliata e immediatamente leggibile degli eventi di sicurezza raccolti dai log di audit di Windows, ricevuti attraverso la pipeline Redis → Logstash → Elasticsearch. I dati vengono poi visualizzati tramite Kibana in modo strutturato e comprensibile.
 
-### Tabella generale degli eventi
+## Tabella generale degli eventi
 La parte superiore della dashboard mostra una tabella dinamica in cui ogni riga rappresenta un evento di audit. Le colonne visualizzano informazioni fondamentali per l’analisi e la tracciabilità degli eventi:
 
 - Host IP: indirizzo IP del sistema sorgente.
@@ -1219,23 +1219,21 @@ La parte superiore della dashboard mostra una tabella dinamica in cui ogni riga 
 
 Questa tabella consente di monitorare in tempo reale cosa accade sui vari host della rete, rendendo immediata l’individuazione di accessi sospetti o anomalie.
 
-### Grafico a torta: distribuzione eventi
+## Grafico a torta: distribuzione eventi
 Al centro della dashboard è presente un grafico a torta (donut chart) che mostra la distribuzione percentuale degli Event ID raccolti. Questo permette di avere una visione aggregata su quali tipi di eventi si verificano più frequentemente e se vi sono anomalie (ad esempio, un numero elevato di login falliti o tentativi di accesso non autorizzati).
 
 <div align="center" style="border:1px solid #ccc; padding:10px; display: inline-block;"> 
   <img src="https://github.com/user-attachments/assets/6448ae63-4761-4006-b38f-f5ce82c53f9e" alt="image" /> 
 </div>
 
-
-### Tabella di descrizione Event ID
+## Tabella di descrizione Event ID
 In basso a destra è presente una tabella che associa ogni Event ID a una descrizione sintetica e, se noto, al relativo tipo di evento. Questa sezione è particolarmente utile per chi non conosce a memoria il significato dei codici evento di Windows, poiché consente una rapida identificazione del contesto.
 
 <div align="center" style="border:1px solid #ccc; padding:10px; display: inline-block;"> 
   <img src="https://github.com/user-attachments/assets/363044c5-7698-48d6-9819-bc4feb7f9571" alt="image" /> 
 </div>
 
-
-### Istogramma eventi più frequenti
+## Istogramma eventi più frequenti
 Infine, la dashboard presenta un grafico a barre che mostra i Top Event ID ricevuti nel tempo. Questo consente di evidenziare con immediatezza quali eventi sono più ricorrenti e quindi meritano attenzione, per esempio un picco improvviso di Event ID legati a tentativi di accesso non autorizzati.
 
 <div align="center" style="border:1px solid #ccc; padding:10px; display: inline-block;"> 
