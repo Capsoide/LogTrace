@@ -935,7 +935,7 @@ Kibana è utilizzato per:
 - creare dashboard personalizzate per la sicurezza e l'analisi degli audit-log;
 - configurare alert (tramite il modulo Watcher) per notificare condizioni anomale (es. tentativi di accesso sospetti).
 
-## Generazione DEI certificati TLS 
+## Generazione dei certificati TLS 
 
 ### Creazione di una Certificate Authority (CA) e i certificati per Elasticsearch e Kibana 
 
@@ -1144,20 +1144,32 @@ elasticsearch.ssl.verificationMode: certificate
 
 ## Avvio e abilitazione
 
+Questi comandi vanno eseguiti dopo la configurazione dei file .service, delle directory e dei certificati, per assicurare che i servizi si avviino correttamente e in modo persistente.
+
 ```bash
+# Ricarica completamente il processo systemd (utile dopo aggiornamenti di systemd stesso)
 systemctl daemon-reexec
+
+# Rilegge i file di configurazione delle unità systemd (necessario dopo modifiche a file .service)
 systemctl daemon-reload
+
+# Abilita Elasticsearch all'avvio automatico del sistema
 systemctl enable elasticsearch
+
+# Avvia immediatamente il servizio Elasticsearch
 systemctl start elasticsearch
 
+# Abilita Kibana all'avvio automatico del sistema
 systemctl enable kibana
+
+# Avvia immediatamente il servizio Kibana
 systemctl start kibana
 
 ```
 
 ## Verifica e funzionamento
 
-### Elasticsearch
+## Elasticsearch
 
 Per verificare che Elasticsearch sia correttamente avviato e accessibile in HTTPS con autenticazione:
 
@@ -1169,7 +1181,7 @@ Per verificare che Elasticsearch sia correttamente avviato e accessibile in HTTP
   <img src="https://github.com/user-attachments/assets/bb6dae70-b76e-43b7-a4ee-08df1f13c2c8" alt="image" />
 </div>
 
-### Kibana
+## Kibana
 
 1. Aprire il browser e accedere all'indirizzo ``https://192.168.56.10:5601``;
 2. Inserire le credenziali di autenticazione (username e password) quando richiesto;
