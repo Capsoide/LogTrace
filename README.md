@@ -1178,20 +1178,20 @@ Per verificare che Elasticsearch sia correttamente avviato e accessibile in HTTP
 3. Se tutto è configurato correttamente (TLS e certificati), il servizio risponde con un JSON simile al seguente, che conferma l’avvio del nodo e le informazioni sul cluster:
 
 ```html
-name:	"vbox-node"
-cluster_name:	"my-audit-log"
-cluster_uuid:	"eNKo8m_4Ra6YkKBC7Kx-Ag"
-version:	
-number:	"7.17.29"
-build_flavor:	"default"
-build_type: "deb"
-build_hash:	"580aff1a0064ce4c93293aaab6fcc55e22c10d1c"
-build_date:	"2025-06-19T01:37:57.847711500Z"
-build_snapshot:	false
-lucene_version:	"8.11.3"
-minimum_wire_compatibility_version:	"6.8.0"
-minimum_index_compatibility_version:	"6.0.0-beta1"
-tagline	"You Know, for Search" 
+name	"vbox-node"
+cluster_name	"my-audit-log"
+cluster_uuid	"eNKo8m_4Ra6YkKBC7Kx-Ag"
+version	
+  number	"7.17.29"
+  build_flavor	"default"
+  build_type	"deb"
+  build_hash	"580aff1a0064ce4c93293aaab6fcc55e22c10d1c"
+  build_date	"2025-06-19T01:37:57.847711500Z"
+  build_snapshot	false
+  lucene_version	"8.11.3"
+  minimum_wire_compatibility_version	"6.8.0"
+  minimum_index_compatibility_version	"6.0.0-beta1"
+tagline	"You Know, for Search"
 
 ```
 
