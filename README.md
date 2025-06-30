@@ -1196,7 +1196,7 @@ La dashboard Discover di Kibana consente di esplorare i dati indicizzati in Elas
 Di seguito, un esempio reale dell’interfaccia Discover in uso:
 
 <div align="center" style="border:1px solid #ccc; padding:10px; display: inline-block;"> 
-  <img src="https://github.com/user-attachments/assets/bb6dae70-b76e-43b7-a4ee-08df1f13c2c8" alt="image" /> 
+  <img src="https://github.com/user-attachments/assets/a9aaa176-db37-4f84-aa42-147515be21e0" alt="image" /> 
 </div>
 
 
