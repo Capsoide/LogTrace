@@ -186,8 +186,8 @@ E' necessario creare una regola per Windows Server, perchè il firewall (di Wind
 
 #### 1. Aprire Windows Defender Firewall con sicurezza avanzata
    
-``Premere il tasto Windows, digitare "Windows Defender Firewall with Advanced Security", successivamente aprire l’app.
-                                                                                                                       ``
+    Premere il tasto Windows, digitare "Windows Defender Firewall with Advanced Security", successivamente aprire l’app.
+                                                                                                                       
   	
 #### 2. Selezionare “Regole in ingresso” (Inbound Rules)
    
