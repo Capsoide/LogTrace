@@ -550,7 +550,7 @@ Verificare che i log siano stati inseriti correttamente nelle due code Redis tra
 ## Gerarchia directory (file configurazione di immudb)
 ```
 /etc/immudb/
-    ├── immudb.toml
+    └── immudb.toml
 ```
 
 ## immudb.toml
@@ -597,8 +597,8 @@ Nel file di configurazione ```immudb.toml```, sono specificati i path fondamenta
          ├── immudb.identifier
          ├── immudb.pid            --> contiene il Process ID (PID) del processo immudb attualmente in esecuzione
          ├── immulog
-                   ├──immudb.log
-         ├── systemdb
+         |      └──immudb.log
+         └── systemdb
 ```
 
 
@@ -1258,6 +1258,18 @@ Infine, la dashboard presenta un grafico a barre che mostra i Top Event ID ricev
 La dashboard è pensata per offrire uno strumento di controllo centralizzato e immediatamente fruibile anche da chi non è esperto di analisi log. È utile sia per il monitoraggio costante che per analisi forensi su eventi passati. Grazie alla categorizzazione e visualizzazione intuitiva dei dati, ogni componente può essere utilizzato in fase investigativa, operativa o preventiva.
 
 ---
+
+| **Modulo**         | **IP**           | **Porta/e**                       | **Protocollo** | **Note**                                                                 |
+|--------------------|------------------|-----------------------------------|----------------|--------------------------------------------------------------------------|
+| **Winlogbeat**     | 192.168.56.2     | 5044                              | TCP            | Invia i log a Logstash sulla porta Beats (5044)                          |
+| **Logstash**       | 192.168.56.10    | 5044 (input), 6379 (output)       | TCP            | Riceve log da Winlogbeat e li inoltra su Redis (più code)                |
+| **Redis (redis-queue elastic)**| 192.168.56.10    | 6379                              | TCP            | Coda letta da Elasticsearch per analisi                                  |
+| **Redis (redis-queue-immudb)**| 192.168.56.10    | 6379                              | TCP            | Coda duplicata per immudb; stesso server/porta, DB o chiave differente   |
+| **Elasticsearch**  | 192.168.56.10    | 9200 (REST API), 9300 (transport) | HTTP/TCP       | Riceve dati da Logstash tramite Redis; usato da Kibana                   |
+| **Kibana**         | 192.168.56.10    | 5601                              | HTTP           | Interfaccia web per Elasticsearch                                        |
+| **immudb**         | 192.168.56.10    | 3322 (default), 9497 (gRPC API)   | TCP            | Legge i log dalla seconda coda Redis per storicizzazione immutabile      |
+
+---
 # Configurazione dei servizi con systemd
 
 Per orchestrare l'intero sistema di raccolta, archiviazione e visualizzazione dei log, vengono utilizzate diverse unità systemd che automatizzano e gestiscono l'esecuzione periodica degli script e il database immutabile immuDB.
@@ -1525,22 +1537,6 @@ WantedBy=multi-user.target
 # Built for packages-7.17.29 (packages)
 
 ```
-
-
-
-![image](https://github.com/user-attachments/assets/d7cfd3e4-bec2-4ef3-b94b-ed717b759fa7)
-
-
-
-
-
-
-
-
-
-
-
-![image](https://github.com/user-attachments/assets/4e6b1fce-867c-4ab3-a6dd-af69465ec2ed)
 
 
 
