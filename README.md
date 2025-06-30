@@ -1169,7 +1169,7 @@ systemctl start kibana
 
 ## Verifica e funzionamento
 
-## Elasticsearch
+### Elasticsearch
 
 Per verificare che Elasticsearch sia correttamente avviato e accessibile in HTTPS con autenticazione:
 
@@ -1181,7 +1181,7 @@ Per verificare che Elasticsearch sia correttamente avviato e accessibile in HTTP
   <img src="https://github.com/user-attachments/assets/bb6dae70-b76e-43b7-a4ee-08df1f13c2c8" alt="image" />
 </div>
 
-## Kibana
+### Kibana
 
 1. Aprire il browser e accedere all'indirizzo ``https://192.168.56.10:5601``;
 2. Inserire le credenziali di autenticazione (username e password) quando richiesto;
@@ -1199,12 +1199,58 @@ Di seguito, un esempio reale dell’interfaccia Discover in uso:
   <img src="https://github.com/user-attachments/assets/a9aaa176-db37-4f84-aa42-147515be21e0" alt="image" /> 
 </div>
 
+### Dashboard custom: : Analisi eventi di audit Windows
+
+La dashboard è stata realizzata per fornire una panoramica dettagliata e immediatamente leggibile degli eventi di sicurezza raccolti dai log di audit di Windows, ricevuti attraverso la pipeline Redis → Logstash → Elasticsearch. I dati vengono poi visualizzati tramite Kibana in modo strutturato e comprensibile.
+
+Questa dashboard include i seguenti pannelli personalizzati:
+
+#### Tabella generale degli eventi
+La parte superiore della dashboard mostra una tabella dinamica in cui ogni riga rappresenta un evento di audit. Le colonne visualizzano informazioni fondamentali per l’analisi e la tracciabilità degli eventi:
+
+Host IP: indirizzo IP del sistema sorgente.
+
+Host ID: identificativo univoco della macchina che ha generato il log.
+
+Computer Name: nome host configurato sulla macchina Windows.
+
+Event Code: codice identificativo dell’evento Windows.
+
+Event Action: tipo di azione registrata (es. Success, Failure, ecc.).
+
+Message Event: descrizione testuale dettagliata dell’evento.
+
+<div align="center" style="border:1px solid #ccc; padding:10px; display: inline-block;"> 
+  <img src="https://github.com/user-attachments/assets/9d44f6b4-6096-4573-a31b-fb38fcd97ee5" alt="image" /> 
+</div>
 
 
+Questa tabella consente di monitorare in tempo reale cosa accade sui vari host della rete, rendendo immediata l’individuazione di accessi sospetti o anomalie.
+
+#### Grafico a torta: distribuzione eventi
+Al centro della dashboard è presente un grafico a torta (donut chart) che mostra la distribuzione percentuale degli Event ID raccolti. Questo permette di avere una visione aggregata su quali tipi di eventi si verificano più frequentemente e se vi sono anomalie (ad esempio, un numero elevato di login falliti o tentativi di accesso non autorizzati).
+
+<div align="center" style="border:1px solid #ccc; padding:10px; display: inline-block;"> 
+  <img src="https://github.com/user-attachments/assets/6448ae63-4761-4006-b38f-f5ce82c53f9e" alt="image" /> 
+</div>
 
 
+#### Tabella di descrizione Event ID
+In basso a destra è presente una tabella che associa ogni Event ID a una descrizione sintetica e, se noto, al relativo tipo di evento. Questa sezione è particolarmente utile per chi non conosce a memoria il significato dei codici evento di Windows, poiché consente una rapida identificazione del contesto.
+
+<div align="center" style="border:1px solid #ccc; padding:10px; display: inline-block;"> 
+  <img src="https://github.com/user-attachments/assets/363044c5-7698-48d6-9819-bc4feb7f9571" alt="image" /> 
+</div>
 
 
+#### Istogramma eventi più frequenti
+Infine, la dashboard presenta un grafico a barre che mostra i Top Event ID ricevuti nel tempo. Questo consente di evidenziare con immediatezza quali eventi sono più ricorrenti e quindi meritano attenzione, per esempio un picco improvviso di Event ID legati a tentativi di accesso non autorizzati.
+
+<div align="center" style="border:1px solid #ccc; padding:10px; display: inline-block;"> 
+  <img src="https://github.com/user-attachments/assets/b781ec87-9e7b-4fff-9661-284938012a91" alt="image" /> 
+</div>
+
+La dashboard è pensata per offrire uno strumento di controllo centralizzato e immediatamente fruibile anche da chi non è esperto di analisi log. È utile sia per il monitoraggio costante che per analisi forensi su eventi passati. Grazie alla categorizzazione e visualizzazione intuitiva dei dati, ogni componente può essere utilizzato in fase investigativa, operativa o preventiva.
 
 
 ---
