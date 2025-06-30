@@ -451,47 +451,32 @@ Pipeline Logstash per leggere da ```Redis``` e inviare ad ```Elasticsearch```.
 
 ```yaml
 input {
-        redis {
-                # Indirizzo del server Redis dove leggere la coda
-                host => "192.168.56.10"
-
-                # Tipo struttura dati usata in Redis: lista
-                data_type => "list"
-
-                # Porta del server Redis: 6379 è quella di default
-                port => 6379
-
-                # Key Redis: nome lista Redis da cui Logstash legge i dati
-                key => "redis-queue-elastic"
-
-                # PSW key Redis
-                password => ""
-
-                # Codec usato per decodificare i dati ricevuti da Redis: formato JSON, quindi Logstash li trasforma automaticamente in oggetti leggibili e filtrabili
-                codec => json
-        }
+  redis {
+    host => "192.168.56.10"       # Indirizzo del server Redis dove leggere la coda
+    data_type => "list"           # Tipo struttura dati usata in Redis: lista         
+    port => 6379                  # Porta del server Redis: 6379 è quella di default
+    key => "redis-queue-elastic" # Key Redis: nome lista Redis da cui Logstash legge i dati
+    password => ""                # PSW key Redis
+    codec => json                 # Codec usato per decodificare i dati ricevuti da Redis: formato JSON, quindi Logstash li trasforma automaticamente in oggetti leggibili e filtrabili
+  }
 }
 
 filter {
-        #Qui è possibile inserire eventuali filtri per elaborare o arricchire i dati ricevuti prima di inviarli ad Elastic,
-        #Ad esempio: parsing, timestamp, normalizzazione dei campi, aggiunta di tag, ...
+  #Qui è possibile inserire eventuali filtri per elaborare o arricchire i dati ricevuti prima di inviarli ad Elastic,
 }
 
 output {
-        elasticsearch {
-                        # Indirizzo del cluster Elasticsearch (modifica in base all'ambiente che si utilizza)
-                        hosts => ["http://192.168.56.10:9200"]
-
-                        # Nome dell'indice su Elasticsearch. Viene usata una data dinamica per indicizzazione giornaliera
-                        index => "from-redis-%{+YYYY.MM.dd}"
-
-                        # Autenticazione Elasticsearch
-                        #user => ""
-                        #password => ""
-        }
-        stdout{
-                codec => rubydebug
-        }
+  elasticsearch {
+    hosts => ["http://192.168.56.10:9200"]   # Indirizzo del cluster Elasticsearch (modifica in base all'ambiente che si utilizza)
+    index => "from-redis-%{+YYYY.MM.dd}"     # Nome dell'indice su Elasticsearch. Viene usata una data dinamica per indicizzazione giornaliera
+  
+    # Autenticazione Elasticsearch
+    #user => ""
+    #password => ""
+  }
+  stdout{
+    codec => rubydebug
+  }
 }
 ```
 
