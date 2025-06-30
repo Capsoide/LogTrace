@@ -1,4 +1,5 @@
 # Sistema di monitoraggio Audit Logs
+
 ## Introduzione
 Il sistema descritto si occupa dell'acquisizione automatica dei log di audit relativi agli accessi amministrativi ai sistemi Windows, con l'obiettivo di garantire tracciabilità, integrità e conformità alle normative vigenti in materia di sicurezza informatica.
 
@@ -23,6 +24,13 @@ L'intero sistema è progettato per soddisfare i requisiti normativi previsti dal
 - [**ACN**](https://www.acn.gov.it/portale/nis/aggiornamento-informazioni) (Agenzia per la Cybersicurezza Nazionale) stabilisce standard per la sicurezza delle infrastrutture critiche italiane.
 - [**ISO/IEC 27001**](https://edirama.org/wp-content/uploads/2023/10/document-1.pdf) è uno standard internazionale per la gestione della sicurezza delle informazioni (ISMS), che richiede la registrazione e l’analisi degli eventi di accesso.
 - [**NIS2**](https://www.acn.gov.it/portale/nis) è la direttiva europea sulla sicurezza delle reti e dei sistemi informativi, che impone obblighi di logging, conservazione e risposta agli incidenti per gli operatori di servizi essenziali.
+
+---
+
+# Schema infrastruttura
+<div align="center" style="border:1px solid #ccc; padding:10px; display: inline-block;"> 
+  <img src="https://github.com/user-attachments/assets/5581e26f-8dbe-42e0-80e1-f26e0b95d0d6" alt="image" /> 
+</div>
 
 ---
 
@@ -1539,6 +1547,10 @@ WantedBy=multi-user.target
 # Built for packages-7.17.29 (packages)
 
 ```
+
+---
+
+
 
 
 
