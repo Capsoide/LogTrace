@@ -1449,9 +1449,20 @@ WantedBy=multi-user.target
 ---
 # Debug
 Per monitorare il corretto funzionamento dei servizi, è possibile consultare i log nei seguenti percorsi o comandi:
-immudb : ```/var/log/immudb/immudb.log```
-grafana-server : /var/log/grafana/grafana.log 
+
+immudb : ``` DEVO TROVARE IL PERSO, NON MEE LO RICORDOOOOH``` nononononnoo
+
+elasticsearch: ```/var/log/elasticsearch/elasticsearch.log```
+
+redis: ```/var/log/redis/redis-server.log```
+
+logstash: ```/var/log/logstash/logstash-plain.log```
+
+
+
+
 run-logs : modalità dinamica journalctl -u run-logs.service -f | modalità statica /var/log/logtrace/run-logs.log
+
 uvicorn-api : modalità dinamica journalctl -u uvicorn-api.service -f | modalità statica /var/log/logtrace/uvicorn-api.log
 
 
