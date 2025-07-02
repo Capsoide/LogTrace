@@ -385,14 +385,14 @@ input {
   }
 }
 
-# Filter: qui puoi aggiungere regole per elaborare o filtrare i dati prima dell’output
 filter {
-  # Inserisci qui eventuali filtri o parsing (ad esempio, grok, mutate, ecc.)
+  # Inserire eventuali filtri o parsing (ad esempio, grok, mutate, ecc.)
 }
 
 # Output: invia i dati processati verso due code Redis diverse (duplicazione)
+
 output {
-# Primo output: manda i dati alla coda Redis "redis-queue-elastic"
+# output (1): manda i dati alla coda Redis "redis-queue-elastic"
   redis {
     host => "192.168.56.10"
     port => 6379
@@ -402,7 +402,7 @@ output {
     db => 0
   }
 
-  # Secondo output: manda gli stessi dati alla coda Redis "redis-queue-immudb"
+  # output (2): manda gli stessi dati alla coda Redis "redis-queue-immudb"
   redis {
     host => "192.168.56.10"
     port => 6379
@@ -426,14 +426,14 @@ input {
     host => "192.168.56.10"       # Indirizzo del server Redis dove leggere la coda
     data_type => "list"           # Tipo struttura dati usata in Redis: lista         
     port => 6379                  # Porta del server Redis: 6379 è quella di default
-    key => "redis-queue-elastic" # Key Redis: nome lista Redis da cui Logstash legge i dati
+    key => "redis-queue-elastic"  # Key Redis: nome lista Redis da cui Logstash legge i dati
     password => ""                # PSW key Redis
     codec => json                 # Codec usato per decodificare i dati ricevuti da Redis: formato JSON, quindi Logstash li trasforma automaticamente in oggetti leggibili e filtrabili
   }
 }
 
 filter {
-  #Qui è possibile inserire eventuali filtri per elaborare o arricchire i dati ricevuti prima di inviarli ad Elastic,
+  #Qui è possibile inserire eventuali filtri per elaborare o arricchire i dati ricevuti prima di inviarli ad Elastic
 }
 
 output {
@@ -441,7 +441,7 @@ output {
     hosts => ["http://192.168.56.10:9200"]   # Indirizzo del cluster Elasticsearch (modifica in base all'ambiente che si utilizza)
     index => "from-redis-%{+YYYY.MM.dd}"     # Nome dell'indice su Elasticsearch. Viene usata una data dinamica per indicizzazione giornaliera
   
-    # Autenticazione Elasticsearch
+    # Autenticazione Elasticsearch e certificato ssl
     user => ""
     password => ""
     ssl => true
@@ -534,7 +534,7 @@ File di configurazione principale per il servizio immudb.
 # Porta, directory dei dati, autenticazione
 
 address = "0.0.0.0"
-admin-password = 'xxx'
+admin-password = ''
 auth = true
 certificate = ''
 clientcas = ''
@@ -571,7 +571,6 @@ Nel file di configurazione ```immudb.toml```, sono specificati i path fondamenta
          |   └──immudb.log
          └── systemdb
 ```
-
 
 Il file ```immudb-log``` contiene tutte le informazioni di esecuzione del server immudb: 
 - path utilizzati (dati, log, configurazione, PID),
@@ -813,23 +812,23 @@ vboxuser@vbox:/$ source /home/vboxuser/my-venv/bin/activate
 ## Visualizzazione in immuDB
 
 ```bash
-+--------------------------------------------------------------------+------------------------------------------------------------+
-|                           (key.value)                              |                         (logs.value)                       |    
-+--------------------------------------------------------------------+------------------------------------------------------------+
-|                                                                    | "{"@timestamp": "2025-06-18 15:45:36,854.089Z",            |    
-|                                                                    | "@version": "1", "agent": {"ephemeral_id":                 |    
-|                                                                    | "70d8b8eb-8915-459e-badf-05c9118e73c6", "hostname":        |     
-|                                                                    | "WIN-S", "id": "c156a342-40dc-47ca-977a-f100ebd8e89f",     |     
-|                                                                    | "name": "WIN-S", "type": "winlogbeat", "version":          |     
-| "149cf3c7024285a6539433d1f84b17411f0527b67da963ddf4b421e5ee2c540c" | "7.17.7"}, "ecs": {"version": "1.12.0"},                   |     
-|                                                                    | "event": {"action": "Logon", "code": "4624",               |     
-|                                                                    | "created": "2025-06-17T12:02:18.364Z", "kind":             |     
-|                                                                    | "event", "outcome": "success", "provider":                 |     
-|                                                                    | "Microsoft-Windows-Security-Auditing"}, "host":            |     
-|                                                                    |                          ...                               |     
-|                                                                    |                          ...                               |     
-|                                                                    |                          ...                               |     
-+--------------------------------------------------------------------+------------------------------------------------------------+
++--------------------------------------------------------------------+----------------------------------------------------------+
+|                           (key.value)                              |                         (logs.value)                     | 
++--------------------------------------------------------------------+----------------------------------------------------------+
+|                                                                    | "{"@timestamp": "2025-06-18 15:45:36,854.089Z",          |   
+|                                                                    | "@version": "1", "agent": {"ephemeral_id":               |     
+|                                                                    | "70d8b8eb-8915-459e-badf-05c9118e73c6", "hostname":      |      
+|                                                                    | "WIN-S", "id": "c156a342-40dc-47ca-977a-f100ebd8e89f",   |      
+|                                                                    | "name": "WIN-S", "type": "winlogbeat", "version":        |    
+| "149cf3c7024285a6539433d1f84b17411f0527b67da963ddf4b421e5ee2c540c" | "7.17.7"}, "ecs": {"version": "1.12.0"},                 |    
+|                                                                    | "event": {"action": "Logon", "code": "4624",             |   
+|                                                                    | "created": "2025-06-17T12:02:18.364Z", "kind":           |    
+|                                                                    | "event", "outcome": "success", "provider":               |      
+|                                                                    | "Microsoft-Windows-Security-Auditing"}, "host":          |     
+|                                                                    |                          ...                             |      
+|                                                                    |                          ...                             |     
+|                                                                    |                          ...                             |     
++--------------------------------------------------------------------+----------------------------------------------------------+
 ```
 
 ## Verifica in redis: Consumazione coda
