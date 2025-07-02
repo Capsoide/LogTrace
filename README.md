@@ -898,6 +898,7 @@ La coda è stata consumata in modo corretto e i log sono salvati in immuDB.
 │   ├── kibana.crt             # Certificato pubblico di Kibana, firmato dalla CA.
 │   ├── kibana.csr             # Richiesta di firma del certificato per Kibana.
 │   └── kibana.key             # Chiave privata di Kibana (usata da Kibana, ma conservata qui).
+|
 ├── elasticsearch.keystore     # File keystore sicuro con segreti (es. password, token).
 ├── elasticsearch-plugins.example.yml
 ├── elasticsearch.yml          # File principale di configurazione di Elasticsearch.
@@ -919,29 +920,30 @@ Come spiegato in precedenza i log nella coda Redis ``redis-queue-elastic`` vengo
 ## Gerarchia directory (file configurazione di Kibana)
 
 ```
-/etc/elasticsearch/
-    ├── certs/
-    │   ├── ca.crt                 # Certificato della CA usato da Kibana per validare Elasticsearch.
-    │   ├── kibana.crt             # Certificato pubblico usato da Kibana per TLS.
-    │   └── kibana.key             # Chiave privata associata al certificato di Kibana.
-    |
-    ├── kibana.keystore           # File keystore per password e token sensibili.
-    ├── kibana.yml                # File principale di configurazione di Kibana.
-    └── node.options              # Opzioni del nodo Kibana (es. parametri Node.js).
+/etc/kibana/
+     ├── certs/
+     │   ├── ca.crt                 # Certificato della CA usato da Kibana per validare Elasticsearch.
+     │   ├── kibana.crt             # Certificato pubblico usato da Kibana per TLS.
+     │   └── kibana.key             # Chiave privata associata al certificato di Kibana.
+     |
+     ├── kibana.keystore           # File keystore per password e token sensibili.
+     ├── kibana.yml                # File principale di configurazione di Kibana.
+     └── node.options              # Opzioni del nodo Kibana (es. parametri Node.js).
 ```
 
 Kibana è l’interfaccia grafica di Elasticsearch. Permette di visualizzare, esplorare e analizzare i dati archiviati su Elasticsearch tramite dashboard, grafici e strumenti interattivi (come Discover, Visualize, Dashboard, Alerting).
-
+<!--
 Kibana è utilizzato per:
 
 - Visualizzare i log raccolti dai sistemi monitorati;
 - filtrare eventi per codici o intervalli temporali;
 - creare dashboard personalizzate per la sicurezza e l'analisi degli audit-log;
 - configurare alert (tramite il modulo Watcher) per notificare condizioni anomale (es. tentativi di accesso sospetti).
+-->
+## Certificati SSL/TLS
 
-## Generazione dei certificati TLS 
-
-### Creazione di una Certificate Authority (CA) e i certificati per Elasticsearch e Kibana 
+Genera una Certificate Authority (CA) privata e crea certificati firmati per Elasticsearch e Kibana, necessari per abilitare la comunicazione sicura tramite TLS.
+I certificati vengono poi copiati nelle rispettive cartelle di configurazione.
 
 ```bash
 # Entra nella cartella dei certificati
@@ -971,7 +973,7 @@ cp /etc/elasticsearch/certs/elasticsearch.key /etc/kibana/certs/kibana.key
 
 ```
 
-### Impostazione dei permessi sicuri
+### Permessi sicuri
 
 Le seguenti istruzioni vengono utilizzate per assegnare i permessi corretti ai certificati TLS di Elasticsearch e Kibana, garantendo:
 
