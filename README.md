@@ -353,7 +353,7 @@ Stop-Service winlogbeat
 
 Logstash è una pipeline open source utilizzata per  la gestione, elaborazione e inoltro in tempo reale di dati provenienti da diverse fonti verso una o più destinazioni.
 
-Nel contesto di questo sistema, Logstash riceve eventi in formato JSON da Winlogbeat, li processa e infine invia i dati in output a due code Redis distinte, permettendo la duplicazione del flusso: 
+Nel contesto di questo sistema, Logstash riceve eventi in formato JSON da Winlogbeat, li processa e invia i dati in output a due code Redis distinte, permettendo la duplicazione del flusso: 
 - una prima coda destinata all’ingestione in Elasticsearch per analisi;
 - una seconda coda per la storicizzazione in immuDB.
 
@@ -375,7 +375,7 @@ Nel contesto di questo sistema, Logstash riceve eventi in formato JSON da Winlog
 
 Percorso: ```/etc/logstash/conf.d/logstash.conf```
 
-Snippet Logstash impostato per ricevere i log da ```Winlogbeat``` (via Beats protocol sulla porta 5044) e per la duplicazione dei log su due code Redis.
+File di configurazione Logstash che definisce una pipeline impostato per ricevere i log da ```Winlogbeat``` via Beats protocol (porta 5044) e per la duplicazione dei log su due code Redis.
 
 ```yaml
 # Input: riceve dati da Winlogbeat tramite protocollo Beats sulla porta 5044
@@ -418,7 +418,7 @@ output {
 
 Percorso: ```/etc/logstash/conf.d/logstash1.conf```
 
-Pipeline Logstash per leggere da ```Redis``` e inviare ad ```Elasticsearch```.
+File di confogurazione (2) impostato per leggere i log da ```Redis``` e inviarli ad ```Elasticsearch```.
 
 ```yaml
 input {
@@ -457,7 +457,7 @@ output {
 
 Percorso: ```/etc/logstash/logstash.yml```
 
-File di configurazione principale di Logstash che definisce le impostazioni globali del sistema: contiene solo la configurazione che specifica la directory di archiviazione dei dati interni di Logstash. Le restanti impostazioni sono lasciate ai valori predefiniti di Logstash.
+File di configurazione principale di Logstash, in cui si definisce la directory per l’archiviazione dei dati interni.
 
 ```yaml                                                     
 # ------------ Data path ------------
@@ -472,7 +472,7 @@ path.data: /var/lib/logstash
 
 Percorso: ```/etc/logstash/pipelines.yml```
 
-Definizione delle due pipeline distinte per Logstash
+Definizione delle pipeline distinte per Logstash
   - ```main```: pipeline utlizziata per immudb,
   - ```elastic-pipeline```: utilizzata per elasticsearch.
 
