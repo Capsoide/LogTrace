@@ -46,9 +46,7 @@ In questa prima parte si descrive come creare una rete locale tra due macchine v
 | Ubuntu/Debian     | 192.168.56.10 | Receiver (Redis, Logstash) |
 
 
-## Configurazione VirtualBox
-
-### Creazione e configurazione dell'adattatore Host-Only
+## Configurazione adattatore Host-Only (Virtualbox)
 
 #### 1. Aprire **VirtualBox** → `File` → `Host Network Manager`
 #### 2. Cliccare su **Crea** per aggiungere un nuovo adattatore
