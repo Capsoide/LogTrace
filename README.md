@@ -57,7 +57,7 @@ In questa prima parte si descrive come creare una rete locale tra due macchine v
    - **Subnet Mask**: `255.255.255.0`
    - **DHCP**: disabilitato
 #### 4. Assegnare l’adattatore come **Adattatore 2** alle VM:
-   - Modalità: `Solo host (Host-Only)`
+   - Modalità: `Host-Only`
    - Nome: ad esempio `vboxnet0`
 
 ## Configurazione IP Statici (Windows Server)
