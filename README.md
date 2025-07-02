@@ -185,7 +185,8 @@ vboxuser@vbox:~$ sudo systemctl restart networking
 
 #Se necessario utilizzare il seguente comando (o inalternativa riaviare la vm)
 vboxuser@vbox:~$ sudo ifdown enp0s8 && sudo ifup enp0s8
-
+```
+```bash
 #Verifica che l'indirizzo sia stato applicato correttamente
 vboxuser@vbox:~$ ip a
 1: lo: <LOOPBACK,UP,LOWER_UP> mtu 65536 qdisc noqueue state UNKNOWN group default qlen 1000
