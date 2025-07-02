@@ -60,7 +60,7 @@ In questa prima parte si descrive come creare una rete locale tra due macchine v
    - Modalità: `Solo host (Host-Only)`
    - Nome: ad esempio `vboxnet0`
 
-## Configurazione degli IP Statici (Windows Server)
+## Configurazione IP Statici (Windows Server)
 
 #### 1. Aprire `Centro connessioni di rete` > `Modificare impostazioni scheda`
 #### 2. Scegliere l’interfaccia collegata a `vboxnet0` (“Ethernet 2”)
