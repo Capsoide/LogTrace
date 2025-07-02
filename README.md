@@ -252,8 +252,6 @@ Winlogbeat è un agente software che raccoglie e invia i Windows Event Log verso
 4. **Supporto ECS**: normalizza i dati secondo l’Elastic Common Schema.
 5. **Dashboard Kibana integrate**: fornisce visualizzazioni pronte all’uso.
 
----
-
 ## Gerarchia directory: Winlogbeat
 
 ```
