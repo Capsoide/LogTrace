@@ -95,7 +95,7 @@ Ethernet adapter Ethernet 2:
 
 ---
 
-## Configurazione interfacce di rete (Ubuntu/Debian)
+## Configurazione interfacce di rete (Debian)
 
 Configurare le interfacce di rete modificando direttamente il file  ```interfaces``` posizionato in ```/etc/network/```.
 
