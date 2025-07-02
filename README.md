@@ -1081,35 +1081,21 @@ Percorso: ```/etc/kibana/kibana.yml```
 File di configurazione principale per il servizio kibana.
 
 ```yaml
-# Kibana is served by a back end server. This setting specifies the port to use.
 server.port: 5601
 
-# Specifies the address to which the Kibana server will bind. IP addresses and host names are both valid values.
-# The default is 'localhost', which usually means remote machines will not be able to connect.
-# To allow connections from remote users, set this parameter to a non-loopback address.
 server.host: "192.168.56.10"
 
-# The URLs of the Elasticsearch instances to use for all your queries.
 elasticsearch.hosts: ["https://192.168.56.10:9200"]
 
-# If your Elasticsearch is protected with basic authentication, these settings provide
-# the username and password that the Kibana server uses to perform maintenance on the Kibana
-# index at startup. Your Kibana users still need to authenticate with Elasticsearch, which
-# is proxied through the Kibana server.
 elasticsearch.username: ""
 elasticsearch.password: ""
 
-# Enables SSL and paths to the PEM-format SSL certificate and SSL key files, respectively.
-# These settings enable SSL for outgoing requests from the Kibana server to the browser.
 server.ssl.enabled: true
 server.ssl.certificate: /etc/kibana/certs/kibana.crt
 server.ssl.key: /etc/kibana/certs/kibana.key
 
-# Optional setting that enables you to specify a path to the PEM file for the certificate
-# authority for your Elasticsearch instance.
 elasticsearch.ssl.certificateAuthorities: ["/etc/kibana/certs/ca.crt"]
 
-# To disregard the validity of SSL certificates, change this setting's value to 'none'.
 elasticsearch.ssl.verificationMode: certificate
 
 ```
@@ -1296,7 +1282,6 @@ User=redis
 Group=redis
 RuntimeDirectory=redis
 RuntimeDirectoryMode=2755
-
 UMask=007
 PrivateTmp=yes
 LimitNOFILE=65535
@@ -1306,7 +1291,6 @@ ReadOnlyDirectories=/
 ReadWriteDirectories=-/var/lib/redis
 ReadWriteDirectories=-/var/log/redis
 ReadWriteDirectories=-/run/redis
-
 NoNewPrivileges=true
 CapabilityBoundingSet=CAP_SYS_RESOURCE
 RestrictAddressFamilies=AF_INET AF_INET6 AF_UNIX
@@ -1316,7 +1300,6 @@ ProtectKernelTunables=true
 ProtectControlGroups=true
 RestrictRealtime=true
 RestrictNamespaces=true
-
 ProtectSystem=true
 ReadWriteDirectories=-/etc/redis
 
@@ -1365,7 +1348,6 @@ Description=logstash
 Type=simple
 User=logstash
 Group=logstash
-
 EnvironmentFile=-/etc/default/logstash
 EnvironmentFile=-/etc/sysconfig/logstash
 ExecStart=/usr/share/logstash/bin/logstash "--path.settings" "/etc/logstash"
@@ -1373,7 +1355,6 @@ Restart=always
 WorkingDirectory=/
 Nice=19
 LimitNOFILE=16384
-
 TimeoutStopSec=infinity
 
 [Install]
@@ -1398,23 +1379,16 @@ After=network-online.target
 Type=simple
 User=kibana
 Group=kibana
-
 Environment=KBN_HOME=/usr/share/kibana
 Environment=KBN_PATH_CONF=/etc/kibana
-
 EnvironmentFile=-/etc/default/kibana
 EnvironmentFile=-/etc/sysconfig/kibana
-
 ExecStart=/usr/share/kibana/bin/kibana --logging.dest="/var/log/kibana/kibana.log" --pid.file="/run/kibana/kibana.pid" --deprecation.skip_d>
-
 Restart=on-failure
 RestartSec=3
-
 StartLimitBurst=3
 StartLimitInterval=60
-
 WorkingDirectory=/usr/share/kibana
-
 StandardOutput=journal
 StandardError=inherit
 
@@ -1451,42 +1425,27 @@ Environment=ES_PATH_CONF=/etc/elasticsearch
 Environment=PID_DIR=/var/run/elasticsearch
 Environment=ES_SD_NOTIFY=true
 EnvironmentFile=-/etc/default/elasticsearch
-
 WorkingDirectory=/usr/share/elasticsearch
-
 User=elasticsearch
 Group=elasticsearch
-
 ExecStart=/usr/share/elasticsearch/bin/systemd-entrypoint -p ${PID_DIR}/elasticsearch.pid --quiet
-
 StandardOutput=journal
 StandardError=inherit
-
 LimitNOFILE=65535
-
 LimitNPROC=4096
-
 LimitAS=infinity
-
 LimitFSIZE=infinity
-
 TimeoutStopSec=0
-
 KillSignal=SIGTERM
-
 KillMode=process
-
 SendSIGKILL=no
-
 SuccessExitStatus=143
-
 TimeoutStartSec=900
 
 [Install]
 WantedBy=multi-user.target
 
 ```
-
 ---
 
 
