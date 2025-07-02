@@ -1,7 +1,7 @@
 # Sistema di monitoraggio Audit Logs
 
 ## Introduzione
-Il sistema descritto si occupa dell'acquisizione automatica dei log di audit relativi agli accessi amministrativi ai sistemi Windows, con l'obiettivo di garantire tracciabilità, integrità e conformità alle normative vigenti in materia di sicurezza informatica.
+Questo sistema si occupa dell'acquisizione automatica dei log di audit relativi agli accessi amministrativi ai sistemi Windows. I log vengono archiviati in un database immutabile per garantirne l’integrità e resi consultabili tramite una dashboard interattiva, pensata per facilitare l’analisi e il monitoraggio delle attività.
 
 Il processo viene realizzato attraverso una pipeline composta dai seguenti componenti:
 - ```Winlogbeat```, installato su un'istanza Windows Server, è il servizio responsabile del recupero e dell'invio degli eventi log di audit raccolti da Event Viewer.
