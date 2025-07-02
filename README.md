@@ -281,8 +281,6 @@ Winlogbeat/
             └── winlogbeat-sysmon.js
 ```
 
----
-
 ## winlogbeat.yml
 
 Percorso: ```/Winlogbeat/data/winlogbeat.yml```
