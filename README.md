@@ -310,8 +310,6 @@ logging:
     keepfiles: 7
 ```
 
----
-
 ## Installazione come Servizio Windows
 
 ```powershell
@@ -357,8 +355,6 @@ Nel contesto di questo sistema, Logstash riceve eventi in formato JSON da Winlog
 - una prima coda destinata all’ingestione in Elasticsearch per analisi;
 - una seconda coda per la storicizzazione in immuDB.
 
----
-
 ## Gerarchia directory: Logstash
 
 ```
@@ -372,8 +368,6 @@ Nel contesto di questo sistema, Logstash riceve eventi in formato JSON da Winlog
     ├── pipelines.yml
     └── startup.options
 ```
-
----
 
 ## logstash.conf
 
@@ -418,8 +412,6 @@ output {
 }
 ```
 
----
-
 ## logstash1.conf
 
 Percorso: ```/etc/logstash/conf.d/logstash1.conf```
@@ -457,7 +449,6 @@ output {
 }
 ```
 
----
 ## logstash.yml
 
 Percorso: ```/etc/logstash/logstash.yml```
@@ -473,7 +464,6 @@ path.data: /var/lib/logstash
 #
 ```
 
----
 ## pipelines.yml
 
 Percorso: ```/etc/logstash/pipelines.yml```
@@ -511,7 +501,7 @@ OK
 2) "redis-queue-elastic
 ```
 
-Verificare che i log siano stati inseriti correttamente nelle due code Redis tramite ```LLEN```:
+Verificare che i log siano stati inseriti correttamente nelle due code Redis:
 
 ```bash
 192.168.56.10> LLEN redis-queue-immudb
