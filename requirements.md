@@ -1,11 +1,5 @@
-<style>
-  a {
-    text-decoration: none;
-    color: inherit;
-  }
-</style>
 
-# Prerequisiti da installare
+## Prerequisiti da installare
 
 [Java OpenJDK 17](https://openjdk.org/projects/jdk/17/)
 
