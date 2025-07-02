@@ -1327,9 +1327,7 @@ Alias=redis.service
 
 Percorso: ```/etc/systemd/system/immudb.service```
 
-Servizio systemd che avvia il demone immudb, un database immutabile, utilizzando il file di configurazione ```/etc/immudb/immudb.toml```.
-Configura l’avvio automatico al boot, con gestione del riavvio in caso di fallimenti.
-Esegue il processo con l’utente e gruppo dedicati immudb, e indirizza log e errori al syslog con identificatore immudb per una facile tracciabilità.
+Servizio systemd che avvia il demone immudb, il database immutabile dove vengono scritti i log. Configurato tramite il file TOML specificato nel percorso ```/etc/immudb/immudb.toml```.
 
 ```bash
 [Unit]
