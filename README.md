@@ -34,7 +34,7 @@ L'intero sistema è progettato per soddisfare i requisiti normativi previsti dal
 
 ---
 
-# Comunicazione tra Windows Server e Ubuntu/Debian via VirtualBox
+# Comunicazione Windows Server - Debian via VirtualBox
 
 In questa prima parte si descrive come creare una rete locale tra due macchine virtuali (VM) usando **VirtualBox** con una rete **Host-Only**.
 
