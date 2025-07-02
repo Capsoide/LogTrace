@@ -1,4 +1,12 @@
+<style>
+  a {
+    text-decoration: none;
+    color: inherit;
+  }
+</style>
+
 # Prerequisiti da installare
+
 [Java OpenJDK 17](https://openjdk.org/projects/jdk/17/)
 
 [Elasticsearch 7.17.28](https://www.elastic.co/downloads/past-releases/elasticsearch-7-17-28)
@@ -14,7 +22,6 @@
 [Python 3](https://www.python.org/downloads/) + pip + virtualenv
 
 [OpenSSL](https://www.openssl.org/) (per gestione certificati)
-
 
 ---
 
