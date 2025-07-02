@@ -1,0 +1,15 @@
+[Unit]
+Description=immudb immutable database
+After=network.target
+
+[Service]
+ExecStart=/usr/local/bin/immudb --config /etc/immudb/immudb.toml
+Restart=on-failure
+User=immudb
+Group=immudb
+StandardOutput=syslog
+StandardError=syslog
+SyslogIdentifier=immudb
+
+[Install]
+WantedBy=multi-user.target

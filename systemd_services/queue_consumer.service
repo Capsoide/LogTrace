@@ -1,0 +1,14 @@
+[Unit]
+Description=Servizio queue_consumer Python con virtualenv
+After=network.target
+
+[Service]
+Type=simple
+User=vboxuser
+WorkingDirectory=/var/consumer-immudb
+ExecStart=/home/vboxuser/my-venv/bin/python /var/consumer-immudb/queue_consumer.py
+Restart=on-failure
+RestartSec=5s
+
+[Install]
+WantedBy=multi-user.target
