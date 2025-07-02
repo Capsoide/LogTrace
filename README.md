@@ -97,17 +97,9 @@ Ethernet adapter Ethernet 2:
 
 ---
 
-## Configurazione interfacce di rete in `/etc/network/interfaces` (Ubuntu/Debian)
+## Configurazione interfacce di rete (Ubuntu/Debian)
 
-Se il sistema non utilizza Netplan (come accade spesso su Debian o alcune versioni legacy di Ubuntu), è possibile configurare le interfacce di rete modificando direttamente il file ```/etc/network/interfaces```.
-
-#### Aprire il file interfaces (descrive le interfacce di rete presenti nel sistema e definisce come devono essere attivate)
-
-```bash
-vboxuser@vbox:~$ sudo nano /etc/network/interfaces
-```
-
-#### Modificare il file come segue, assicurandosi che i nomi delle interfacce (es. enp0s3, enp0s8) corrispondano a quelli presenti nel sistema
+Configurare le interfacce di rete modificando direttamente il file  ```interfaces``` posizionato in ```/etc/network/```.
 
 ```text
 # Include configurazioni aggiuntive (se presenti)
@@ -127,62 +119,11 @@ iface enp0s8 inet static
     address 192.168.56.10   <--
     netmask 255.255.255.0   <--
 ```
+## Regola firewall: permettere il ping da Debian a Windows Server
 
-#### Verifica delle interfacce
+E' necessario creare una regola per Windows Server poichè il firewall (di Windows) blocca di default i pacchetti ICMP Echo Request (ping) in ingresso. 
 
-```bash
-vboxuser@vbox:~$ ip link
-1: lo: <LOOPBACK,UP,LOWER_UP> mtu 65536 qdisc noqueue state UNKNOWN mode DEFAULT group default qlen 1000
-    link/loopback 00:00:00:00:00:00 brd 00:00:00:00:00:00
-2: enp0s3: <BROADCAST,MULTICAST,UP,LOWER_UP> mtu 1500 qdisc fq_codel state UP mode DEFAULT group default qlen 1000
-    link/ether 08:00:27:e0:87:cc brd ff:ff:ff:ff:ff:ff
-3: enp0s8: <BROADCAST,MULTICAST,UP,LOWER_UP> mtu 1500 qdisc fq_codel state UP mode DEFAULT group default qlen 1000   <--
-    link/ether 08:00:27:9d:3a:10 brd ff:ff:ff:ff:ff:ff
-```
-
-#### Applicare le modifiche
-
-```bash
-vboxuser@vbox:~$ sudo systemctl restart networking
-```
-
-#### Se necessario utilizzare il seguente comando (o in alternativa riavviare la macchina virtuale)
-
-```bash
-vboxuser@vbox:~$ sudo ifdown enp0s8 && sudo ifup enp0s8
-```
-
-#### Verificare che l'indirizzo sia stato applicato correttamente
-
-```bash
-vboxuser@vbox:~$ ip a
-1: lo: <LOOPBACK,UP,LOWER_UP> mtu 65536 qdisc noqueue state UNKNOWN group default qlen 1000
-    link/loopback 00:00:00:00:00:00 brd 00:00:00:00:00:00
-    inet 127.0.0.1/8 scope host lo
-       valid_lft forever preferred_lft forever
-    inet6 ::1/128 scope host noprefixroute 
-       valid_lft forever preferred_lft forever
-2: enp0s3: <BROADCAST,MULTICAST,UP,LOWER_UP> mtu 1500 qdisc fq_codel state UP group default qlen 1000
-    link/ether 08:00:27:e0:87:cc brd ff:ff:ff:ff:ff:ff
-    inet 10.0.2.15/24 brd 10.0.2.255 scope global dynamic enp0s3
-       valid_lft 84997sec preferred_lft 84997sec
-    inet6 fd00::a00:27ff:fee0:87cc/64 scope global dynamic mngtmpaddr 
-       valid_lft 86245sec preferred_lft 14245sec
-    inet6 fe80::a00:27ff:fee0:87cc/64 scope link 
-       valid_lft forever preferred_lft forever
-3: enp0s8: <BROADCAST,MULTICAST,UP,LOWER_UP> mtu 1500 qdisc fq_codel state UP group default qlen 1000
-    link/ether 08:00:27:9d:3a:10 brd ff:ff:ff:ff:ff:ff
-    inet 192.168.56.10/24 brd 192.168.56.255 scope global enp0s8   <--
-       valid_lft forever preferred_lft forever
-    inet6 fe80::a00:27ff:fe9d:3a10/64 scope link 
-       valid_lft forever preferred_lft forever
-```
----
-
-## Regola firewall per permettere il ping da Debian a Windows Server
-
-E' necessario creare una regola per Windows Server, perchè il firewall (di Windows) blocca di default i pacchetti ICMP Echo Request (ping) in ingresso. 
-### Passaggi per creare la regola firewall su Windows:
+### Passaggi step-by-step
 
 #### 1. Aprire Windows Defender Firewall con sicurezza avanzata
    
@@ -229,7 +170,47 @@ E' necessario creare una regola per Windows Server, perchè il firewall (di Wind
     
     Scrivere un nome tipo "Consenti ping ICMP Echo Request" e confermare.
 
-## Verifica finale
+
+### Verifica
+
+```bash
+vboxuser@vbox:~$ ip link
+1: lo: <LOOPBACK,UP,LOWER_UP> mtu 65536 qdisc noqueue state UNKNOWN mode DEFAULT group default qlen 1000
+    link/loopback 00:00:00:00:00:00 brd 00:00:00:00:00:00
+2: enp0s3: <BROADCAST,MULTICAST,UP,LOWER_UP> mtu 1500 qdisc fq_codel state UP mode DEFAULT group default qlen 1000
+    link/ether 08:00:27:e0:87:cc brd ff:ff:ff:ff:ff:ff
+3: enp0s8: <BROADCAST,MULTICAST,UP,LOWER_UP> mtu 1500 qdisc fq_codel state UP mode DEFAULT group default qlen 1000   <--
+    link/ether 08:00:27:9d:3a:10 brd ff:ff:ff:ff:ff:ff
+
+#Applicazione delle modifiche
+vboxuser@vbox:~$ sudo systemctl restart networking
+
+#Se necessario utilizzare il seguente comando (o inalternativa riaviare la vm)
+vboxuser@vbox:~$ sudo ifdown enp0s8 && sudo ifup enp0s8
+
+#Verifica che l'indirizzo sia stato applicato correttamente
+vboxuser@vbox:~$ ip a
+1: lo: <LOOPBACK,UP,LOWER_UP> mtu 65536 qdisc noqueue state UNKNOWN group default qlen 1000
+    link/loopback 00:00:00:00:00:00 brd 00:00:00:00:00:00
+    inet 127.0.0.1/8 scope host lo
+       valid_lft forever preferred_lft forever
+    inet6 ::1/128 scope host noprefixroute 
+       valid_lft forever preferred_lft forever
+2: enp0s3: <BROADCAST,MULTICAST,UP,LOWER_UP> mtu 1500 qdisc fq_codel state UP group default qlen 1000
+    link/ether 08:00:27:e0:87:cc brd ff:ff:ff:ff:ff:ff
+    inet 10.0.2.15/24 brd 10.0.2.255 scope global dynamic enp0s3
+       valid_lft 84997sec preferred_lft 84997sec
+    inet6 fd00::a00:27ff:fee0:87cc/64 scope global dynamic mngtmpaddr 
+       valid_lft 86245sec preferred_lft 14245sec
+    inet6 fe80::a00:27ff:fee0:87cc/64 scope link 
+       valid_lft forever preferred_lft forever
+3: enp0s8: <BROADCAST,MULTICAST,UP,LOWER_UP> mtu 1500 qdisc fq_codel state UP group default qlen 1000
+    link/ether 08:00:27:9d:3a:10 brd ff:ff:ff:ff:ff:ff
+    inet 192.168.56.10/24 brd 192.168.56.255 scope global enp0s8   <--
+       valid_lft forever preferred_lft forever
+    inet6 fe80::a00:27ff:fe9d:3a10/64 scope link 
+       valid_lft forever preferred_lft forever
+```
 
 ### Ping da Debian a Windows Server
 
@@ -263,9 +244,7 @@ Approximate round trip times in milli-seconds:
 
 # Winlogbeat
 
-## Overview
-
-Winlogbeat è un lightweight shipper, ovvero un piccolo agente software, il quale raccoglie e invia i Windows Event Log verso endpoint **Redis**, **Logstash** ed **Elasticsearch**.
+Winlogbeat è un agente software che raccoglie e invia i Windows Event Log verso endpoint **Redis**, **Logstash** ed **Elasticsearch**.
 
 ### Azioni Winlogbeat
 
