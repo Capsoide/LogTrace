@@ -13,9 +13,9 @@
 
 [immudb](https://github.com/codenotary/immudb)
 
-[Python 3](https://www.python.org/downloads/) + pip + virtualenv
+[Python 3](https://www.python.org/downloads/)
 
-[OpenSSL](https://www.openssl.org/) (per gestione certificati)
+[OpenSSL](https://www.openssl.org/)
 
 ---
 
