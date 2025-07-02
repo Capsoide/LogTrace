@@ -88,8 +88,8 @@ Ethernet adapter Ethernet 2:
 
    Connection-specific DNS Suffix  . :
    Link-local IPv6 Address . . . . . : fe80::6894:81ba:3678:5341%13
-   IPv4 Address. . . . . . . . . . . : 192.168.56.2    <--
-   Subnet Mask . . . . . . . . . . . : 255.255.255.0   <--
+   IPv4 Address. . . . . . . . . . . : 192.168.56.2    <---
+   Subnet Mask . . . . . . . . . . . : 255.255.255.0   <---
    Default Gateway . . . . . . . . . :
 ```
 
@@ -114,8 +114,8 @@ iface enp0s3 inet dhcp
 # Interfaccia Host-Only (rete interna con VirtualBox)
 auto enp0s8
 iface enp0s8 inet static
-    address 192.168.56.10   <--
-    netmask 255.255.255.0   <--
+    address 192.168.56.10   <---
+    netmask 255.255.255.0   <---
 ```
 ## Regola firewall: permettere il ping da Debian a Windows Server
 
@@ -177,7 +177,7 @@ vboxuser@vbox:~$ ip link
     link/loopback 00:00:00:00:00:00 brd 00:00:00:00:00:00
 2: enp0s3: <BROADCAST,MULTICAST,UP,LOWER_UP> mtu 1500 qdisc fq_codel state UP mode DEFAULT group default qlen 1000
     link/ether 08:00:27:e0:87:cc brd ff:ff:ff:ff:ff:ff
-3: enp0s8: <BROADCAST,MULTICAST,UP,LOWER_UP> mtu 1500 qdisc fq_codel state UP mode DEFAULT group default qlen 1000   <--
+3: enp0s8: <BROADCAST,MULTICAST,UP,LOWER_UP> mtu 1500 qdisc fq_codel state UP mode DEFAULT group default qlen 1000   <---
     link/ether 08:00:27:9d:3a:10 brd ff:ff:ff:ff:ff:ff
 
 #Applicazione delle modifiche
@@ -205,7 +205,7 @@ vboxuser@vbox:~$ ip a
        valid_lft forever preferred_lft forever
 3: enp0s8: <BROADCAST,MULTICAST,UP,LOWER_UP> mtu 1500 qdisc fq_codel state UP group default qlen 1000
     link/ether 08:00:27:9d:3a:10 brd ff:ff:ff:ff:ff:ff
-    inet 192.168.56.10/24 brd 192.168.56.255 scope global enp0s8   <--
+    inet 192.168.56.10/24 brd 192.168.56.255 scope global enp0s8   <---
        valid_lft forever preferred_lft forever
     inet6 fe80::a00:27ff:fe9d:3a10/64 scope link 
        valid_lft forever preferred_lft forever
@@ -221,7 +221,7 @@ PING 192.168.56.2 (192.168.56.2) 56(84) bytes of data.
 64 bytes from 192.168.56.2: icmp_seq=3 ttl=128 time=1.16 ms
 
 --- 192.168.56.2 ping statistics ---
-3 packets transmitted, 3 received, 0% packet loss, time 2003ms   <--
+3 packets transmitted, 3 received, 0% packet loss, time 2003ms   <---
 rtt min/avg/max/mdev = 1.160/2.923/6.434/2.482 ms
 ```
 
