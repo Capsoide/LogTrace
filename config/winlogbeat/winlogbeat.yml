@@ -1,0 +1,22 @@
+winlogbeat.event_logs:
+  - name: Security
+    event_id: 4624, 4634
+  - name: System
+  - name: Application
+
+output.redis:
+  hosts: ["192.168.56.10:6379"]
+  key: "winlogbeat"
+  db: 0
+  timeout: 5
+
+setup.template.enabled: false
+setup.ilm.enabled: false
+
+logging:
+  level: info
+  to_files: true
+  files:
+    path: C:/ProgramData/winlogbeat/Logs
+    name: winlogbeat.log
+    keepfiles: 7

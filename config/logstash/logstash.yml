@@ -1,0 +1,6 @@
+# ------------ Data path ------------
+# Which directory should be used by logstash and its plugins
+#for any persistent needs. Defaults to LOGSTASH_HOME/data
+#
+path.data: /var/lib/logstash
+#
