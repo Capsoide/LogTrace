@@ -293,11 +293,6 @@ Winlogbeat/
 ├── data/
 │   ├── winlogbeat.yml
 │   └── meta.json
-├── kibana/
-│   └── 7/
-│       ├── dashboard/
-│       ├── search/
-│       └── visualization/
 └── module/
     ├── powershell/
     │   └── config/
@@ -602,11 +597,11 @@ Nel file di configurazione ```immudb.toml```, sono specificati i path fondamenta
 ```
 /var/lib/immudb
          ├── defaultdb
-         ├── logs_immudb           --> db usato per immutabilità logs registrati
+         ├── logs_immudb          
          ├── immudb.identifier
-         ├── immudb.pid            --> contiene il Process ID (PID) del processo immudb attualmente in esecuzione
+         ├── immudb.pid           
          ├── immulog
-         |      └──immudb.log
+         |   └──immudb.log
          └── systemdb
 ```
 
