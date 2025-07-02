@@ -1251,6 +1251,8 @@ Percorso: ```/etc/systemd/system/queue_consumer.service```
 
 Servizio associato allo script ```queue_consumer.py```. Viene eseguito periodicamente per la lettura e il consumo continuo dei log dalla coda ```redis-queue-immudb```, con successiva scrittura su immuDB.
 
+⚠️ Assicurarsi che venv sia correttamente creato nella nuova directory ```/home/vboxuser/my-venv```.
+
 ```bash
 [Unit]
 Description=Servizio queue_consumer Python con virtualenv
@@ -1312,9 +1314,6 @@ ProtectControlGroups=true
 RestrictRealtime=true
 RestrictNamespaces=true
 
-# redis-server can write to its own config file when in cluster mode so we
-# permit writing there by default. If you are not using this feature, it is
-# recommended that you replace the following lines with "ProtectSystem=full".
 ProtectSystem=true
 ReadWriteDirectories=-/etc/redis
 
@@ -1365,9 +1364,7 @@ Description=logstash
 Type=simple
 User=logstash
 Group=logstash
-# Load env vars from /etc/default/ and /etc/sysconfig/ if they exist.
-# Prefixing the path with '-' makes it try to load, but if the file doesn't
-# exist, it continues onward.
+
 EnvironmentFile=-/etc/default/logstash
 EnvironmentFile=-/etc/sysconfig/logstash
 ExecStart=/usr/share/logstash/bin/logstash "--path.settings" "/etc/logstash"
@@ -1376,8 +1373,6 @@ WorkingDirectory=/
 Nice=19
 LimitNOFILE=16384
 
-# When stopping, how long to wait before giving up and sending SIGKILL?
-# Keep in mind that SIGKILL on a process can cause data loss.
 TimeoutStopSec=infinity
 
 [Install]
@@ -1463,49 +1458,31 @@ Group=elasticsearch
 
 ExecStart=/usr/share/elasticsearch/bin/systemd-entrypoint -p ${PID_DIR}/elasticsearch.pid --quiet
 
-# StandardOutput is configured to redirect to journalctl since
-# some error messages may be logged in standard output before
-# elasticsearch logging system is initialized. Elasticsearch
-# stores its logs in /var/log/elasticsearch and does not use
-# journalctl by default. If you also want to enable journalctl
-# logging, you can simply remove the "quiet" option from ExecStart.
 StandardOutput=journal
 StandardError=inherit
 
-# Specifies the maximum file descriptor number that can be opened by this process
 LimitNOFILE=65535
 
-# Specifies the maximum number of processes
 LimitNPROC=4096
 
-# Specifies the maximum size of virtual memory
 LimitAS=infinity
 
-# Specifies the maximum file size
 LimitFSIZE=infinity
 
-# Disable timeout logic and wait until process is stopped
 TimeoutStopSec=0
 
-# SIGTERM signal is used to stop the Java process
 KillSignal=SIGTERM
 
-# Send the signal only to the JVM rather than its control group
 KillMode=process
 
-# Java process is never killed
 SendSIGKILL=no
 
-# When a JVM receives a SIGTERM signal it exits with code 143
 SuccessExitStatus=143
 
-# Allow a slow startup before the systemd notifier module kicks in to extend the timeout
 TimeoutStartSec=900
 
 [Install]
 WantedBy=multi-user.target
-
-# Built for packages-7.17.29 (packages)
 
 ```
 
