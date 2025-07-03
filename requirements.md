@@ -17,8 +17,6 @@
 
 [OpenSSL](https://www.openssl.org/)
 
----
-
 ## Librerie Python da installare nel virtualenv
 
 [redis](https://pypi.org/project/redis/) (client Redis)
