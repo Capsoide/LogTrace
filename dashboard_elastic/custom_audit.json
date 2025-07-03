@@ -24,7 +24,217 @@
             "title": "Audit-Logs",
             "hits": 0,
             "description": "",
-            "panelsJSON": "[{\"version\":\"7.17.28\",\"type\":\"lens\",\"gridData\":{\"x\":0,\"y\":0,\"w\":48,\"h\":20,\"i\":\"3f942747-20bc-4f0e-98db-f01f0972178d\"},\"panelIndex\":\"3f942747-20bc-4f0e-98db-f01f0972178d\",\"embeddableConfig\":{\"attributes\":{\"title\":\"prova\",\"description\":\"\",\"visualizationType\":\"lnsDatatable\",\"type\":\"lens\",\"references\":[{\"type\":\"index-pattern\",\"id\":\"51e9e330-5271-11f0-b888-ffe2ab3ca398\",\"name\":\"indexpattern-datasource-current-indexpattern\"},{\"type\":\"index-pattern\",\"id\":\"51e9e330-5271-11f0-b888-ffe2ab3ca398\",\"name\":\"indexpattern-datasource-layer-a4a7346a-58f0-47d9-9791-2b18f0761e72\"}],\"state\":{\"visualization\":{\"layerId\":\"a4a7346a-58f0-47d9-9791-2b18f0761e72\",\"layerType\":\"data\",\"columns\":[{\"isTransposed\":false,\"columnId\":\"69a458d6-9cee-44df-9a5b-7dfbe3d0a290\",\"alignment\":\"left\",\"width\":123},{\"isTransposed\":false,\"columnId\":\"f42e9020-688c-4c91-94c8-8f4699541ebf\",\"alignment\":\"left\",\"width\":128},{\"isTransposed\":false,\"columnId\":\"67970c18-29ad-4ebd-8cc8-9f42b437b709\",\"alignment\":\"left\",\"width\":243},{\"columnId\":\"d582b33a-b8ee-452f-96bc-d2b5cbf2132e\",\"isTransposed\":false,\"alignment\":\"left\",\"width\":152},{\"columnId\":\"ca5e8a16-32c2-4a50-be00-248054d704d9\",\"isTransposed\":false,\"alignment\":\"left\",\"width\":622},{\"columnId\":\"a4e9d124-34a3-4c72-9e63-2c5841b4fce2\",\"isTransposed\":false,\"alignment\":\"left\",\"width\":300}]},\"query\":{\"query\":\"\",\"language\":\"kuery\"},\"filters\":[],\"datasourceStates\":{\"indexpattern\":{\"layers\":{\"a4a7346a-58f0-47d9-9791-2b18f0761e72\":{\"columns\":{\"69a458d6-9cee-44df-9a5b-7dfbe3d0a290\":{\"label\":\"Event Action\",\"dataType\":\"string\",\"operationType\":\"terms\",\"scale\":\"ordinal\",\"sourceField\":\"event.action.keyword\",\"isBucketed\":true,\"params\":{\"size\":1000,\"orderBy\":{\"type\":\"alphabetical\",\"fallback\":true},\"orderDirection\":\"asc\",\"otherBucket\":true,\"missingBucket\":false},\"customLabel\":true},\"f42e9020-688c-4c91-94c8-8f4699541ebf\":{\"label\":\"Event Code\",\"dataType\":\"string\",\"operationType\":\"terms\",\"scale\":\"ordinal\",\"sourceField\":\"event.code.keyword\",\"isBucketed\":true,\"params\":{\"size\":1000,\"orderBy\":{\"type\":\"alphabetical\",\"fallback\":true},\"orderDirection\":\"asc\",\"otherBucket\":true,\"missingBucket\":false},\"customLabel\":true},\"67970c18-29ad-4ebd-8cc8-9f42b437b709\":{\"label\":\"Host IP\",\"dataType\":\"string\",\"operationType\":\"terms\",\"scale\":\"ordinal\",\"sourceField\":\"host.ip.keyword\",\"isBucketed\":true,\"params\":{\"size\":1000,\"orderBy\":{\"type\":\"alphabetical\",\"fallback\":true},\"orderDirection\":\"asc\",\"otherBucket\":true,\"missingBucket\":false},\"customLabel\":true},\"d582b33a-b8ee-452f-96bc-d2b5cbf2132e\":{\"label\":\"Computer Name\",\"dataType\":\"string\",\"operationType\":\"terms\",\"scale\":\"ordinal\",\"sourceField\":\"winlog.computer_name.keyword\",\"isBucketed\":true,\"params\":{\"size\":1000,\"orderBy\":{\"type\":\"alphabetical\",\"fallback\":true},\"orderDirection\":\"asc\",\"otherBucket\":true,\"missingBucket\":false},\"customLabel\":true},\"ca5e8a16-32c2-4a50-be00-248054d704d9\":{\"label\":\"Message Event\",\"dataType\":\"string\",\"operationType\":\"last_value\",\"isBucketed\":false,\"scale\":\"ordinal\",\"sourceField\":\"message.keyword\",\"params\":{\"sortField\":\"@timestamp\"},\"customLabel\":true},\"a4e9d124-34a3-4c72-9e63-2c5841b4fce2\":{\"label\":\"Host ID\",\"dataType\":\"string\",\"operationType\":\"terms\",\"scale\":\"ordinal\",\"sourceField\":\"host.id.keyword\",\"isBucketed\":true,\"params\":{\"size\":1000,\"orderBy\":{\"type\":\"alphabetical\",\"fallback\":true},\"orderDirection\":\"asc\",\"otherBucket\":true,\"missingBucket\":false},\"customLabel\":true}},\"columnOrder\":[\"67970c18-29ad-4ebd-8cc8-9f42b437b709\",\"a4e9d124-34a3-4c72-9e63-2c5841b4fce2\",\"d582b33a-b8ee-452f-96bc-d2b5cbf2132e\",\"f42e9020-688c-4c91-94c8-8f4699541ebf\",\"69a458d6-9cee-44df-9a5b-7dfbe3d0a290\",\"ca5e8a16-32c2-4a50-be00-248054d704d9],\"incompleteColumns\":{}}}}}}},\"enhancements\":{},\"hidePanelTitles\":false},\"title\":\"General View\"}]",
+            "panelsJSON": "[
+  {
+    \"version\": \"7.17.28\",
+    \"type\": \"lens\",
+    \"gridData\": {
+      \"x\": 0,
+      \"y\": 0,
+      \"w\": 48,
+      \"h\": 20,
+      \"i\": \"3f942747-20bc-4f0e-98db-f01f0972178d\"
+    },
+    \"panelIndex\": \"3f942747-20bc-4f0e-98db-f01f0972178d\",
+    \"embeddableConfig\": {
+      \"attributes\": {
+        \"title\": \"prova\",
+        \"description\": \"\",
+        \"visualizationType\": \"lnsDatatable\",
+        \"type\": \"lens\",
+        \"references\": [
+          {
+            \"type\": \"index-pattern\",
+            \"id\": \"51e9e330-5271-11f0-b888-ffe2ab3ca398\",
+            \"name\": \"indexpattern-datasource-current-indexpattern\"
+          },
+          {
+            \"type\": \"index-pattern\",
+            \"id\": \"51e9e330-5271-11f0-b888-ffe2ab3ca398\",
+            \"name\": \"indexpattern-datasource-layer-a4a7346a-58f0-47d9-9791-2b18f0761e72\"
+          }
+        ],
+        \"state\": {
+          \"visualization\": {
+            \"layerId\": \"a4a7346a-58f0-47d9-9791-2b18f0761e72\",
+            \"layerType\": \"data\",
+            \"columns\": [
+              {
+                \"isTransposed\": false,
+                \"columnId\": \"69a458d6-9cee-44df-9a5b-7dfbe3d0a290\",
+                \"alignment\": \"left\",
+                \"width\": 123
+              },
+              {
+                \"isTransposed\": false,
+                \"columnId\": \"f42e9020-688c-4c91-94c8-8f4699541ebf\",
+                \"alignment\": \"left\",
+                \"width\": 128
+              },
+              {
+                \"isTransposed\": false,
+                \"columnId\": \"67970c18-29ad-4ebd-8cc8-9f42b437b709\",
+                \"alignment\": \"left\",
+                \"width\": 243
+              },
+              {
+                \"columnId\": \"d582b33a-b8ee-452f-96bc-d2b5cbf2132e\",
+                \"isTransposed\": false,
+                \"alignment\": \"left\",
+                \"width\": 152
+              },
+              {
+                \"columnId\": \"ca5e8a16-32c2-4a50-be00-248054d704d9\",
+                \"isTransposed\": false,
+                \"alignment\": \"left\",
+                \"width\": 622
+              },
+              {
+                \"columnId\": \"a4e9d124-34a3-4c72-9e63-2c5841b4fce2\",
+                \"isTransposed\": false,
+                \"alignment\": \"left\",
+                \"width\": 300
+              }
+            ]
+          },
+          \"query\": {
+            \"query\": \"\",
+            \"language\": \"kuery\"
+          },
+          \"filters\": [],
+          \"datasourceStates\": {
+            \"indexpattern\": {
+              \"layers\": {
+                \"a4a7346a-58f0-47d9-9791-2b18f0761e72\": {
+                  \"columns\": {
+                    \"69a458d6-9cee-44df-9a5b-7dfbe3d0a290\": {
+                      \"label\": \"Event Action\",
+                      \"dataType\": \"string\",
+                      \"operationType\": \"terms\",
+                      \"scale\": \"ordinal\",
+                      \"sourceField\": \"event.action.keyword\",
+                      \"isBucketed\": true,
+                      \"params\": {
+                        \"size\": 1000,
+                        \"orderBy\": {
+                          \"type\": \"alphabetical\",
+                          \"fallback\": true
+                        },
+                        \"orderDirection\": \"asc\",
+                        \"otherBucket\": true,
+                        \"missingBucket\": false
+                      },
+                      \"customLabel\": true
+                    },
+                    \"f42e9020-688c-4c91-94c8-8f4699541ebf\": {
+                      \"label\": \"Event Code\",
+                      \"dataType\": \"string\",
+                      \"operationType\": \"terms\",
+                      \"scale\": \"ordinal\",
+                      \"sourceField\": \"event.code.keyword\",
+                      \"isBucketed\": true,
+                      \"params\": {
+                        \"size\": 1000,
+                        \"orderBy\": {
+                          \"type\": \"alphabetical\",
+                          \"fallback\": true
+                        },
+                        \"orderDirection\": \"asc\",
+                        \"otherBucket\": true,
+                        \"missingBucket\": false
+                      },
+                      \"customLabel\": true
+                    },
+                    \"67970c18-29ad-4ebd-8cc8-9f42b437b709\": {
+                      \"label\": \"Host IP\",
+                      \"dataType\": \"string\",
+                      \"operationType\": \"terms\",
+                      \"scale\": \"ordinal\",
+                      \"sourceField\": \"host.ip.keyword\",
+                      \"isBucketed\": true,
+                      \"params\": {
+                        \"size\": 1000,
+                        \"orderBy\": {
+                          \"type\": \"alphabetical\",
+                          \"fallback\": true
+                        },
+                        \"orderDirection\": \"asc\",
+                        \"otherBucket\": true,
+                        \"missingBucket\": false
+                      },
+                      \"customLabel\": true
+                    },
+                    \"d582b33a-b8ee-452f-96bc-d2b5cbf2132e\": {
+                      \"label\": \"Computer Name\",
+                      \"dataType\": \"string\",
+                      \"operationType\": \"terms\",
+                      \"scale\": \"ordinal\",
+                      \"sourceField\": \"winlog.computer_name.keyword\",
+                      \"isBucketed\": true,
+                      \"params\": {
+                        \"size\": 1000,
+                        \"orderBy\": {
+                          \"type\": \"alphabetical\",
+                          \"fallback\": true
+                        },
+                        \"orderDirection\": \"asc\",
+                        \"otherBucket\": true,
+                        \"missingBucket\": false
+                      },
+                      \"customLabel\": true
+                    },
+                    \"ca5e8a16-32c2-4a50-be00-248054d704d9\": {
+                      \"label\": \"Message Event\",
+                      \"dataType\": \"string\",
+                      \"operationType\": \"last_value\",
+                      \"isBucketed\": false,
+                      \"scale\": \"ordinal\",
+                      \"sourceField\": \"message.keyword\",
+                      \"params\": {
+                        \"sortField\": \"@timestamp\"
+                      },
+                      \"customLabel\": true
+                    },
+                    \"a4e9d124-34a3-4c72-9e63-2c5841b4fce2\": {
+                      \"label\": \"Host ID\",
+                      \"dataType\": \"string\",
+                      \"operationType\": \"terms\",
+                      \"scale\": \"ordinal\",
+                      \"sourceField\": \"host.id.keyword\",
+                      \"isBucketed\": true,
+                      \"params\": {
+                        \"size\": 1000,
+                        \"orderBy\": {
+                          \"type\": \"alphabetical\",
+                          \"fallback\": true
+                        },
+                        \"orderDirection\": \"asc\",
+                        \"otherBucket\": true,
+                        \"missingBucket\": false
+                      },
+                      \"customLabel\": true
+                    }
+                  },
+                  \"columnOrder\": [
+                    \"67970c18-29ad-4ebd-8cc8-9f42b437b709\",
+                    \"a4e9d124-34a3-4c72-9e63-2c5841b4fce2\",
+                    \"d582b33a-b8ee-452f-96bc-d2b5cbf2132e\",
+                    \"f42e9020-688c-4c91-94c8-8f4699541ebf\",
+                    \"69a458d6-9cee-44df-9a5b-7dfbe3d0a290\",
+                    \"ca5e8a16-32c2-4a50-be00-248054d704d9\"
+                  ],
+                  \"incompleteColumns\": {}
+                }
+              }
+            }
+          },
+          \"enhancements\": {},
+          \"hidePanelTitles\": false
+        },
+        \"title\": \"General View\"
+      }
+    }
+  ]",
             "optionsJSON": "{\"useMargins\":true,\"syncColors\":false,\"hidePanelTitles\":false}",
             "version": 1,
             "timeRestore": false,
