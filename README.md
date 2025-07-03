@@ -1171,7 +1171,7 @@ Di seguito, un esempio reale dell’interfaccia Discover in uso:
   <img src="https://github.com/user-attachments/assets/a9aaa176-db37-4f84-aa42-147515be21e0" alt="image" /> 
 </div>
 
-## Dashboard custom: : Analisi eventi di audit Windows
+## Dashboard custom
 
 La dashboard è stata realizzata per fornire una panoramica dettagliata e immediatamente leggibile degli eventi di sicurezza raccolti dai log di audit di Windows.
 
