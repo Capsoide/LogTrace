@@ -1459,7 +1459,11 @@ Per monitorare il corretto funzionamento dei servizi, è possibile consultare i 
 
 **queue_consumer.service**: modalità dinamica ``journalctl -u queue_consumer.service -f``
 
-## 
+## Author
+
+Nicola Capancioni
+
+##
 
 
 
