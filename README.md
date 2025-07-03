@@ -1201,7 +1201,7 @@ La dashboard è pensata per offrire uno strumento di controllo centralizzato e i
 ## Kibana Dashboard Export via Elasticsearch Query
 Query HTTP GET che utilizza la Search API di Elasticsearch per estrarre la dashboard personalizzata con il titolo "Audit-Logs" dall’indice ``.kibana``. La ricerca filtra i documenti di tipo ``dashboard`` e seleziona quelli il cui titolo corrisponde esattamente al valore specificato. Questo metodo consente di esportare la configurazione della dashboard per backup o migrazione.
 
-```HTML
+```bash
 GET .kibana/_search
 {
   "query":{
