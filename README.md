@@ -1450,13 +1450,15 @@ WantedBy=multi-user.target
 # Debug
 Per monitorare il corretto funzionamento dei servizi, è possibile consultare i log nei seguenti percorsi o comandi:
 
-immudb : ``` DEVO TROVARE IL PERSO, NON MEE LO RICORDOOOOH``` nononononnoo
+logstash: modalità statica```/var/log/logstash/logstash-plain.log```
 
-elasticsearch: ```/var/log/elasticsearch/elasticsearch.log```
+redis: modalità statica```/var/log/redis/redis-server.log```
 
-redis: ```/var/log/redis/redis-server.log```
+immudb : modalità statica```/var/lib/immudb/immulog/immudb.log``` 
 
-logstash: ```/var/log/logstash/logstash-plain.log```
+elasticsearch: modalità statica```/var/log/elasticsearch/elasticsearch.log```
+
+kibana: modalità statica```/var/log/kibana/kibana.log```
 
 
 
