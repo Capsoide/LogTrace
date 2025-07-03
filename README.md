@@ -25,17 +25,13 @@ L'intero sistema è progettato per soddisfare i requisiti normativi previsti dal
 - [**ISO/IEC 27001**](https://edirama.org/wp-content/uploads/2023/10/document-1.pdf) è uno standard internazionale per la gestione della sicurezza delle informazioni (ISMS), che richiede la registrazione e l’analisi degli eventi di accesso.
 - [**NIS2**](https://www.acn.gov.it/portale/nis) è la direttiva europea sulla sicurezza delle reti e dei sistemi informativi, che impone obblighi di logging, conservazione e risposta agli incidenti per gli operatori di servizi essenziali.
 
----
 
-
-# Schema infrastruttura
+## Schema infrastruttura
 <div align="center" style="border:1px solid #ccc; padding:10px; display: inline-block;"> 
   <img src="https://github.com/user-attachments/assets/35074374-ca95-4a12-97eb-0501cb1db141" alt="image" /> 
 </div>
 
----
-
-# Comunicazione Windows Server - Debian via VirtualBox
+## Comunicazione Windows Server - Debian via VirtualBox
 
 In questa prima parte si descrive come creare una rete locale tra due macchine virtuali (VM) usando **VirtualBox** con una rete **Host-Only**.
 
@@ -93,8 +89,6 @@ Ethernet adapter Ethernet 2:
    Subnet Mask . . . . . . . . . . . : 255.255.255.0   <---
    Default Gateway . . . . . . . . . :
 ```
-
----
 
 ## Configurazione interfacce di rete (Debian)
 
@@ -242,7 +236,7 @@ Approximate round trip times in milli-seconds:
     Minimum = 1ms, Maximum = 1ms, Average = 1ms
 ```
 
-# Winlogbeat
+## Winlogbeat
 
 Winlogbeat è un agente software che raccoglie e invia i Windows Event Log verso endpoint **Redis**, **Logstash** ed **Elasticsearch**.
 
@@ -328,8 +322,6 @@ Stop-Service winlogbeat
 .\uninstall-service-winlogbeat.ps1
 ```
 
----
-
 ## Debug e Verifica
 
 - **Log locale**: `C:\\ProgramData\\winlogbeat\\Logs\\winlogbeat.log`
@@ -347,9 +339,7 @@ Stop-Service winlogbeat
   .\winlogbeat.exe -c winlogbeat.yml -e -v
   ```
 
----
-
-# Logstash
+## Logstash
 
 Logstash è una pipeline open source utilizzata per  la gestione, elaborazione e inoltro in tempo reale di dati provenienti da diverse fonti verso una o più destinazioni.
 
@@ -490,9 +480,7 @@ Definizione delle pipeline distinte per Logstash
   path.config: "/etc/logstash/conf.d/logstash1.conf"
 ```
 
----
-
-# Accesso e verifica delle code Redis
+## Accesso e verifica delle code Redis
 
 Accedere al server Redis remoto ed elencare le chiavi disponibili per verificare la presenza delle due code:
 
@@ -514,9 +502,7 @@ Verificare che i log siano stati inseriti correttamente nelle due code Redis:
 (integer) 144
 ```
 
----
-
-# Immudb
+## Immudb
 
 ## Gerarchia directory (file configurazione di immudb)
 ```
@@ -613,9 +599,7 @@ vboxuser@vbox:~$ immuadmin database list --tokenfile ~/immuadmin_token
 -  --------------  ----------  ----------  ------  ----------  ---------  ------------
 ```
 
----
-
-# queue_consumer.py
+## queue_consumer.py
 
 Percorso: ```/var/consumer-immudb/queue_consumer.py```
 
@@ -846,9 +830,9 @@ La coda è stata consumata in modo corretto e i log sono salvati in immuDB.
 
 ---
 
-# Analisi Log e UX Grafica con Elasticsearch e Kibana
+## Analisi Log e UX Grafica con Elasticsearch e Kibana
 
-# Elasticsearch 
+## Elasticsearch 
 
 ### Gerarchia directory (file configurazione di Elasticsearch)
 
@@ -881,7 +865,7 @@ Elasticsearch è un motore di ricerca e analisi distribuito, progettato per arch
 
 Come spiegato in precedenza i log nella coda Redis ``redis-queue-elastic`` vengono consumati da Logstash, il quale li elabora e li invia a Elasticsearch per l’archiviazione e la ricerca dei log di sistema.
 
-# Kibana
+## Kibana
 
 ## Gerarchia directory (file configurazione di Kibana)
 
@@ -1214,9 +1198,7 @@ Infine, la dashboard presenta un grafico a barre che mostra i Top Event ID ricev
 
 La dashboard è pensata per offrire uno strumento di controllo centralizzato e immediatamente fruibile anche da chi non è esperto di analisi log. È utile sia per il monitoraggio costante che per analisi forensi su eventi passati. Grazie alla categorizzazione e visualizzazione intuitiva dei dati, ogni componente può essere utilizzato in fase investigativa, operativa o preventiva.
 
----
-
-# Mappa IP/Porte dei Moduli di Logging
+## Mappa IP/Porte dei Moduli di Logging
 
 | **Modulo**                      | **IP**           | **Porta/e**                       | **Protocollo**     | **Note**                                                                 |
 |---------------------------------|------------------|-----------------------------------|---------------------|--------------------------------------------------------------------------|
@@ -1228,8 +1210,7 @@ La dashboard è pensata per offrire uno strumento di controllo centralizzato e i
 | **Kibana**                      | 192.168.56.10    | 5601                              | HTTPS/TCP/TLS       | Interfaccia grafica per interrogare Elasticsearch                       |
 | **immudb**                      | 192.168.56.10    | 3322 (default), 9497 (gRPC API)   | TCP/gRPC            | Legge i log dalla coda Redis per la storicizzazione immutabile          |
 
----
-# Configurazione dei servizi con systemd
+## Configurazione dei servizi con systemd
 
 Per orchestrare l'intero sistema di raccolta, archiviazione e visualizzazione dei log, vengono utilizzate diverse unità systemd che automatizzano e gestiscono l'esecuzione periodica degli script e il database immutabile immuDB.
 
