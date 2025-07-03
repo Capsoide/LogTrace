@@ -1153,7 +1153,6 @@ tagline	"You Know, for Search"
 
 ```
 
-
 ### Kibana
 
 1. Aprire il browser e accedere all'indirizzo ``https://192.168.56.10:5601``;
@@ -1238,7 +1237,7 @@ Per orchestrare l'intero sistema di raccolta, archiviazione e visualizzazione de
 
 Percorso: ```/etc/systemd/system/queue_consumer.service```
 
-Servizio associato allo script ```queue_consumer.py```. Viene eseguito periodicamente per la lettura e il consumo continuo dei log dalla coda ```redis-queue-immudb```, con successiva scrittura su immuDB.
+Servizio systemd associato allo script ```queue_consumer.py```. Viene eseguito periodicamente per la lettura e il consumo continuo dei log dalla coda ```redis-queue-immudb```, con successiva scrittura su immuDB.
 
 ⚠️ Assicurarsi che venv sia correttamente creato nella nuova directory ```/home/vboxuser/my-venv```.
 
@@ -1264,7 +1263,7 @@ WantedBy=multi-user.target
 
 Percorso: ```/etc/systemd/system/redis.service```
 
-Servizio systemd che esegue il demone redis-server utilizzando il file di configurazione ```/etc/redis/redis.conf```, con tipo notify per integrazione corretta con systemd.
+Servizio systemd che gestisce l'avvio di ``redis-server`` utilizzando il file di configurazione ```/etc/redis/redis.conf```, con tipo notify per integrazione corretta con systemd.
 Include meccanismi di sicurezza avanzati (isolamento delle risorse, restrizioni di privilegio, protezione del filesystem) e supporto al riavvio automatico.
 
 ```bash
@@ -1313,7 +1312,7 @@ Alias=redis.service
 
 Percorso: ```/etc/systemd/system/immudb.service```
 
-Servizio systemd che avvia il demone immudb, il database immutabile dove vengono scritti i log. Configurato tramite il file TOML specificato nel percorso ```/etc/immudb/immudb.toml```.
+Servizio systemd che gestisce l'avvio di ``immudb``, il database immutabile dove vengono scritti i log. Configurato tramite il file TOML specificato nel percorso ```/etc/immudb/immudb.toml```.
 
 ```bash
 [Unit]
@@ -1338,7 +1337,7 @@ WantedBy=multi-user.target
 
 Percorso: ```/etc/systemd/system/logstash.service ```
 
-Servizio systemd che avvia il demone Logstash con configurazione in ```/etc/logstash```, eseguito con privilegi limitati dall’utente e gruppo logstash. Garantisce il riavvio automatico in caso di fallimento, imposta priorità CPU bassa (nice=19) e un limite massimo di file aperti pari a 16384 per gestire grandi carichi di lavoro.
+Servizio systemd che gestisce l'avvio di ``Logstash`` con configurazione in ```/etc/logstash```, eseguito con privilegi limitati dall’utente e gruppo logstash. Garantisce il riavvio automatico in caso di fallimento, imposta priorità CPU bassa (nice=19) e un limite massimo di file aperti pari a 16384 per gestire grandi carichi di lavoro.
 
 ```bash
 [Unit]
@@ -1366,7 +1365,7 @@ WantedBy=multi-user.target
 
 Percorso: ```/etc/systemd/system/kibana.service ```
 
-Servizio systemd che avvia il demone Kibana con configurazione in ```/etc/kibana```, fornisce l’interfaccia web per visualizzare, analizzare e interrogare i dati presenti in Elasticsearch. Questo file systemd definisce l'avvio automatico di Kibana come processo in background, configurandone utente, percorso di esecuzione, variabili d’ambiente e log. È essenziale per rendere Kibana disponibile agli utenti tramite browser.
+Servizio systemd che gestisce l'avvio di ``Kibana`` con configurazione in ```/etc/kibana```, fornisce l’interfaccia web per visualizzare, analizzare e interrogare i dati presenti in Elasticsearch. Questo file systemd definisce l'avvio automatico di Kibana come processo in background, configurandone utente, percorso di esecuzione, variabili d’ambiente e log. È essenziale per rendere Kibana disponibile agli utenti tramite browser.
 
 ```bash
 [Unit]
@@ -1401,7 +1400,7 @@ WantedBy=multi-user.target
 
 Percorso: ```/lib/systemd/system/elasticsearch.service```
 
-Servizio systemd che gestisce l'avvio del demone Elasticsearch, utilizzando il binario systemd-entrypoint, che supporta le notifiche a systemd (Type=notify) per un'integrazione corretta con il sistema di init.
+Servizio systemd che gestisce l'avvio di ``Elasticsearch``, utilizzando il binario systemd-entrypoint, che supporta le notifiche a systemd (Type=notify) per un'integrazione corretta con il sistema di init.
 
 La configurazione principale del servizio si trova in ```/etc/elasticsearch```. Il servizio viene eseguito con l'utente dedicato elasticsearch per motivi di sicurezza e isolamento dei privilegi.
 
@@ -1450,15 +1449,19 @@ WantedBy=multi-user.target
 # Debug
 Per monitorare il corretto funzionamento dei servizi, è possibile consultare i log nei seguenti percorsi o comandi:
 
-logstash: modalità statica ``/var/log/logstash/logstash-plain.log`` |  modalità interattiva ``journalctl -u logstash.service -f``
+logstash: modalità statica ``/var/log/logstash/logstash-plain.log`` |  modalità dinamica ``journalctl -u logstash.service -f``
 
-redis: modalità statica ``/var/log/redis/redis-server.log`` |  modalità interattiva ````journalctl -u redis-server.service -f````
+redis: modalità statica ``/var/log/redis/redis-server.log`` |  modalità dinamica ````journalctl -u redis-server.service -f````
 
-immudb : modalità statica ``/var/lib/immudb/immulog/immudb.log`` |  modalità interattiva ``journalctl -u immudb.service -f``
+immudb : modalità statica ``/var/lib/immudb/immulog/immudb.log`` |  modalità dinamica ``journalctl -u immudb.service -f``
 
-elasticsearch: modalità statica ``/var/log/elasticsearch/elasticsearch.log`` |  modalità interattiva ``journalctl -u elasticsearch.service -f``
+elasticsearch: modalità statica ``/var/log/elasticsearch/elasticsearch.log`` |  modalità dinamica ``journalctl -u elasticsearch.service -f``
 
-kibana: modalità statica ``/var/log/kibana/kibana.log`` |  modalità interattiva ``journalctl -u kibana.service -f``
+kibana: modalità statica ``/var/log/kibana/kibana.log`` |  modalità dinamica ``journalctl -u kibana.service -f``
+
+queue_consumer.service: modalità dinamica ``journalctl -u queue_consumer.service -f``
+
+
 
 
 
