@@ -1198,6 +1198,23 @@ Infine, la dashboard presenta un grafico a barre che mostra i Top Event ID ricev
 
 La dashboard è pensata per offrire uno strumento di controllo centralizzato e immediatamente fruibile anche da chi non è esperto di analisi log. È utile sia per il monitoraggio costante che per analisi forensi su eventi passati. Grazie alla categorizzazione e visualizzazione intuitiva dei dati, ogni componente può essere utilizzato in fase investigativa, operativa o preventiva.
 
+## Kibana Dashboard Export via Elasticsearch Query
+Query HTTP GET che utilizza la Search API di Elasticsearch per estrarre la dashboard personalizzata con il titolo "Audit-Logs" dall’indice ``.kibana``. La ricerca filtra i documenti di tipo ``dashboard`` e seleziona quelli il cui titolo corrisponde esattamente al valore specificato. Questo metodo consente di esportare la configurazione della dashboard per backup o migrazione.
+
+```html
+GET .kibana/_search
+{
+  "query":{
+    "bool": {
+      "must": [
+        { "term": { "type": "dashboard"} },
+        { "match_phrase": { "dashboard.title": "Audit-Logs"} }
+      ]
+    }
+  },
+  "size": 1
+}
+```
 ## Mappa IP/Porte dei Moduli di Logging
 
 | **Modulo**                      | **IP**           | **Porta/e**                       | **Protocollo**     | **Note**                                                                 |
