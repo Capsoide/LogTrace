@@ -1450,22 +1450,22 @@ WantedBy=multi-user.target
 # Debug
 Per monitorare il corretto funzionamento dei servizi, è possibile consultare i log nei seguenti percorsi o comandi:
 
-logstash: modalità statica ``/var/log/logstash/logstash-plain.log`` |
+logstash: modalità statica ``/var/log/logstash/logstash-plain.log`` |  modalità interattiva ``journalctl -u logstash.service -f``
 
-redis: modalità statica ``/var/log/redis/redis-server.log`` |
+redis: modalità statica ``/var/log/redis/redis-server.log`` |  modalità interattiva ````journalctl -u redis-server.service -f````
 
-immudb : modalità statica ``/var/lib/immudb/immulog/immudb.log`` |
+immudb : modalità statica ``/var/lib/immudb/immulog/immudb.log`` |  modalità interattiva ``journalctl -u immudb.service -f``
 
-elasticsearch: modalità statica ``/var/log/elasticsearch/elasticsearch.log`` |
+elasticsearch: modalità statica ``/var/log/elasticsearch/elasticsearch.log`` |  modalità interattiva ``journalctl -u elasticsearch.service -f``
 
-kibana: modalità statica ``/var/log/kibana/kibana.log`` |
-
-
+kibana: modalità statica ``/var/log/kibana/kibana.log`` |  modalità interattiva ``journalctl -u kibana.service -f``
 
 
-run-logs : modalità dinamica journalctl -u run-logs.service -f | modalità statica /var/log/logtrace/run-logs.log
 
-uvicorn-api : modalità dinamica journalctl -u uvicorn-api.service -f | modalità statica /var/log/logtrace/uvicorn-api.log
+
+
+
+
 
 
 
