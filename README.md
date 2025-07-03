@@ -1450,15 +1450,15 @@ WantedBy=multi-user.target
 # Debug
 Per monitorare il corretto funzionamento dei servizi, è possibile consultare i log nei seguenti percorsi o comandi:
 
-logstash: modalità statica```/var/log/logstash/logstash-plain.log```
+logstash: modalità statica ``/var/log/logstash/logstash-plain.log`` |
 
-redis: modalità statica```/var/log/redis/redis-server.log```
+redis: modalità statica ``/var/log/redis/redis-server.log`` |
 
-immudb : modalità statica```/var/lib/immudb/immulog/immudb.log``` 
+immudb : modalità statica ``/var/lib/immudb/immulog/immudb.log`` |
 
-elasticsearch: modalità statica```/var/log/elasticsearch/elasticsearch.log```
+elasticsearch: modalità statica ``/var/log/elasticsearch/elasticsearch.log`` |
 
-kibana: modalità statica```/var/log/kibana/kibana.log```
+kibana: modalità statica ``/var/log/kibana/kibana.log`` |
 
 
 
