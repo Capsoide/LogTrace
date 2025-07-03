@@ -6,7 +6,7 @@ Questo sistema si occupa dell'acquisizione automatica dei log di audit relativi 
 Il processo viene realizzato attraverso una pipeline composta dai seguenti componenti:
 - ```Winlogbeat```, installato su un'istanza Windows Server, è il servizio responsabile del recupero e dell'invio degli eventi log di audit raccolti da Event Viewer.
 - ```Logstash```, in esecuzione su un sistema Debian, riceve i log da Winlogbeat processandoli e duplicandoli in due differenti code Redis.
-- ```Redis```, funge da sistema di gestione delle code, permettendo la separazione dei flussi di log:
+- ```Redis```, in esecuzione su un sistema Debian, funge da sistema di gestione delle code, permettendo la separazione dei flussi di log:
   - La **coda 0** (`redis-queue-elastic`) invia i log a **Elasticsearch** per l'indicizzazione e la visualizzazione tramite interfaccia front-end.
   - La **coda 1** (`redis-queue-immudb`)  è dedicata alla persistenza dei log in un database immutabile (immudb), progettato per garantire integrità, non ripudiabilità e conservazione a lungo termine. In questo contesto, è configurata una retention time pari a 24 ore.
 
@@ -17,7 +17,8 @@ I singoli componenti svolgono i seguenti ruoli:
 - `Logstash`: duplicazione dei flussi di log e invio alle rispettive code Redis.
 - `Redis`: gestione dei buffer dei dati.
 - `Immudb`: archiviazione sicura e immutabile dei log.
-- `Elasticsearch`: indicizzazione e front-end per analisi interattiva dei log.
+- `Elasticsearch`: indicizzazione e conservazione dei log. Fornisce il backend per l’analisi interattiva dei dati.
+- `Kibana`: GUI per la ricerca, visualizzazione e monitoraggio dei log indicizzati.
 
 L'intero sistema è progettato per soddisfare i requisiti normativi previsti dalle direttive **ACN**, **ISO/IEC 27001** e **NIS2**, che impongono il tracciamento, la conservazione e l’integrità dei log di sicurezza:
 
@@ -31,9 +32,9 @@ L'intero sistema è progettato per soddisfare i requisiti normativi previsti dal
   <img src="https://github.com/user-attachments/assets/35074374-ca95-4a12-97eb-0501cb1db141" alt="image" /> 
 </div>
 
-## Comunicazione Windows Server - Debian via VirtualBox
+## Comunicazione Windows Server → Debian 
 
-In questa prima parte si descrive come creare una rete locale tra due macchine virtuali (VM) usando **VirtualBox** con una rete **Host-Only**.
+In questa prima fase si descrive come è stata creata la rete locale tra due macchine virtuali (VM) usando **VirtualBox** con una rete **Host-Only**.
 
 ## Topologia di rete
 
@@ -360,12 +361,26 @@ Nel contesto di questo sistema, Logstash riceve eventi in formato JSON da Winlog
     ├── pipelines.yml
     └── startup.options
 ```
+## logstash.yml
+
+Percorso: ```/etc/logstash/logstash.yml```
+
+File di configurazione principale di Logstash, in cui si definisce la directory per l’archiviazione dei dati interni.
+
+```yaml                                                     
+# ------------ Data path ------------
+# Which directory should be used by logstash and its plugins
+#for any persistent needs. Defaults to LOGSTASH_HOME/data
+#
+path.data: /var/lib/logstash
+#
+```
 
 ## logstash.conf
 
 Percorso: ```/etc/logstash/conf.d/logstash.conf```
 
-File di configurazione Logstash che definisce una pipeline impostato per ricevere i log da ```Winlogbeat``` via Beats protocol (porta 5044) e per la duplicazione dei log su due code Redis.
+File di configurazione definito per una pipeline Logstash che riceve i log da ``Winlogbeat`` (tramite protocollo Beats) e li duplica su due code Redis distinte.
 
 ```yaml
 # Input: riceve dati da Winlogbeat tramite protocollo Beats sulla porta 5044
@@ -408,7 +423,7 @@ output {
 
 Percorso: ```/etc/logstash/conf.d/logstash1.conf```
 
-File di confogurazione (2) impostato per leggere i log da ```Redis``` e inviarli ad ```Elasticsearch```.
+File di configurazione impostato per leggere i log da ```Redis``` e inviarli ad ```Elasticsearch```.
 
 ```yaml
 input {
@@ -441,21 +456,6 @@ output {
     codec => rubydebug
   }
 }
-```
-
-## logstash.yml
-
-Percorso: ```/etc/logstash/logstash.yml```
-
-File di configurazione principale di Logstash, in cui si definisce la directory per l’archiviazione dei dati interni.
-
-```yaml                                                     
-# ------------ Data path ------------
-# Which directory should be used by logstash and its plugins
-#for any persistent needs. Defaults to LOGSTASH_HOME/data
-#
-path.data: /var/lib/logstash
-#
 ```
 
 ## pipelines.yml
@@ -540,13 +540,12 @@ log-level = "DEBUG"
 tables = [
   { db = "logs_immudb", table = "logstash_logs", retentionPeriod = "24h" }
 ]
-
 ```
-Nel file di configurazione ```immudb.toml```, sono specificati i path fondamentali per il funzionamento del database: ```/var/lib/immudb``` è la directory principale dei dati che contiene:
+Nel file di configurazione ``immudb.toml``, sono specificati i path per il funzionamento del database: ``/var/lib/immudb`` è la directory principale dei dati che contiene:
 
-- I database configurati ed utilizzati (```defaultdb``` e ```logs_immudb```).
+- I database configurati ed utilizzati (``defaultdb`` e ``logs_immudb``).
 - Le strutture immutabili dei dati (Merkle tree, indici, log transazionali).
-
+  
 ```
 /var/lib/immudb
          ├── defaultdb
@@ -556,20 +555,6 @@ Nel file di configurazione ```immudb.toml```, sono specificati i path fondamenta
          ├── immulog
          |   └──immudb.log
          └── systemdb
-```
-
-Il file ```immudb-log``` contiene tutte le informazioni di esecuzione del server immudb: 
-- path utilizzati (dati, log, configurazione, PID),
-- stato del servizio;
-- connessioni;
-- operazioni di scrittura e lettura;
-- eventuali errori;
-- debug/monitoraggio del sistema.
-
-## Verifica log generati
-
-```bash
-vboxuser@vbox:~$ sudo tail -n 50 /var/lib/immudb/immulog/immudb.log
 ```
 
 ## Login
@@ -586,7 +571,7 @@ logged in
 vboxuser@vbox:~$ immuadmin database create nome_database --retention-period=24h --tokenfile ~/immuadmin_token
 ```
 
-## Listare database esistenti
+## Lista database esistenti
 
 ```bash
 vboxuser@vbox:~$ immuadmin database list --tokenfile ~/immuadmin_token
@@ -601,18 +586,18 @@ vboxuser@vbox:~$ immuadmin database list --tokenfile ~/immuadmin_token
 
 ## queue_consumer.py
 
-Percorso: ```/var/consumer-immudb/queue_consumer.py```
+Percorso: ``/var/consumer-immudb/queue_consumer.py``
 
 ## Descrizione
 
-Questo script (`queue_consumer.py`) consuma log JSON da una coda Redis (`redis-queue-immudb`) e li inserisce nella tabella `logs` di immudb usando le API SQL.
+Lo script `queue_consumer.py` consuma log JSON dalla coda Redis `redis-queue-immudb` inserendoli nella tabella `logs` di immudb usando le API SQL.
 
 ## Funzionamento
 
-- I log vengono letti in modalità bloccante da Redis.
+I log vengono letti da Redis in modalità bloccante e salvati come coppie chiave-valore:
 - Ogni log viene serializzato con ordinamento delle chiavi.
-- Si calcola un hash SHA-256 del contenuto: è usato come chiave primaria (`log_key`).
-- Il log completo viene salvato come stringa (`value`).
+- Viene calcolato un hash SHA-256 del contenuto, utilizzato come chiave primaria (`log_key`).
+- Il log completo viene memorizzato come stringa (`value`).
 
 ## Definizione tabella `logs`
 
@@ -655,7 +640,7 @@ IMMUD_HOST = '127.0.0.1'
 IMMUD_PORT = 3322
 IMMUD_USER = ''
 IMMUD_PASSWORD = ''
-IMMUD_DATABASE = 'logs_immudb'  # Nome del database immudb in cui verranno scritti i log
+IMMUD_DATABASE = 'logs_immudb'  # Nome del database immudb in cui vengono scritti i log
 
 # -------------------
 # CONFIGURAZIONE LOG
@@ -664,7 +649,7 @@ IMMUD_DATABASE = 'logs_immudb'  # Nome del database immudb in cui verranno scrit
 # Imposta il livello di logging e il formato dei messaggi
 logging.basicConfig(level=logging.INFO, format='%(asctime)s - %(levelname)s - %(message)s')
 
-# Flag globale per controllare l'esecuzione del ciclo principale
+# Flag globale per l'esecuzione del ciclo principale
 running = True
 
 def cleanup_and_exit(signum, frame):
@@ -828,8 +813,6 @@ OK
 ```
 La coda è stata consumata in modo corretto e i log sono salvati in immuDB.
 
----
-
 ## Analisi Log e UX Grafica con Elasticsearch e Kibana
 
 ## Elasticsearch 
@@ -892,7 +875,7 @@ Kibana è utilizzato per:
 -->
 ## Certificati SSL/TLS
 
-Genera una Certificate Authority (CA) privata e crea certificati firmati per Elasticsearch e Kibana, necessari per abilitare la comunicazione sicura tramite TLS.
+Generazione di una Certificate Authority (CA) privata e creazione di certificati firmati per Elasticsearch e Kibana, necessari per abilitare la comunicazione sicura tramite TLS.
 I certificati vengono poi copiati nelle rispettive cartelle di configurazione.
 
 ```bash
@@ -922,7 +905,6 @@ cp /etc/elasticsearch/certs/elasticsearch.crt /etc/kibana/certs/kibana.crt
 cp /etc/elasticsearch/certs/elasticsearch.key /etc/kibana/certs/kibana.key
 
 ```
-
 ### Permessi sicuri
 
 Le seguenti istruzioni vengono utilizzate per assegnare i permessi corretti ai certificati TLS di Elasticsearch e Kibana, garantendo:
