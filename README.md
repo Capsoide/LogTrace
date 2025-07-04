@@ -61,7 +61,7 @@ In questa sezione viene illustrata la configurazione di una rete Host-Only in Vi
    - **Subnet Mask**: `255.255.255.0`
    - **DHCP**: disabilitato
      
-4. Assegnare l’adattatore come **Adattatore 2** alle VM:
+4. Assegnare l’adattatore come `Adattatore 2` alle VM:
    - Modalità: `Host-Only`
    - Nome: ad esempio `vboxnet0`
 
