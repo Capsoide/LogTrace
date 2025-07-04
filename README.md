@@ -1448,7 +1448,7 @@ WantedBy=multi-user.target
 ## Debug
 Per monitorare il corretto funzionamento dei servizi, è possibile consultare i log nei seguenti percorsi o comandi:
 
-• **logstash**: modalità statica ``/var/log/logstash/logstash-plain.log`` |  modalità dinamica ``journalctl -u logstash.service -f``
+• **logstash**: modalità statica ``/var/log/logstash/logstash-plain.log`` |  modalità dinamica ``journalctl -u logstash.service -f`` 
 • **redis**: modalità statica ``/var/log/redis/redis-server.log`` |  modalità dinamica ````journalctl -u redis-server.service -f````
 • **immudb**: modalità statica ``/var/lib/immudb/immulog/immudb.log`` |  modalità dinamica ``journalctl -u immudb.service -f``
 • **elasticsearch**: modalità statica ``/var/log/elasticsearch/elasticsearch.log`` |  modalità dinamica ``journalctl -u elasticsearch.service -f``
