@@ -34,7 +34,7 @@ L'intero sistema è progettato per soddisfare i requisiti normativi previsti dal
 
 
 
-## Mappa Servizi e Interfacce di Rete di LogTrace
+## Mappa Servizi e Interfacce di Rete LogTrace
 
 | **Modulo**                      | **IP**           | **Porta/e**                       | **Protocollo**     | **Note**                                                                 |
 |---------------------------------|------------------|-----------------------------------|---------------------|--------------------------------------------------------------------------|
