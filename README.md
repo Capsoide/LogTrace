@@ -52,26 +52,31 @@ In questa sezione viene illustrata la configurazione di una rete Host-Only in Vi
 
 ## Configurazione adattatore Host-Only (Virtualbox)
 
-#### 1. Aprire **VirtualBox** → `File` → `Host Network Manager`
-#### 2. Cliccare su **Crea** per aggiungere un nuovo adattatore
-#### 3. Configurazione:
+1. Aprire **VirtualBox** → `File` → `Host Network Manager`
+   
+2. Cliccare su **Crea** per aggiungere un nuovo adattatore
+  
+3. Configurazione:
    - **IP**: `192.168.56.1`
    - **Subnet Mask**: `255.255.255.0`
    - **DHCP**: disabilitato
-#### 4. Assegnare l’adattatore come **Adattatore 2** alle VM:
+     
+4. Assegnare l’adattatore come **Adattatore 2** alle VM:
    - Modalità: `Host-Only`
    - Nome: ad esempio `vboxnet0`
 
 ## Configurazione IP Statici (Windows Server)
 
-#### 1. Aprire `Centro connessioni di rete` > `Modificare impostazioni scheda`
-#### 2. Scegliere l’interfaccia collegata a `vboxnet0` (“Ethernet 2”)
-#### 3. Cliccare su `Proprietà` > `TCP/IPv4` e impostare:
+1. Aprire `Centro connessioni di rete` > Modificare `Impostazioni scheda`
+   
+2. Scegliere l’interfaccia collegata a `vboxnet0` (“Ethernet 2”)
+   
+3. Cliccare su `Proprietà` > `TCP/IPv4` e impostare:
    - **IP**: `192.168.56.2`
    - **Subnet mask**: `255.255.255.0`
    - **Gateway**: lascia vuoto
-
-#### 4. Verificare con ```ipconfig``` 
+    
+4. Verificare con ```ipconfig``` 
 
 ```powershell
 C:\Users\vboxuser> ipconfig
