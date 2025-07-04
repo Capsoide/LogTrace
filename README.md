@@ -504,6 +504,25 @@ Verificare che i log siano stati inseriti correttamente nelle due code Redis:
 
 ## Immudb
 
+L'archiviazione dei log è gestita tramite immuDB, un database immutabile progettato per garantire l'integrità dei dati.
+I log vengono salvati con una struttura chiave:valore, in cui:
+
+- **Chiave**: identificatore univoco del log
+- **Valore**: contenuto JSON del log stesso
+
+Questa struttura consente di:
+
+- garantire l’integrità e la non modificabilità dei dati
+- effettuare ricerche e recuperi rapidi attraverso il prefisso delle chiavi log
+
+
+### Database utilizzati
+Sono presenti due database distinti all'interno di immuDB:
+
+- **defaultdb**: database di default utilizzato per testing
+
+- **logs_immudb**: dedicato agli audit log
+
 ## Gerarchia directory (file configurazione di immudb)
 ```
 /etc/immudb/
