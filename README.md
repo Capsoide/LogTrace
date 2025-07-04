@@ -32,11 +32,9 @@ L'intero sistema è progettato per soddisfare i requisiti normativi previsti dal
   <img src="https://github.com/user-attachments/assets/35074374-ca95-4a12-97eb-0501cb1db141" alt="image" /> 
 </div>
 
-## Comunicazione Windows Server → Debian 
 
-In questa prima fase si descrive come è stata creata la rete locale tra due macchine virtuali (VM) usando **VirtualBox** con una rete **Host-Only**.
 
-## Servizi e Interfacce di Rete di LogTrace
+## Mappa Servizi e Interfacce di Rete di LogTrace
 
 | **Modulo**                      | **IP**           | **Porta/e**                       | **Protocollo**     | **Note**                                                                 |
 |---------------------------------|------------------|-----------------------------------|---------------------|--------------------------------------------------------------------------|
@@ -48,6 +46,9 @@ In questa prima fase si descrive come è stata creata la rete locale tra due mac
 | **Kibana**                      | 192.168.56.10    | 5601                              | HTTPS/TCP/TLS       | Interfaccia grafica per interrogare Elasticsearch                       |
 | **immudb**                      | 192.168.56.10    | 3322 (default), 9497 (gRPC API)   | TCP/gRPC            | Legge i log dalla coda Redis per la storicizzazione immutabile          |
 
+## Comunicazione Windows Server → Debian 
+
+In questa sezione viene illustrata la configurazione di una rete Host-Only in VirtualBox, utilizzata per stabilire la comunicazione diretta tra le due macchine virtuali: Windows Server (mittente dei log) e Debian (ricevente e processore dei log).
 
 ## Configurazione adattatore Host-Only (Virtualbox)
 
