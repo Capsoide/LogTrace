@@ -1110,9 +1110,11 @@ systemctl start kibana
 
 ```
 
-## Verifica e funzionamento
+## Visualizzazione Elasticsearch/Kibana
 
 ### Elasticsearch
+
+Per una consultazione semplice e interattiva dei log archiviati, il sistema espone i dati tramite Elasticsearch, che vengono interrogati e visualizzati tramite Kibana.
 
 Per verificare che Elasticsearch sia correttamente avviato e accessibile in HTTPS con autenticazione:
 
@@ -1139,11 +1141,12 @@ tagline	"You Know, for Search"
 ```
 
 ### Kibana
+Per una consultazione semplice e interattiva dei log archiviati, il sistema utilizza Kibana come interfaccia di visualizzazione, collegata direttamente a Elasticsearch. Attraverso dashboard dinamiche e query in KQL (Kibana Query Language), è possibile esplorare i dati in tempo reale, filtrare eventi, costruire visualizzazioni personalizzate e monitorare l’infrastruttura in modo efficiente.
 
 1. Aprire il browser e accedere all'indirizzo ``https://192.168.56.10:5601``;
 2. Inserire le credenziali di autenticazione (username e password) quando richiesto;
 3. Se tutto è configurato correttamente (TLS e certificati), sarà possibile visualizzare dashboard, log e strumenti di analisi collegati a Elasticsearch.
-
+<!--
 ## Visualizzazione dashboard
 
 ## Dashboard Discover
@@ -1196,9 +1199,7 @@ Infine, la dashboard presenta un grafico a barre che mostra i Top Event ID ricev
 <div align="center" style="border:1px solid #ccc; padding:10px; display: inline-block;"> 
   <img src="https://github.com/user-attachments/assets/b781ec87-9e7b-4fff-9661-284938012a91" alt="image" /> 
 </div>
-
-La dashboard è pensata per offrire uno strumento di controllo centralizzato e immediatamente fruibile anche da chi non è esperto di analisi log. È utile sia per il monitoraggio costante che per analisi forensi su eventi passati. Grazie alla categorizzazione e visualizzazione intuitiva dei dati, ogni componente può essere utilizzato in fase investigativa, operativa o preventiva.
-
+ -->
 ## Kibana Dashboard Export via Elasticsearch Query
 Query HTTP GET che utilizza la Search API di Elasticsearch per estrarre la dashboard personalizzata con il titolo "Audit-Logs" dall’indice ``.kibana``. La ricerca filtra i documenti di tipo ``dashboard`` e seleziona quelli il cui titolo corrisponde esattamente al valore specificato. Questo metodo consente di esportare la configurazione della dashboard per backup o migrazione.
 
