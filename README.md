@@ -1,12 +1,12 @@
 # Sistema di monitoraggio Audit Logs
 
 ## Introduzione
-Il sistema descritto si occupa dell'acquisizione automatica dei log di audit relativi agli accessi amministrativi ai sistemi Windows, con l'obiettivo di garantire tracciabilità, integrità e conformità alle normative vigenti in materia di sicurezza informatica.
+Questo sistema si occupa dell'acquisizione automatica dei log di audit relativi agli accessi amministrativi ai sistemi Windows. I log vengono archiviati in un database immutabile per garantirne l’integrità e resi consultabili tramite una dashboard interattiva, pensata per facilitare l’analisi e il monitoraggio delle attività.
 
 Il processo viene realizzato attraverso una pipeline composta dai seguenti componenti:
 - ```Winlogbeat```, installato su un'istanza Windows Server, è il servizio responsabile del recupero e dell'invio degli eventi log di audit raccolti da Event Viewer.
 - ```Logstash```, in esecuzione su un sistema Debian, riceve i log da Winlogbeat processandoli e duplicandoli in due differenti code Redis.
-- ```Redis```, funge da sistema di gestione delle code, permettendo la separazione dei flussi di log:
+- ```Redis```, in esecuzione su un sistema Debian, funge da sistema di gestione delle code, permettendo la separazione dei flussi di log:
   - La **coda 0** (`redis-queue-elastic`) invia i log a **Elasticsearch** per l'indicizzazione e la visualizzazione tramite interfaccia front-end.
   - La **coda 1** (`redis-queue-immudb`)  è dedicata alla persistenza dei log in un database immutabile (immudb), progettato per garantire integrità, non ripudiabilità e conservazione a lungo termine. In questo contesto, è configurata una retention time pari a 24 ore.
 
@@ -17,7 +17,8 @@ I singoli componenti svolgono i seguenti ruoli:
 - `Logstash`: duplicazione dei flussi di log e invio alle rispettive code Redis.
 - `Redis`: gestione dei buffer dei dati.
 - `Immudb`: archiviazione sicura e immutabile dei log.
-- `Elasticsearch`: indicizzazione e front-end per analisi interattiva dei log.
+- `Elasticsearch`: indicizzazione e conservazione dei log. Fornisce il backend per l’analisi interattiva dei dati.
+- `Kibana`: GUI per la ricerca, visualizzazione e monitoraggio dei log indicizzati.
 
 L'intero sistema è progettato per soddisfare i requisiti normativi previsti dalle direttive **ACN**, **ISO/IEC 27001** e **NIS2**, che impongono il tracciamento, la conservazione e l’integrità dei log di sicurezza:
 
@@ -25,18 +26,15 @@ L'intero sistema è progettato per soddisfare i requisiti normativi previsti dal
 - [**ISO/IEC 27001**](https://edirama.org/wp-content/uploads/2023/10/document-1.pdf) è uno standard internazionale per la gestione della sicurezza delle informazioni (ISMS), che richiede la registrazione e l’analisi degli eventi di accesso.
 - [**NIS2**](https://www.acn.gov.it/portale/nis) è la direttiva europea sulla sicurezza delle reti e dei sistemi informativi, che impone obblighi di logging, conservazione e risposta agli incidenti per gli operatori di servizi essenziali.
 
----
 
-# Schema infrastruttura
+## Schema infrastruttura
 <div align="center" style="border:1px solid #ccc; padding:10px; display: inline-block;"> 
-  <img src="https://github.com/user-attachments/assets/3b569849-e174-4c83-98fe-94728fbd4156" alt="image" /> 
+  <img src="https://github.com/user-attachments/assets/35074374-ca95-4a12-97eb-0501cb1db141" alt="image" /> 
 </div>
 
----
+## Comunicazione Windows Server → Debian 
 
-# Comunicazione tra Windows Server e Ubuntu/Debian via VirtualBox
-
-In questa prima parte si descrive come creare una rete locale tra due macchine virtuali (VM) usando **VirtualBox** con una rete **Host-Only**.
+In questa prima fase si descrive come è stata creata la rete locale tra due macchine virtuali (VM) usando **VirtualBox** con una rete **Host-Only**.
 
 ## Topologia di rete
 
@@ -46,9 +44,7 @@ In questa prima parte si descrive come creare una rete locale tra due macchine v
 | Ubuntu/Debian     | 192.168.56.10 | Receiver (Redis, Logstash) |
 
 
-## Configurazione VirtualBox
-
-### Creazione e configurazione dell'adattatore Host-Only
+## Configurazione adattatore Host-Only (Virtualbox)
 
 #### 1. Aprire **VirtualBox** → `File` → `Host Network Manager`
 #### 2. Cliccare su **Crea** per aggiungere un nuovo adattatore
@@ -57,10 +53,10 @@ In questa prima parte si descrive come creare una rete locale tra due macchine v
    - **Subnet Mask**: `255.255.255.0`
    - **DHCP**: disabilitato
 #### 4. Assegnare l’adattatore come **Adattatore 2** alle VM:
-   - Modalità: `Solo host (Host-Only)`
+   - Modalità: `Host-Only`
    - Nome: ad esempio `vboxnet0`
 
-## Configurazione degli IP Statici (Windows Server)
+## Configurazione IP Statici (Windows Server)
 
 #### 1. Aprire `Centro connessioni di rete` > `Modificare impostazioni scheda`
 #### 2. Scegliere l’interfaccia collegata a `vboxnet0` (“Ethernet 2”)
@@ -90,24 +86,14 @@ Ethernet adapter Ethernet 2:
 
    Connection-specific DNS Suffix  . :
    Link-local IPv6 Address . . . . . : fe80::6894:81ba:3678:5341%13
-   IPv4 Address. . . . . . . . . . . : 192.168.56.2    <--
-   Subnet Mask . . . . . . . . . . . : 255.255.255.0   <--
+   IPv4 Address. . . . . . . . . . . : 192.168.56.2    <---
+   Subnet Mask . . . . . . . . . . . : 255.255.255.0   <---
    Default Gateway . . . . . . . . . :
 ```
 
----
+## Configurazione interfacce di rete (Debian)
 
-## Configurazione interfacce di rete in `/etc/network/interfaces` (Ubuntu/Debian)
-
-Se il sistema non utilizza Netplan (come accade spesso su Debian o alcune versioni legacy di Ubuntu), è possibile configurare le interfacce di rete modificando direttamente il file ```/etc/network/interfaces```.
-
-#### Aprire il file interfaces (descrive le interfacce di rete presenti nel sistema e definisce come devono essere attivate)
-
-```bash
-vboxuser@vbox:~$ sudo nano /etc/network/interfaces
-```
-
-#### Modificare il file come segue, assicurandosi che i nomi delle interfacce (es. enp0s3, enp0s8) corrispondano a quelli presenti nel sistema
+Configurare le interfacce di rete modificando direttamente il file  ```interfaces``` posizionato in ```/etc/network/```.
 
 ```text
 # Include configurazioni aggiuntive (se presenti)
@@ -124,65 +110,14 @@ iface enp0s3 inet dhcp
 # Interfaccia Host-Only (rete interna con VirtualBox)
 auto enp0s8
 iface enp0s8 inet static
-    address 192.168.56.10   <--
-    netmask 255.255.255.0   <--
+    address 192.168.56.10   <---
+    netmask 255.255.255.0   <---
 ```
+## Regola firewall: permettere il ping da Debian a Windows Server
 
-#### Verifica delle interfacce
+E' necessario creare una regola per Windows Server poichè il firewall (di Windows) blocca di default i pacchetti ICMP Echo Request (ping) in ingresso. 
 
-```bash
-vboxuser@vbox:~$ ip link
-1: lo: <LOOPBACK,UP,LOWER_UP> mtu 65536 qdisc noqueue state UNKNOWN mode DEFAULT group default qlen 1000
-    link/loopback 00:00:00:00:00:00 brd 00:00:00:00:00:00
-2: enp0s3: <BROADCAST,MULTICAST,UP,LOWER_UP> mtu 1500 qdisc fq_codel state UP mode DEFAULT group default qlen 1000
-    link/ether 08:00:27:e0:87:cc brd ff:ff:ff:ff:ff:ff
-3: enp0s8: <BROADCAST,MULTICAST,UP,LOWER_UP> mtu 1500 qdisc fq_codel state UP mode DEFAULT group default qlen 1000   <--
-    link/ether 08:00:27:9d:3a:10 brd ff:ff:ff:ff:ff:ff
-```
-
-#### Applicare le modifiche
-
-```bash
-vboxuser@vbox:~$ sudo systemctl restart networking
-```
-
-#### Se necessario utilizzare il seguente comando (o in alternativa riavviare la macchina virtuale)
-
-```bash
-vboxuser@vbox:~$ sudo ifdown enp0s8 && sudo ifup enp0s8
-```
-
-#### Verificare che l'indirizzo sia stato applicato correttamente
-
-```bash
-vboxuser@vbox:~$ ip a
-1: lo: <LOOPBACK,UP,LOWER_UP> mtu 65536 qdisc noqueue state UNKNOWN group default qlen 1000
-    link/loopback 00:00:00:00:00:00 brd 00:00:00:00:00:00
-    inet 127.0.0.1/8 scope host lo
-       valid_lft forever preferred_lft forever
-    inet6 ::1/128 scope host noprefixroute 
-       valid_lft forever preferred_lft forever
-2: enp0s3: <BROADCAST,MULTICAST,UP,LOWER_UP> mtu 1500 qdisc fq_codel state UP group default qlen 1000
-    link/ether 08:00:27:e0:87:cc brd ff:ff:ff:ff:ff:ff
-    inet 10.0.2.15/24 brd 10.0.2.255 scope global dynamic enp0s3
-       valid_lft 84997sec preferred_lft 84997sec
-    inet6 fd00::a00:27ff:fee0:87cc/64 scope global dynamic mngtmpaddr 
-       valid_lft 86245sec preferred_lft 14245sec
-    inet6 fe80::a00:27ff:fee0:87cc/64 scope link 
-       valid_lft forever preferred_lft forever
-3: enp0s8: <BROADCAST,MULTICAST,UP,LOWER_UP> mtu 1500 qdisc fq_codel state UP group default qlen 1000
-    link/ether 08:00:27:9d:3a:10 brd ff:ff:ff:ff:ff:ff
-    inet 192.168.56.10/24 brd 192.168.56.255 scope global enp0s8   <--
-       valid_lft forever preferred_lft forever
-    inet6 fe80::a00:27ff:fe9d:3a10/64 scope link 
-       valid_lft forever preferred_lft forever
-```
----
-
-## Regola firewall per permettere il ping da Debian a Windows Server
-
-E' necessario creare una regola per Windows Server, perchè il firewall (di Windows) blocca di default i pacchetti ICMP Echo Request (ping) in ingresso. 
-### Passaggi per creare la regola firewall su Windows:
+### Passaggi step-by-step
 
 #### 1. Aprire Windows Defender Firewall con sicurezza avanzata
    
@@ -229,7 +164,48 @@ E' necessario creare una regola per Windows Server, perchè il firewall (di Wind
     
     Scrivere un nome tipo "Consenti ping ICMP Echo Request" e confermare.
 
-## Verifica finale
+
+### Verifica
+
+```bash
+vboxuser@vbox:~$ ip link
+1: lo: <LOOPBACK,UP,LOWER_UP> mtu 65536 qdisc noqueue state UNKNOWN mode DEFAULT group default qlen 1000
+    link/loopback 00:00:00:00:00:00 brd 00:00:00:00:00:00
+2: enp0s3: <BROADCAST,MULTICAST,UP,LOWER_UP> mtu 1500 qdisc fq_codel state UP mode DEFAULT group default qlen 1000
+    link/ether 08:00:27:e0:87:cc brd ff:ff:ff:ff:ff:ff
+3: enp0s8: <BROADCAST,MULTICAST,UP,LOWER_UP> mtu 1500 qdisc fq_codel state UP mode DEFAULT group default qlen 1000   <---
+    link/ether 08:00:27:9d:3a:10 brd ff:ff:ff:ff:ff:ff
+
+#Applicazione delle modifiche
+vboxuser@vbox:~$ sudo systemctl restart networking
+
+#Se necessario utilizzare il seguente comando (o inalternativa riaviare la vm)
+vboxuser@vbox:~$ sudo ifdown enp0s8 && sudo ifup enp0s8
+```
+```bash
+#Verifica che l'indirizzo sia stato applicato correttamente
+vboxuser@vbox:~$ ip a
+1: lo: <LOOPBACK,UP,LOWER_UP> mtu 65536 qdisc noqueue state UNKNOWN group default qlen 1000
+    link/loopback 00:00:00:00:00:00 brd 00:00:00:00:00:00
+    inet 127.0.0.1/8 scope host lo
+       valid_lft forever preferred_lft forever
+    inet6 ::1/128 scope host noprefixroute 
+       valid_lft forever preferred_lft forever
+2: enp0s3: <BROADCAST,MULTICAST,UP,LOWER_UP> mtu 1500 qdisc fq_codel state UP group default qlen 1000
+    link/ether 08:00:27:e0:87:cc brd ff:ff:ff:ff:ff:ff
+    inet 10.0.2.15/24 brd 10.0.2.255 scope global dynamic enp0s3
+       valid_lft 84997sec preferred_lft 84997sec
+    inet6 fd00::a00:27ff:fee0:87cc/64 scope global dynamic mngtmpaddr 
+       valid_lft 86245sec preferred_lft 14245sec
+    inet6 fe80::a00:27ff:fee0:87cc/64 scope link 
+       valid_lft forever preferred_lft forever
+3: enp0s8: <BROADCAST,MULTICAST,UP,LOWER_UP> mtu 1500 qdisc fq_codel state UP group default qlen 1000
+    link/ether 08:00:27:9d:3a:10 brd ff:ff:ff:ff:ff:ff
+    inet 192.168.56.10/24 brd 192.168.56.255 scope global enp0s8   <---
+       valid_lft forever preferred_lft forever
+    inet6 fe80::a00:27ff:fe9d:3a10/64 scope link 
+       valid_lft forever preferred_lft forever
+```
 
 ### Ping da Debian a Windows Server
 
@@ -241,7 +217,7 @@ PING 192.168.56.2 (192.168.56.2) 56(84) bytes of data.
 64 bytes from 192.168.56.2: icmp_seq=3 ttl=128 time=1.16 ms
 
 --- 192.168.56.2 ping statistics ---
-3 packets transmitted, 3 received, 0% packet loss, time 2003ms   <--
+3 packets transmitted, 3 received, 0% packet loss, time 2003ms   <---
 rtt min/avg/max/mdev = 1.160/2.923/6.434/2.482 ms
 ```
 
@@ -261,11 +237,9 @@ Approximate round trip times in milli-seconds:
     Minimum = 1ms, Maximum = 1ms, Average = 1ms
 ```
 
-# Winlogbeat
+## Winlogbeat
 
-## Overview
-
-Winlogbeat è un lightweight shipper, ovvero un piccolo agente software, il quale raccoglie e invia i Windows Event Log verso endpoint **Redis**, **Logstash** ed **Elasticsearch**.
+Winlogbeat è un agente software che raccoglie e invia i Windows Event Log verso endpoint **Redis**, **Logstash** ed **Elasticsearch**.
 
 ### Azioni Winlogbeat
 
@@ -274,8 +248,6 @@ Winlogbeat è un lightweight shipper, ovvero un piccolo agente software, il qual
 3. **Spedizione dei log**: inoltra i dati verso Redis, Logstash ed Elasticsearch.
 4. **Supporto ECS**: normalizza i dati secondo l’Elastic Common Schema.
 5. **Dashboard Kibana integrate**: fornisce visualizzazioni pronte all’uso.
-
----
 
 ## Gerarchia directory: Winlogbeat
 
@@ -293,11 +265,6 @@ Winlogbeat/
 ├── data/
 │   ├── winlogbeat.yml
 │   └── meta.json
-├── kibana/
-│   └── 7/
-│       ├── dashboard/
-│       ├── search/
-│       └── visualization/
 └── module/
     ├── powershell/
     │   └── config/
@@ -310,8 +277,6 @@ Winlogbeat/
         └── config/
             └── winlogbeat-sysmon.js
 ```
-
----
 
 ## winlogbeat.yml
 
@@ -342,8 +307,6 @@ logging:
     keepfiles: 7
 ```
 
----
-
 ## Installazione come Servizio Windows
 
 ```powershell
@@ -353,14 +316,12 @@ Start-Service winlogbeat
 Set-Service -Name winlogbeat -StartupType Automatic
 ```
 
-### Disinstallazione
+## Disinstallazione
 
 ```powershell
 Stop-Service winlogbeat
 .\uninstall-service-winlogbeat.ps1
 ```
-
----
 
 ## Debug e Verifica
 
@@ -379,17 +340,13 @@ Stop-Service winlogbeat
   .\winlogbeat.exe -c winlogbeat.yml -e -v
   ```
 
----
-
-# Logstash
+## Logstash
 
 Logstash è una pipeline open source utilizzata per  la gestione, elaborazione e inoltro in tempo reale di dati provenienti da diverse fonti verso una o più destinazioni.
 
-Nel contesto di questa infrastruttura, Logstash riceve eventi in formato JSON da Winlogbeat, li processa e infine invia i dati in output a due code Redis distinte, permettendo la duplicazione del flusso: 
+Nel contesto di questo sistema, Logstash riceve eventi in formato JSON da Winlogbeat, li processa e invia i dati in output a due code Redis distinte, permettendo la duplicazione del flusso: 
 - una prima coda destinata all’ingestione in Elasticsearch per analisi;
 - una seconda coda per la storicizzazione in immuDB.
-
----
 
 ## Gerarchia directory: Logstash
 
@@ -404,14 +361,26 @@ Nel contesto di questa infrastruttura, Logstash riceve eventi in formato JSON da
     ├── pipelines.yml
     └── startup.options
 ```
+## logstash.yml
 
----
+Percorso: ```/etc/logstash/logstash.yml```
+
+File di configurazione principale di Logstash, in cui si definisce la directory per l’archiviazione dei dati interni.
+
+```yaml                                                     
+# ------------ Data path ------------
+# Which directory should be used by logstash and its plugins
+#for any persistent needs. Defaults to LOGSTASH_HOME/data
+#
+path.data: /var/lib/logstash
+#
+```
 
 ## logstash.conf
 
 Percorso: ```/etc/logstash/conf.d/logstash.conf```
 
-Snippet Logstash impostato per ricevere i log da ```Winlogbeat``` (via Beats protocol sulla porta 5044) e per la duplicazione dei log su due code Redis.
+File di configurazione definito per una pipeline Logstash che riceve i log da ``Winlogbeat`` (tramite protocollo Beats) e li duplica su due code Redis distinte.
 
 ```yaml
 # Input: riceve dati da Winlogbeat tramite protocollo Beats sulla porta 5044
@@ -421,14 +390,14 @@ input {
   }
 }
 
-# Filter: qui puoi aggiungere regole per elaborare o filtrare i dati prima dell’output
 filter {
-  # Inserisci qui eventuali filtri o parsing (ad esempio, grok, mutate, ecc.)
+  # Inserire eventuali filtri o parsing (ad esempio, grok, mutate, ecc.)
 }
 
 # Output: invia i dati processati verso due code Redis diverse (duplicazione)
+
 output {
-# Primo output: manda i dati alla coda Redis "redis-queue-elastic"
+# output (1): manda i dati alla coda Redis "redis-queue-elastic"
   redis {
     host => "192.168.56.10"
     port => 6379
@@ -438,7 +407,7 @@ output {
     db => 0
   }
 
-  # Secondo output: manda gli stessi dati alla coda Redis "redis-queue-immudb"
+  # output (2): manda gli stessi dati alla coda Redis "redis-queue-immudb"
   redis {
     host => "192.168.56.10"
     port => 6379
@@ -450,13 +419,11 @@ output {
 }
 ```
 
----
-
 ## logstash1.conf
 
 Percorso: ```/etc/logstash/conf.d/logstash1.conf```
 
-Pipeline Logstash per leggere da ```Redis``` e inviare ad ```Elasticsearch```.
+File di configurazione impostato per leggere i log da ```Redis``` e inviarli ad ```Elasticsearch```.
 
 ```yaml
 input {
@@ -464,14 +431,14 @@ input {
     host => "192.168.56.10"       # Indirizzo del server Redis dove leggere la coda
     data_type => "list"           # Tipo struttura dati usata in Redis: lista         
     port => 6379                  # Porta del server Redis: 6379 è quella di default
-    key => "redis-queue-elastic" # Key Redis: nome lista Redis da cui Logstash legge i dati
+    key => "redis-queue-elastic"  # Key Redis: nome lista Redis da cui Logstash legge i dati
     password => ""                # PSW key Redis
     codec => json                 # Codec usato per decodificare i dati ricevuti da Redis: formato JSON, quindi Logstash li trasforma automaticamente in oggetti leggibili e filtrabili
   }
 }
 
 filter {
-  #Qui è possibile inserire eventuali filtri per elaborare o arricchire i dati ricevuti prima di inviarli ad Elastic,
+  #Qui è possibile inserire eventuali filtri per elaborare o arricchire i dati ricevuti prima di inviarli ad Elastic
 }
 
 output {
@@ -479,9 +446,11 @@ output {
     hosts => ["http://192.168.56.10:9200"]   # Indirizzo del cluster Elasticsearch (modifica in base all'ambiente che si utilizza)
     index => "from-redis-%{+YYYY.MM.dd}"     # Nome dell'indice su Elasticsearch. Viene usata una data dinamica per indicizzazione giornaliera
   
-    # Autenticazione Elasticsearch
-    #user => ""
-    #password => ""
+    # Autenticazione Elasticsearch e certificato ssl
+    user => ""
+    password => ""
+    ssl => true
+    cacert => "/etc/elasticsearch/certs/ca.crt"
   }
   stdout{
     codec => rubydebug
@@ -489,28 +458,11 @@ output {
 }
 ```
 
----
-## logstash.yml
-
-Percorso: ```/etc/logstash/logstash.yml```
-
-File di configurazione principale di Logstash che definisce le impostazioni globali del sistema: contiene solo la configurazione che specifica la directory di archiviazione dei dati interni di Logstash. Le restanti impostazioni sono lasciate ai valori predefiniti di Logstash.
-
-```yaml                                                     
-# ------------ Data path ------------
-# Which directory should be used by logstash and its plugins
-#for any persistent needs. Defaults to LOGSTASH_HOME/data
-#
-path.data: /var/lib/logstash
-#
-```
-
----
 ## pipelines.yml
 
 Percorso: ```/etc/logstash/pipelines.yml```
 
-Definizione delle due pipeline distinte per Logstash
+Definizione delle pipeline distinte per Logstash
   - ```main```: pipeline utlizziata per immudb,
   - ```elastic-pipeline```: utilizzata per elasticsearch.
 
@@ -528,9 +480,7 @@ Definizione delle due pipeline distinte per Logstash
   path.config: "/etc/logstash/conf.d/logstash1.conf"
 ```
 
----
-
-# Accesso e verifica delle code Redis
+## Accesso e verifica delle code Redis
 
 Accedere al server Redis remoto ed elencare le chiavi disponibili per verificare la presenza delle due code:
 
@@ -543,7 +493,7 @@ OK
 2) "redis-queue-elastic
 ```
 
-Verificare che i log siano stati inseriti correttamente nelle due code Redis tramite ```LLEN```:
+Verificare che i log siano stati inseriti correttamente nelle due code Redis:
 
 ```bash
 192.168.56.10> LLEN redis-queue-immudb
@@ -552,14 +502,31 @@ Verificare che i log siano stati inseriti correttamente nelle due code Redis tra
 (integer) 144
 ```
 
----
+## Immudb
 
-# Immudb
+L'archiviazione dei log è gestita tramite immuDB, un database immutabile progettato per garantire l'integrità dei dati.
+I log vengono salvati con una struttura chiave:valore, in cui:
+
+- **Chiave**: identificatore univoco del log
+- **Valore**: contenuto JSON del log stesso
+
+Questa struttura consente di:
+
+- garantire l’integrità e la non modificabilità dei dati
+- effettuare ricerche e recuperi rapidi attraverso il prefisso delle chiavi log
+
+
+### Database utilizzati
+Sono presenti due database distinti all'interno di immuDB:
+
+- **defaultdb**: database di default utilizzato per testing
+
+- **logs_immudb**: dedicato agli audit log
 
 ## Gerarchia directory (file configurazione di immudb)
 ```
 /etc/immudb/
-    └── immudb.toml
+     └── immudb.toml
 ```
 
 ## immudb.toml
@@ -572,7 +539,7 @@ File di configurazione principale per il servizio immudb.
 # Porta, directory dei dati, autenticazione
 
 address = "0.0.0.0"
-admin-password = 'xxx'
+admin-password = ''
 auth = true
 certificate = ''
 clientcas = ''
@@ -592,37 +559,21 @@ log-level = "DEBUG"
 tables = [
   { db = "logs_immudb", table = "logstash_logs", retentionPeriod = "24h" }
 ]
-
 ```
-Nel file di configurazione ```immudb.toml```, sono specificati i path fondamentali per il funzionamento del database: ```/var/lib/immudb``` è la directory principale dei dati che contiene:
+Nel file di configurazione ``immudb.toml``, sono specificati i path per il funzionamento del database: ``/var/lib/immudb`` è la directory principale dei dati che contiene:
 
-- I database configurati ed utilizzati (```defaultdb``` e ```logs_immudb```).
+- I database configurati ed utilizzati (``defaultdb`` e ``logs_immudb``).
 - Le strutture immutabili dei dati (Merkle tree, indici, log transazionali).
-
+  
 ```
 /var/lib/immudb
          ├── defaultdb
-         ├── logs_immudb           --> db usato per immutabilità logs registrati
+         ├── logs_immudb          
          ├── immudb.identifier
-         ├── immudb.pid            --> contiene il Process ID (PID) del processo immudb attualmente in esecuzione
+         ├── immudb.pid           
          ├── immulog
-         |      └──immudb.log
+         |   └──immudb.log
          └── systemdb
-```
-
-
-Il file ```immudb-log``` contiene tutte le informazioni di esecuzione del server immudb: 
-- path utilizzati (dati, log, configurazione, PID),
-- stato del servizio;
-- connessioni;
-- operazioni di scrittura e lettura;
-- eventuali errori;
-- debug/monitoraggio del sistema.
-
-## Verifica log generati
-
-```bash
-vboxuser@vbox:~$ sudo tail -n 50 /var/lib/immudb/immulog/immudb.log
 ```
 
 ## Login
@@ -639,7 +590,7 @@ logged in
 vboxuser@vbox:~$ immuadmin database create nome_database --retention-period=24h --tokenfile ~/immuadmin_token
 ```
 
-## Listare database esistenti
+## Lista database esistenti
 
 ```bash
 vboxuser@vbox:~$ immuadmin database list --tokenfile ~/immuadmin_token
@@ -652,22 +603,20 @@ vboxuser@vbox:~$ immuadmin database list --tokenfile ~/immuadmin_token
 -  --------------  ----------  ----------  ------  ----------  ---------  ------------
 ```
 
----
+## queue_consumer.py
 
-# queue_consumer.py
-
-Percorso: ```/var/consumer-immudb/queue_consumer.py```
+Percorso: ``/var/consumer-immudb/queue_consumer.py``
 
 ## Descrizione
 
-Questo script (`queue_consumer.py`) consuma log JSON da una coda Redis (`redis-queue-immudb`) e li inserisce nella tabella `logs` di immudb usando le API SQL.
+Lo script `queue_consumer.py` consuma log JSON dalla coda Redis `redis-queue-immudb` inserendoli nella tabella `logs` di immudb usando le API SQL.
 
 ## Funzionamento
 
-- I log vengono letti in modalità bloccante da Redis.
+I log vengono letti da Redis in modalità bloccante e salvati come coppie chiave-valore:
 - Ogni log viene serializzato con ordinamento delle chiavi.
-- Si calcola un hash SHA-256 del contenuto: è usato come chiave primaria (`log_key`).
-- Il log completo viene salvato come stringa (`value`).
+- Viene calcolato un hash SHA-256 del contenuto, utilizzato come chiave primaria (`log_key`).
+- Il log completo viene memorizzato come stringa (`value`).
 
 ## Definizione tabella `logs`
 
@@ -710,7 +659,7 @@ IMMUD_HOST = '127.0.0.1'
 IMMUD_PORT = 3322
 IMMUD_USER = ''
 IMMUD_PASSWORD = ''
-IMMUD_DATABASE = 'logs_immudb'  # Nome del database immudb in cui verranno scritti i log
+IMMUD_DATABASE = 'logs_immudb'  # Nome del database immudb in cui vengono scritti i log
 
 # -------------------
 # CONFIGURAZIONE LOG
@@ -719,7 +668,7 @@ IMMUD_DATABASE = 'logs_immudb'  # Nome del database immudb in cui verranno scrit
 # Imposta il livello di logging e il formato dei messaggi
 logging.basicConfig(level=logging.INFO, format='%(asctime)s - %(levelname)s - %(message)s')
 
-# Flag globale per controllare l'esecuzione del ciclo principale
+# Flag globale per l'esecuzione del ciclo principale
 running = True
 
 def cleanup_and_exit(signum, frame):
@@ -851,23 +800,23 @@ vboxuser@vbox:/$ source /home/vboxuser/my-venv/bin/activate
 ## Visualizzazione in immuDB
 
 ```bash
-+--------------------------------------------------------------------+------------------------------------------------------------+
-|                           (key.value)                              |                         (logs.value)                       |    
-+--------------------------------------------------------------------+------------------------------------------------------------+
-|                                                                    | "{"@timestamp": "2025-06-18 15:45:36,854.089Z",            |    
-|                                                                    | "@version": "1", "agent": {"ephemeral_id":                 |    
-|                                                                    | "70d8b8eb-8915-459e-badf-05c9118e73c6", "hostname":        |     
-|                                                                    | "WIN-S", "id": "c156a342-40dc-47ca-977a-f100ebd8e89f",     |     
-|                                                                    | "name": "WIN-S", "type": "winlogbeat", "version":          |     
-| "149cf3c7024285a6539433d1f84b17411f0527b67da963ddf4b421e5ee2c540c" | "7.17.7"}, "ecs": {"version": "1.12.0"},                   |     
-|                                                                    | "event": {"action": "Logon", "code": "4624",               |     
-|                                                                    | "created": "2025-06-17T12:02:18.364Z", "kind":             |     
-|                                                                    | "event", "outcome": "success", "provider":                 |     
-|                                                                    | "Microsoft-Windows-Security-Auditing"}, "host":            |     
-|                                                                    |                          ...                               |     
-|                                                                    |                          ...                               |     
-|                                                                    |                          ...                               |     
-+--------------------------------------------------------------------+------------------------------------------------------------+
++--------------------------------------------------------------------+--------------------------------------------------------+
+|                           (key.value)                              |                         (logs.value)                   |   
++--------------------------------------------------------------------+--------------------------------------------------------+
+|                                                                    | "{"@timestamp": "2025-06-18 15:45:36,854.089Z",        |    
+|                                                                    | "@version": "1", "agent": {"ephemeral_id":             |       
+|                                                                    | "70d8b8eb-8915-459e-badf-05c9118e73c6", "hostname":    |        
+|                                                                    | "WIN-S", "id": "c156a342-40dc-47ca-977a-f100ebd8e89f", |        
+|                                                                    | "name": "WIN-S", "type": "winlogbeat", "version":      |      
+| "149cf3c7024285a6539433d1f84b17411f0527b67da963ddf4b421e5ee2c540c" | "7.17.7"}, "ecs": {"version": "1.12.0"},               |      
+|                                                                    | "event": {"action": "Logon", "code": "4624",           |     
+|                                                                    | "created": "2025-06-17T12:02:18.364Z", "kind":         |      
+|                                                                    | "event", "outcome": "success", "provider":             |        
+|                                                                    | "Microsoft-Windows-Security-Auditing"}, "host":        |       
+|                                                                    |                          ...                           |        
+|                                                                    |                          ...                           |       
+|                                                                    |                          ...                           |       
++--------------------------------------------------------------------+--------------------------------------------------------+
 ```
 
 ## Verifica in redis: Consumazione coda
@@ -883,11 +832,9 @@ OK
 ```
 La coda è stata consumata in modo corretto e i log sono salvati in immuDB.
 
----
+## Analisi Log e UX Grafica con Elasticsearch e Kibana
 
-# Analisi Log e UX Grafica con Elasticsearch e Kibana
-
-# Elasticsearch 
+## Elasticsearch 
 
 ### Gerarchia directory (file configurazione di Elasticsearch)
 
@@ -903,6 +850,7 @@ La coda è stata consumata in modo corretto e i log sono salvati in immuDB.
 │   ├── kibana.crt             # Certificato pubblico di Kibana, firmato dalla CA.
 │   ├── kibana.csr             # Richiesta di firma del certificato per Kibana.
 │   └── kibana.key             # Chiave privata di Kibana (usata da Kibana, ma conservata qui).
+|
 ├── elasticsearch.keystore     # File keystore sicuro con segreti (es. password, token).
 ├── elasticsearch-plugins.example.yml
 ├── elasticsearch.yml          # File principale di configurazione di Elasticsearch.
@@ -919,34 +867,35 @@ Elasticsearch è un motore di ricerca e analisi distribuito, progettato per arch
 
 Come spiegato in precedenza i log nella coda Redis ``redis-queue-elastic`` vengono consumati da Logstash, il quale li elabora e li invia a Elasticsearch per l’archiviazione e la ricerca dei log di sistema.
 
-# Kibana
+## Kibana
 
 ## Gerarchia directory (file configurazione di Kibana)
 
 ```
-/etc/elasticsearch/
-    ├── certs/
-    │   ├── ca.crt                 # Certificato della CA usato da Kibana per validare Elasticsearch.
-    │   ├── kibana.crt             # Certificato pubblico usato da Kibana per TLS.
-    │   └── kibana.key             # Chiave privata associata al certificato di Kibana.
-    |
-    ├── kibana.keystore           # File keystore per password e token sensibili.
-    ├── kibana.yml                # File principale di configurazione di Kibana.
-    └── node.options              # Opzioni del nodo Kibana (es. parametri Node.js).
+/etc/kibana/
+     ├── certs/
+     │   ├── ca.crt                 # Certificato della CA usato da Kibana per validare Elasticsearch.
+     │   ├── kibana.crt             # Certificato pubblico usato da Kibana per TLS.
+     │   └── kibana.key             # Chiave privata associata al certificato di Kibana.
+     |
+     ├── kibana.keystore           # File keystore per password e token sensibili.
+     ├── kibana.yml                # File principale di configurazione di Kibana.
+     └── node.options              # Opzioni del nodo Kibana (es. parametri Node.js).
 ```
 
 Kibana è l’interfaccia grafica di Elasticsearch. Permette di visualizzare, esplorare e analizzare i dati archiviati su Elasticsearch tramite dashboard, grafici e strumenti interattivi (come Discover, Visualize, Dashboard, Alerting).
-
+<!--
 Kibana è utilizzato per:
 
 - Visualizzare i log raccolti dai sistemi monitorati;
 - filtrare eventi per codici o intervalli temporali;
 - creare dashboard personalizzate per la sicurezza e l'analisi degli audit-log;
 - configurare alert (tramite il modulo Watcher) per notificare condizioni anomale (es. tentativi di accesso sospetti).
+-->
+## Certificati SSL/TLS
 
-## Generazione dei certificati TLS 
-
-### Creazione di una Certificate Authority (CA) e i certificati per Elasticsearch e Kibana 
+Generazione di una Certificate Authority (CA) privata e creazione di certificati firmati per Elasticsearch e Kibana, necessari per abilitare la comunicazione sicura tramite TLS.
+I certificati vengono poi copiati nelle rispettive cartelle di configurazione.
 
 ```bash
 # Entra nella cartella dei certificati
@@ -975,8 +924,7 @@ cp /etc/elasticsearch/certs/elasticsearch.crt /etc/kibana/certs/kibana.crt
 cp /etc/elasticsearch/certs/elasticsearch.key /etc/kibana/certs/kibana.key
 
 ```
-
-### Impostazione dei permessi sicuri
+### Permessi sicuri
 
 Le seguenti istruzioni vengono utilizzate per assegnare i permessi corretti ai certificati TLS di Elasticsearch e Kibana, garantendo:
 
@@ -1118,35 +1066,21 @@ Percorso: ```/etc/kibana/kibana.yml```
 File di configurazione principale per il servizio kibana.
 
 ```yaml
-# Kibana is served by a back end server. This setting specifies the port to use.
 server.port: 5601
 
-# Specifies the address to which the Kibana server will bind. IP addresses and host names are both valid values.
-# The default is 'localhost', which usually means remote machines will not be able to connect.
-# To allow connections from remote users, set this parameter to a non-loopback address.
 server.host: "192.168.56.10"
 
-# The URLs of the Elasticsearch instances to use for all your queries.
 elasticsearch.hosts: ["https://192.168.56.10:9200"]
 
-# If your Elasticsearch is protected with basic authentication, these settings provide
-# the username and password that the Kibana server uses to perform maintenance on the Kibana
-# index at startup. Your Kibana users still need to authenticate with Elasticsearch, which
-# is proxied through the Kibana server.
 elasticsearch.username: ""
 elasticsearch.password: ""
 
-# Enables SSL and paths to the PEM-format SSL certificate and SSL key files, respectively.
-# These settings enable SSL for outgoing requests from the Kibana server to the browser.
 server.ssl.enabled: true
 server.ssl.certificate: /etc/kibana/certs/kibana.crt
 server.ssl.key: /etc/kibana/certs/kibana.key
 
-# Optional setting that enables you to specify a path to the PEM file for the certificate
-# authority for your Elasticsearch instance.
 elasticsearch.ssl.certificateAuthorities: ["/etc/kibana/certs/ca.crt"]
 
-# To disregard the validity of SSL certificates, change this setting's value to 'none'.
 elasticsearch.ssl.verificationMode: certificate
 
 ```
@@ -1204,7 +1138,6 @@ tagline	"You Know, for Search"
 
 ```
 
-
 ### Kibana
 
 1. Aprire il browser e accedere all'indirizzo ``https://192.168.56.10:5601``;
@@ -1223,7 +1156,7 @@ Di seguito, un esempio reale dell’interfaccia Discover in uso:
   <img src="https://github.com/user-attachments/assets/a9aaa176-db37-4f84-aa42-147515be21e0" alt="image" /> 
 </div>
 
-## Dashboard custom: : Analisi eventi di audit Windows
+## Dashboard custom
 
 La dashboard è stata realizzata per fornire una panoramica dettagliata e immediatamente leggibile degli eventi di sicurezza raccolti dai log di audit di Windows.
 
@@ -1266,9 +1199,24 @@ Infine, la dashboard presenta un grafico a barre che mostra i Top Event ID ricev
 
 La dashboard è pensata per offrire uno strumento di controllo centralizzato e immediatamente fruibile anche da chi non è esperto di analisi log. È utile sia per il monitoraggio costante che per analisi forensi su eventi passati. Grazie alla categorizzazione e visualizzazione intuitiva dei dati, ogni componente può essere utilizzato in fase investigativa, operativa o preventiva.
 
----
+## Kibana Dashboard Export via Elasticsearch Query
+Query HTTP GET che utilizza la Search API di Elasticsearch per estrarre la dashboard personalizzata con il titolo "Audit-Logs" dall’indice ``.kibana``. La ricerca filtra i documenti di tipo ``dashboard`` e seleziona quelli il cui titolo corrisponde esattamente al valore specificato. Questo metodo consente di esportare la configurazione della dashboard per backup o migrazione.
 
-# Mappa IP/Porte dei Moduli di Logging
+```bash
+GET .kibana/_search
+{
+  "query":{
+    "bool": {
+      "must": [
+        { "term": { "type": "dashboard"} },
+        { "match_phrase": { "dashboard.title": "Audit-Logs"} }
+      ]
+    }
+  },
+  "size": 1
+}
+```
+## Mappa IP/Porte dei Moduli di Logging
 
 | **Modulo**                      | **IP**           | **Porta/e**                       | **Protocollo**     | **Note**                                                                 |
 |---------------------------------|------------------|-----------------------------------|---------------------|--------------------------------------------------------------------------|
@@ -1280,8 +1228,7 @@ La dashboard è pensata per offrire uno strumento di controllo centralizzato e i
 | **Kibana**                      | 192.168.56.10    | 5601                              | HTTPS/TCP/TLS       | Interfaccia grafica per interrogare Elasticsearch                       |
 | **immudb**                      | 192.168.56.10    | 3322 (default), 9497 (gRPC API)   | TCP/gRPC            | Legge i log dalla coda Redis per la storicizzazione immutabile          |
 
----
-# Configurazione dei servizi con systemd
+## Configurazione dei servizi con systemd
 
 Per orchestrare l'intero sistema di raccolta, archiviazione e visualizzazione dei log, vengono utilizzate diverse unità systemd che automatizzano e gestiscono l'esecuzione periodica degli script e il database immutabile immuDB.
 
@@ -1289,7 +1236,9 @@ Per orchestrare l'intero sistema di raccolta, archiviazione e visualizzazione de
 
 Percorso: ```/etc/systemd/system/queue_consumer.service```
 
-Servizio associato allo script ```queue_consumer.py```. Viene eseguito periodicamente per la lettura e il consumo continuo dei log dalla coda ```redis-queue-immudb```, con successiva scrittura su immuDB.
+Servizio systemd associato allo script ```queue_consumer.py```. Viene eseguito periodicamente per la lettura e il consumo continuo dei log dalla coda ```redis-queue-immudb```, con successiva scrittura su immuDB.
+
+⚠️ Assicurarsi che venv sia correttamente creato nella nuova directory ```/home/vboxuser/my-venv```.
 
 ```bash
 [Unit]
@@ -1313,7 +1262,7 @@ WantedBy=multi-user.target
 
 Percorso: ```/etc/systemd/system/redis.service```
 
-Servizio systemd che esegue il demone redis-server utilizzando il file di configurazione ```/etc/redis/redis.conf```, con tipo notify per integrazione corretta con systemd.
+Servizio systemd che gestisce l'avvio di ``redis-server`` utilizzando il file di configurazione ```/etc/redis/redis.conf```, con tipo notify per integrazione corretta con systemd.
 Include meccanismi di sicurezza avanzati (isolamento delle risorse, restrizioni di privilegio, protezione del filesystem) e supporto al riavvio automatico.
 
 ```bash
@@ -1331,7 +1280,6 @@ User=redis
 Group=redis
 RuntimeDirectory=redis
 RuntimeDirectoryMode=2755
-
 UMask=007
 PrivateTmp=yes
 LimitNOFILE=65535
@@ -1341,7 +1289,6 @@ ReadOnlyDirectories=/
 ReadWriteDirectories=-/var/lib/redis
 ReadWriteDirectories=-/var/log/redis
 ReadWriteDirectories=-/run/redis
-
 NoNewPrivileges=true
 CapabilityBoundingSet=CAP_SYS_RESOURCE
 RestrictAddressFamilies=AF_INET AF_INET6 AF_UNIX
@@ -1351,10 +1298,6 @@ ProtectKernelTunables=true
 ProtectControlGroups=true
 RestrictRealtime=true
 RestrictNamespaces=true
-
-# redis-server can write to its own config file when in cluster mode so we
-# permit writing there by default. If you are not using this feature, it is
-# recommended that you replace the following lines with "ProtectSystem=full".
 ProtectSystem=true
 ReadWriteDirectories=-/etc/redis
 
@@ -1368,9 +1311,7 @@ Alias=redis.service
 
 Percorso: ```/etc/systemd/system/immudb.service```
 
-Servizio systemd che avvia il demone immudb, un database immutabile, utilizzando il file di configurazione ```/etc/immudb/immudb.toml```.
-Configura l’avvio automatico al boot, con gestione del riavvio in caso di fallimenti.
-Esegue il processo con l’utente e gruppo dedicati immudb, e indirizza log e errori al syslog con identificatore immudb per una facile tracciabilità.
+Servizio systemd che gestisce l'avvio di ``immudb``, il database immutabile dove vengono scritti i log. Configurato tramite il file TOML specificato nel percorso ```/etc/immudb/immudb.toml```.
 
 ```bash
 [Unit]
@@ -1395,7 +1336,7 @@ WantedBy=multi-user.target
 
 Percorso: ```/etc/systemd/system/logstash.service ```
 
-Servizio systemd che avvia il demone Logstash con configurazione in ```/etc/logstash```, eseguito con privilegi limitati dall’utente e gruppo logstash. Garantisce il riavvio automatico in caso di fallimento, imposta priorità CPU bassa (nice=19) e un limite massimo di file aperti pari a 16384 per gestire grandi carichi di lavoro.
+Servizio systemd che gestisce l'avvio di ``Logstash`` con configurazione in ```/etc/logstash```, eseguito con privilegi limitati dall’utente e gruppo logstash. Garantisce il riavvio automatico in caso di fallimento, imposta priorità CPU bassa (nice=19) e un limite massimo di file aperti pari a 16384 per gestire grandi carichi di lavoro.
 
 ```bash
 [Unit]
@@ -1405,9 +1346,6 @@ Description=logstash
 Type=simple
 User=logstash
 Group=logstash
-# Load env vars from /etc/default/ and /etc/sysconfig/ if they exist.
-# Prefixing the path with '-' makes it try to load, but if the file doesn't
-# exist, it continues onward.
 EnvironmentFile=-/etc/default/logstash
 EnvironmentFile=-/etc/sysconfig/logstash
 ExecStart=/usr/share/logstash/bin/logstash "--path.settings" "/etc/logstash"
@@ -1415,9 +1353,6 @@ Restart=always
 WorkingDirectory=/
 Nice=19
 LimitNOFILE=16384
-
-# When stopping, how long to wait before giving up and sending SIGKILL?
-# Keep in mind that SIGKILL on a process can cause data loss.
 TimeoutStopSec=infinity
 
 [Install]
@@ -1429,7 +1364,7 @@ WantedBy=multi-user.target
 
 Percorso: ```/etc/systemd/system/kibana.service ```
 
-Servizio systemd che avvia il demone Kibana con configurazione in ```/etc/kibana```, fornisce l’interfaccia web per visualizzare, analizzare e interrogare i dati presenti in Elasticsearch. Questo file systemd definisce l'avvio automatico di Kibana come processo in background, configurandone utente, percorso di esecuzione, variabili d’ambiente e log. È essenziale per rendere Kibana disponibile agli utenti tramite browser.
+Servizio systemd che gestisce l'avvio di ``Kibana`` con configurazione in ```/etc/kibana```, fornisce l’interfaccia web per visualizzare, analizzare e interrogare i dati presenti in Elasticsearch. Questo file systemd definisce l'avvio automatico di Kibana come processo in background, configurandone utente, percorso di esecuzione, variabili d’ambiente e log. È essenziale per rendere Kibana disponibile agli utenti tramite browser.
 
 ```bash
 [Unit]
@@ -1442,23 +1377,16 @@ After=network-online.target
 Type=simple
 User=kibana
 Group=kibana
-
 Environment=KBN_HOME=/usr/share/kibana
 Environment=KBN_PATH_CONF=/etc/kibana
-
 EnvironmentFile=-/etc/default/kibana
 EnvironmentFile=-/etc/sysconfig/kibana
-
 ExecStart=/usr/share/kibana/bin/kibana --logging.dest="/var/log/kibana/kibana.log" --pid.file="/run/kibana/kibana.pid" --deprecation.skip_d>
-
 Restart=on-failure
 RestartSec=3
-
 StartLimitBurst=3
 StartLimitInterval=60
-
 WorkingDirectory=/usr/share/kibana
-
 StandardOutput=journal
 StandardError=inherit
 
@@ -1471,7 +1399,7 @@ WantedBy=multi-user.target
 
 Percorso: ```/lib/systemd/system/elasticsearch.service```
 
-Servizio systemd che gestisce l'avvio del demone Elasticsearch, utilizzando il binario systemd-entrypoint, che supporta le notifiche a systemd (Type=notify) per un'integrazione corretta con il sistema di init.
+Servizio systemd che gestisce l'avvio di ``Elasticsearch``, utilizzando il binario systemd-entrypoint, che supporta le notifiche a systemd (Type=notify) per un'integrazione corretta con il sistema di init.
 
 La configurazione principale del servizio si trova in ```/etc/elasticsearch```. Il servizio viene eseguito con l'utente dedicato elasticsearch per motivi di sicurezza e isolamento dei privilegi.
 
@@ -1495,61 +1423,51 @@ Environment=ES_PATH_CONF=/etc/elasticsearch
 Environment=PID_DIR=/var/run/elasticsearch
 Environment=ES_SD_NOTIFY=true
 EnvironmentFile=-/etc/default/elasticsearch
-
 WorkingDirectory=/usr/share/elasticsearch
-
 User=elasticsearch
 Group=elasticsearch
-
 ExecStart=/usr/share/elasticsearch/bin/systemd-entrypoint -p ${PID_DIR}/elasticsearch.pid --quiet
-
-# StandardOutput is configured to redirect to journalctl since
-# some error messages may be logged in standard output before
-# elasticsearch logging system is initialized. Elasticsearch
-# stores its logs in /var/log/elasticsearch and does not use
-# journalctl by default. If you also want to enable journalctl
-# logging, you can simply remove the "quiet" option from ExecStart.
 StandardOutput=journal
 StandardError=inherit
-
-# Specifies the maximum file descriptor number that can be opened by this process
 LimitNOFILE=65535
-
-# Specifies the maximum number of processes
 LimitNPROC=4096
-
-# Specifies the maximum size of virtual memory
 LimitAS=infinity
-
-# Specifies the maximum file size
 LimitFSIZE=infinity
-
-# Disable timeout logic and wait until process is stopped
 TimeoutStopSec=0
-
-# SIGTERM signal is used to stop the Java process
 KillSignal=SIGTERM
-
-# Send the signal only to the JVM rather than its control group
 KillMode=process
-
-# Java process is never killed
 SendSIGKILL=no
-
-# When a JVM receives a SIGTERM signal it exits with code 143
 SuccessExitStatus=143
-
-# Allow a slow startup before the systemd notifier module kicks in to extend the timeout
 TimeoutStartSec=900
 
 [Install]
 WantedBy=multi-user.target
 
-# Built for packages-7.17.29 (packages)
-
 ```
-
 ---
+## Debug
+Per monitorare il corretto funzionamento dei servizi, è possibile consultare i log nei seguenti percorsi o comandi:
+
+**logstash**: modalità statica ``/var/log/logstash/logstash-plain.log`` |  modalità dinamica ``journalctl -u logstash.service -f``
+
+**redis**: modalità statica ``/var/log/redis/redis-server.log`` |  modalità dinamica ````journalctl -u redis-server.service -f````
+
+**immudb**: modalità statica ``/var/lib/immudb/immulog/immudb.log`` |  modalità dinamica ``journalctl -u immudb.service -f``
+
+**elasticsearch**: modalità statica ``/var/log/elasticsearch/elasticsearch.log`` |  modalità dinamica ``journalctl -u elasticsearch.service -f``
+
+**kibana**: modalità statica ``/var/log/kibana/kibana.log`` |  modalità dinamica ``journalctl -u kibana.service -f``
+
+**queue_consumer.service**: modalità dinamica ``journalctl -u queue_consumer.service -f``
+
+## Author
+
+Nicola Capancioni
+
+
+
+
+
 
 
 
