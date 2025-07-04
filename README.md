@@ -36,12 +36,17 @@ L'intero sistema è progettato per soddisfare i requisiti normativi previsti dal
 
 In questa prima fase si descrive come è stata creata la rete locale tra due macchine virtuali (VM) usando **VirtualBox** con una rete **Host-Only**.
 
-## Topologia di rete
+## Servizi e Interfacce di Rete di LogTrace
 
-| Sistema Operativo |       IP      |           Ruolo            | 
-|-------------------|---------------|----------------------------|
-| Windows Server    | 192.168.56.2  | Sender (Winlogbeat)        |
-| Ubuntu/Debian     | 192.168.56.10 | Receiver (Redis, Logstash) |
+| **Modulo**                      | **IP**           | **Porta/e**                       | **Protocollo**     | **Note**                                                                 |
+|---------------------------------|------------------|-----------------------------------|---------------------|--------------------------------------------------------------------------|
+| **Winlogbeat**                  | 192.168.56.2     | 5044                              | TCP                 | Invia log a Logstash tramite il modulo Beats                            |
+| **Logstash**                    | 192.168.56.10    | 5044 (input), 6379 (output)       | TCP, Beats          | Riceve i log da Winlogbeat e li duplica in due code Redis distinte      |
+| **Redis (coda per Elasticsearch)** | 192.168.56.10 | 6379                              | TCP, RESP           | Coda letta da Logstash per inviare i log a Elasticsearch                |
+| **Redis (coda per immudb)**        | 192.168.56.10 | 6379                              | TCP, RESP           | Coda duplicata per immudb (chiave o DB separato)                        |
+| **Elasticsearch**               | 192.168.56.10    | 9200 (REST API), 9300 (transport) | HTTPS/TCP/TLS       | Espone l’API REST e comunica tra nodi tramite protocollo interno        |
+| **Kibana**                      | 192.168.56.10    | 5601                              | HTTPS/TCP/TLS       | Interfaccia grafica per interrogare Elasticsearch                       |
+| **immudb**                      | 192.168.56.10    | 3322 (default), 9497 (gRPC API)   | TCP/gRPC            | Legge i log dalla coda Redis per la storicizzazione immutabile          |
 
 
 ## Configurazione adattatore Host-Only (Virtualbox)
@@ -1113,13 +1118,12 @@ systemctl start kibana
 ## Visualizzazione Elasticsearch/Kibana
 
 ### Elasticsearch
+Per una consultazione semplice e interattiva dei log archiviati, il sistema espone i dati tramite **Elasticsearch**, che vengono interrogati e visualizzati tramite **Kibana**.
 
-Per una consultazione semplice e interattiva dei log archiviati, il sistema espone i dati tramite Elasticsearch, che vengono interrogati e visualizzati tramite Kibana.
+Per verificare che Elasticsearch sia correttamente avviato e accessibile in **HTTPS** con autenticazione:
 
-Per verificare che Elasticsearch sia correttamente avviato e accessibile in HTTPS con autenticazione:
-
-1. Aprire il browser e accedere all'indirizzo ``https://192.168.56.10:9200``;
-2. Inserire le credenziali di autenticazione (username e password) quando richiesto;
+1. Aprire il browser e accedere all'indirizzo ``https://192.168.56.10:9200``.
+2. Inserire le credenziali di autenticazione.
 3. Se tutto è configurato correttamente (TLS e certificati), il servizio risponde con un JSON simile al seguente, che conferma l’avvio del nodo e le informazioni sul cluster:
 
 ```html
@@ -1141,10 +1145,10 @@ tagline	"You Know, for Search"
 ```
 
 ### Kibana
-Per una consultazione semplice e interattiva dei log archiviati, il sistema utilizza Kibana come interfaccia di visualizzazione, collegata direttamente a Elasticsearch. Attraverso dashboard dinamiche e query in KQL (Kibana Query Language), è possibile esplorare i dati in tempo reale, filtrare eventi, costruire visualizzazioni personalizzate e monitorare l’infrastruttura in modo efficiente.
+Per una consultazione semplice e interattiva dei log archiviati, il sistema utilizza **Kibana** come interfaccia di visualizzazione, collegata direttamente a **Elasticsearch**. 
 
-1. Aprire il browser e accedere all'indirizzo ``https://192.168.56.10:5601``;
-2. Inserire le credenziali di autenticazione (username e password) quando richiesto;
+1. Aprire il browser e accedere all'indirizzo ``https://192.168.56.10:5601``.
+2. Inserire le credenziali di autenticazione.
 3. Se tutto è configurato correttamente (TLS e certificati), sarà possibile visualizzare dashboard, log e strumenti di analisi collegati a Elasticsearch.
 <!--
 ## Visualizzazione dashboard
@@ -1201,7 +1205,7 @@ Infine, la dashboard presenta un grafico a barre che mostra i Top Event ID ricev
 </div>
  -->
 ## Kibana Dashboard Export via Elasticsearch Query
-Query HTTP GET che utilizza la Search API di Elasticsearch per estrarre la dashboard personalizzata con il titolo "Audit-Logs" dall’indice ``.kibana``. La ricerca filtra i documenti di tipo ``dashboard`` e seleziona quelli il cui titolo corrisponde esattamente al valore specificato. Questo metodo consente di esportare la configurazione della dashboard per backup o migrazione.
+Query **HTTP GET** che utilizza la Search API di Elasticsearch per estrarre la dashboard personalizzata con il titolo "Audit-Logs" dall’indice ``.kibana``. La ricerca filtra i documenti di tipo ``dashboard`` e seleziona quelli il cui titolo corrisponde esattamente al valore specificato. Questo metodo consente di esportare la configurazione della dashboard per backup o migrazione.
 
 ```bash
 GET .kibana/_search
@@ -1217,17 +1221,6 @@ GET .kibana/_search
   "size": 1
 }
 ```
-## Mappa IP/Porte dei Moduli di Logging
-
-| **Modulo**                      | **IP**           | **Porta/e**                       | **Protocollo**     | **Note**                                                                 |
-|---------------------------------|------------------|-----------------------------------|---------------------|--------------------------------------------------------------------------|
-| **Winlogbeat**                  | 192.168.56.2     | 5044                              | TCP                 | Invia log a Logstash tramite il modulo Beats                            |
-| **Logstash**                    | 192.168.56.10    | 5044 (input), 6379 (output)       | TCP, Beats          | Riceve i log da Winlogbeat e li duplica in due code Redis distinte      |
-| **Redis (coda per Elasticsearch)** | 192.168.56.10 | 6379                              | TCP, RESP           | Coda letta da Logstash per inviare i log a Elasticsearch                |
-| **Redis (coda per immudb)**        | 192.168.56.10 | 6379                              | TCP, RESP           | Coda duplicata per immudb (chiave o DB separato)                        |
-| **Elasticsearch**               | 192.168.56.10    | 9200 (REST API), 9300 (transport) | HTTPS/TCP/TLS       | Espone l’API REST e comunica tra nodi tramite protocollo interno        |
-| **Kibana**                      | 192.168.56.10    | 5601                              | HTTPS/TCP/TLS       | Interfaccia grafica per interrogare Elasticsearch                       |
-| **immudb**                      | 192.168.56.10    | 3322 (default), 9497 (gRPC API)   | TCP/gRPC            | Legge i log dalla coda Redis per la storicizzazione immutabile          |
 
 ## Configurazione dei servizi con systemd
 
