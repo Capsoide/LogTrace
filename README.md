@@ -494,7 +494,7 @@ Definizione delle pipeline distinte per Logstash
 
 Redis è uno store chiave-valore in memoria, open source e ad alte prestazioni, usato  come sistema di **code distribuite** permettendo la separazione dei flussi di log. Grazie al supporto nativo per le liste (`LPUSH`, `RPUSH`, `LPOP`, `BRPOP`, `LLEN`, ecc.), Redis consente di implementare code `FIFO` semplici e veloci per la gestione asincrona di log, eventi o messaggi tra più componenti. È ideale come buffer temporaneo o broker leggero in architetture distribuite.
 
-File di configurazione Redis ```/etc/redis/redis.conf```
+File di configurazione Redis: ```/etc/redis/redis.conf```
 
 ```
 /etc/redis/
