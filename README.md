@@ -55,7 +55,7 @@ In questa sezione viene illustrata la configurazione di una rete Host-Only in Vi
 1. Aprire **VirtualBox** → `File` → `Host Network Manager`
    
 2. Cliccare su **Crea** per aggiungere un nuovo adattatore
-  
+      
 3. Configurazione:
    - **IP**: `192.168.56.1`
    - **Subnet Mask**: `255.255.255.0`
