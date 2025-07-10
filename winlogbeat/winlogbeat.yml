@@ -230,9 +230,9 @@ setup.template.settings:
 # ---------------------------- Redis Output ----------------------------
 #output.redis:
 #  hosts: ["192.168.56.10:6379"]
-#  password: "whyareyourunning?"
+#  password: "changeme"
 #  data_type: "list"
-#  key: "sigma-queue-1"
+#  key: "***"
 #  db: 0
 #  timeout: 5
   
