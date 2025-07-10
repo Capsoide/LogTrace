@@ -15,7 +15,7 @@
 
 [Python 3](https://www.python.org/downloads/)
 
-[OpenSSL](https://www.openssl.org/)
+[OpenSSL](https://packages.debian.org/bookworm/openssl)
 
 ## Librerie Python da installare nel virtualenv
 
