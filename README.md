@@ -85,7 +85,7 @@ Windows IP Configuration
 
 Ethernet adapter Ethernet:
 
-   Connection-specific DNS Suffix  . : sigmaspa.lan
+   Connection-specific DNS Suffix  . : xyz.lan
    IPv6 Address. . . . . . . . . . . : fd00::be82:30db:2cc8:18ab
    Link-local IPv6 Address . . . . . : fe80::b789:33f2:febd:1d7%14
    IPv4 Address. . . . . . . . . . . : 10.0.2.15
