@@ -1,7 +1,7 @@
 # Porta, directory dei dati, autenticazione
 
 address = "192.168.56.10"
-admin-password = ''
+admin-password = 'changeme'
 auth = true
 certificate = ''
 clientcas = ''
