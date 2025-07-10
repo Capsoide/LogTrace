@@ -1,0 +1,2 @@
+redis
+immudb-py-sdk
