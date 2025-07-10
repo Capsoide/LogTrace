@@ -21,4 +21,4 @@
 
 [redis](https://pypi.org/project/redis/) (client Redis)
 
-[immudb](https://pypi.org/project/immudb-py-sdk/) (client immudb Python)
+[immudb](https://pypi.org/project/immudb-py/) (client immudb Python)
