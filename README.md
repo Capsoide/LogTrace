@@ -580,7 +580,7 @@ PKEY = ''
 log-level = "DEBUG"
 [retention]
 tables = [
-  { db = "logs_immudb", table = "logstash_logs", retentionPeriod = "24h" }
+  { db = "logs_immudb", table = "logs", retentionPeriod = "24h" }
 ]
 ```
 Nel file di configurazione ``immudb.toml``, sono specificati i path per il funzionamento del database: ``/var/lib/immudb`` è la directory principale dei dati che contiene:
