@@ -855,6 +855,23 @@ OK
 ```
 La coda è stata consumata in modo corretto e i log sono salvati in immuDB.
 
+## Retention period
+
+È stata configurata una `retention period` di 24 ore sul database `logs_immudb`, al fine di eliminare automaticamente i dati più vecchi dalla value log, riducendo lo spazio su disco e garantendo una gestione efficiente e sicura dei log. La configurazione è stata effettuata nel momento della creazione del DB tramite il comando:
+
+```bash
+immuadmin database create logs_immudb \
+  --retention-period=24h \
+  --truncation-frequency=24h
+```
+
+Per verificare il corretto funzionamento della `retention period` sulla tabella `logs` del database `logs_immudb`, è possibile eseguire un `get` su una chiave precedentemente inserita. Se la chiave è stata rimossa automaticamente da immudb a causa della scadenza del periodo di retention, il comando restituirà un messaggio di assenza.
+```bash
+immuclient get 149cf3c7024285a6539433d1f84b17411f0527b67da963ddf4b421e5ee2c540c
+immuclient tbtree: key not found
+```
+Questo conferma che la chiave non esiste più, perché è stata eliminata automaticamente dal sistema in base alla retention configurata.
+
 ## Analisi Log e UX Grafica con Elasticsearch e Kibana
 
 ## Elasticsearch 
