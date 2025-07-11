@@ -961,7 +961,7 @@ Come visibile, l'indice `from-redis-2025.07.11` non è stato cancellato perché 
 
 È possibile effettuare un’ulteriore verifica elencando tutti gli indici disponibili dopo l’eliminazione:
 ```bash
-root@vbox:~# curl -u elastic:elasticsigmaspa -k "https://192.168.56.10:9200/_cat/indices?v&s=index"
+root@vbox:~# curl -u username:password -k "https://192.168.56.10:9200/_cat/indices?v&s=index"
 health status index                            uuid                   pri rep docs.count docs.deleted store.size pri.store.size
 yellow open   from-redis-2025.07.11            SuODhIU2TPiLxHH2Rmd1nA   1   1      12992            0      7.1mb          7.1mb
 ```
