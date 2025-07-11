@@ -925,7 +925,7 @@ echo "Rimuovo gli indici from-redis-* più vecchi di $CUTOFF_DATE"
 INDICES=$(curl -s -u $ES_USER:$ES_PASS -k "$ES_HOST/_cat/indices/from-redis-*?h=index" | sort)
 
 for INDEX in $INDICES; do
-  # Converti la data da YYYY.MM.DD a YYYY-MM-DD
+  #Conversione formato data da YYYY.MM.DD a YYYY-MM-DD
   IDX_DATE=$(echo $INDEX | sed -E 's/from-redis-([0-9]{4})\.([0-9]{2})\.([0-9]{2})/\1-\2-\3/')
 
   IDX_TS=$(date -d "$IDX_DATE" +%s 2>/dev/null)
