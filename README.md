@@ -1177,7 +1177,7 @@ Per una consultazione semplice e interattiva dei log archiviati, il sistema espo
 
 Per verificare che Elasticsearch sia correttamente avviato e accessibile in **HTTPS** con autenticazione:
 
-1. Aprire il browser e accedere all'indirizzo ``https://192.168.56.10:9200``.
+1. Aprire il browser e accedere all'indirizzo `https://192.168.56.10:9200`.
 2. Inserire le credenziali di autenticazione.
 3. Se tutto è configurato correttamente (TLS e certificati), il servizio risponde con un JSON simile al seguente, che conferma l’avvio del nodo e le informazioni sul cluster:
 
@@ -1202,7 +1202,7 @@ tagline	"You Know, for Search"
 ### Kibana
 Per una consultazione semplice e interattiva dei log archiviati, il sistema utilizza **Kibana** come interfaccia di visualizzazione, collegata direttamente a **Elasticsearch**. 
 
-1. Aprire il browser e accedere all'indirizzo ``https://192.168.56.10:5601``.
+1. Aprire il browser e accedere all'indirizzo `https://192.168.56.10:5601`.
 2. Inserire le credenziali di autenticazione.
 3. Se tutto è configurato correttamente (TLS e certificati), sarà possibile visualizzare dashboard, log e strumenti di analisi collegati a Elasticsearch.
 <!--  
@@ -1260,7 +1260,7 @@ Infine, la dashboard presenta un grafico a barre che mostra i Top Event ID ricev
 </div>
 -->
 ## Kibana Dashboard Export via Elasticsearch Query
-Query **HTTP GET** che utilizza la Search API di Elasticsearch per estrarre la dashboard personalizzata con il titolo "Audit-Logs" dall’indice ``.kibana``. La ricerca filtra i documenti di tipo ``dashboard`` e seleziona quelli il cui titolo corrisponde esattamente al valore specificato. Questo metodo consente di esportare la configurazione della dashboard per backup o migrazione.
+Query **HTTP GET** che utilizza la Search API di Elasticsearch per estrarre la dashboard personalizzata con il titolo "Audit-Logs" dall’indice `.kibana`. La ricerca filtra i documenti di tipo `dashboard` e seleziona quelli il cui titolo corrisponde esattamente al valore specificato. Questo metodo consente di esportare la configurazione della dashboard per backup o migrazione.
 
 ```bash
 GET .kibana/_search
@@ -1279,39 +1279,13 @@ GET .kibana/_search
 
 ## Configurazione dei servizi con systemd
 
-Per orchestrare l'intero sistema di raccolta, archiviazione e visualizzazione dei log, vengono utilizzate diverse unità systemd che automatizzano e gestiscono l'esecuzione periodica degli script e il database immutabile immuDB.
-
-## queue_consumer.service
-
-Percorso: ```/etc/systemd/system/queue_consumer.service```
-
-Servizio systemd associato allo script ```queue_consumer.py```. Viene eseguito periodicamente per la lettura e il consumo continuo dei log dalla coda ```redis-queue-immudb```, con successiva scrittura su immuDB.
-
-⚠️ Assicurarsi che venv sia correttamente creato nella nuova directory ```/home/vboxuser/my-venv```.
-
-```bash
-[Unit]
-Description=Servizio queue_consumer Python con virtualenv
-After=network.target
-
-[Service]
-Type=simple
-User=vboxuser
-WorkingDirectory=/var/consumer-immudb
-ExecStart=/home/vboxuser/my-venv/bin/python /var/consumer-immudb/queue_consumer.py
-Restart=on-failure
-RestartSec=5s
-
-[Install]
-WantedBy=multi-user.target
-
-```
+Per orchestrare l'intero sistema di raccolta, archiviazione e visualizzazione dei log, vengono utilizzate diverse unità systemd che automatizzano e gestiscono l'esecuzione periodica degli script, il database immutabile immuDB e la visualizzazione.
 
 ## redis.service
 
-Percorso: ```/etc/systemd/system/redis.service```
+Percorso: `/etc/systemd/system/redis.service`
 
-Servizio systemd che gestisce l'avvio di ``redis-server`` utilizzando il file di configurazione ```/etc/redis/redis.conf```, con tipo notify per integrazione corretta con systemd.
+Servizio systemd che gestisce l'avvio di `redis-server` utilizzando il file di configurazione `/etc/redis/redis.conf`, con tipo notify per integrazione corretta con systemd.
 Include meccanismi di sicurezza avanzati (isolamento delle risorse, restrizioni di privilegio, protezione del filesystem) e supporto al riavvio automatico.
 
 ```bash
@@ -1353,14 +1327,13 @@ ReadWriteDirectories=-/etc/redis
 [Install]
 WantedBy=multi-user.target
 Alias=redis.service
-
 ```
 
 ## immudb.service
 
-Percorso: ```/etc/systemd/system/immudb.service```
+Percorso: `/etc/systemd/system/immudb.service`
 
-Servizio systemd che gestisce l'avvio di ``immudb``, il database immutabile dove vengono scritti i log. Configurato tramite il file TOML specificato nel percorso ```/etc/immudb/immudb.toml```.
+Servizio systemd che gestisce l'avvio di `immudb`, il database immutabile dove vengono scritti i log. Configurato tramite il file TOML specificato nel percorso `/etc/immudb/immudb.toml`.
 
 ```bash
 [Unit]
@@ -1378,14 +1351,13 @@ SyslogIdentifier=immudb
 
 [Install]
 WantedBy=multi-user.target
-
 ```
 
 ## logstash.service
 
-Percorso: ```/etc/systemd/system/logstash.service ```
+Percorso: `/etc/systemd/system/logstash.service `
 
-Servizio systemd che gestisce l'avvio di ``Logstash`` con configurazione in ```/etc/logstash```, eseguito con privilegi limitati dall’utente e gruppo logstash. Garantisce il riavvio automatico in caso di fallimento, imposta priorità CPU bassa (nice=19) e un limite massimo di file aperti pari a 16384 per gestire grandi carichi di lavoro.
+Servizio systemd che gestisce l'avvio di `Logstash` con configurazione in `/etc/logstash`, eseguito con privilegi limitati dall’utente e gruppo logstash. Garantisce il riavvio automatico in caso di fallimento, imposta priorità CPU bassa (nice=19) e un limite massimo di file aperti pari a 16384 per gestire grandi carichi di lavoro.
 
 ```bash
 [Unit]
@@ -1406,14 +1378,13 @@ TimeoutStopSec=infinity
 
 [Install]
 WantedBy=multi-user.target
-
 ```
 
 ## kibana.service
 
-Percorso: ```/etc/systemd/system/kibana.service ```
+Percorso: `/etc/systemd/system/kibana.service `
 
-Servizio systemd che gestisce l'avvio di ``Kibana`` con configurazione in ```/etc/kibana```, fornisce l’interfaccia web per visualizzare, analizzare e interrogare i dati presenti in Elasticsearch. Questo file systemd definisce l'avvio automatico di Kibana come processo in background, configurandone utente, percorso di esecuzione, variabili d’ambiente e log. È essenziale per rendere Kibana disponibile agli utenti tramite browser.
+Servizio systemd che gestisce l'avvio di `Kibana` con configurazione in `/etc/kibana`, fornisce l’interfaccia web per visualizzare, analizzare e interrogare i dati presenti in Elasticsearch. Questo file systemd definisce l'avvio automatico di Kibana come processo in background, configurandone utente, percorso di esecuzione, variabili d’ambiente e log. È essenziale per rendere Kibana disponibile agli utenti tramite browser.
 
 ```bash
 [Unit]
@@ -1441,20 +1412,19 @@ StandardError=inherit
 
 [Install]
 WantedBy=multi-user.target
-
 ```
 
 ## elasticsearch.service
 
-Percorso: ```/lib/systemd/system/elasticsearch.service```
+Percorso: `/lib/systemd/system/elasticsearch.service`
 
-Servizio systemd che gestisce l'avvio di ``Elasticsearch``, utilizzando il binario systemd-entrypoint, che supporta le notifiche a systemd (Type=notify) per un'integrazione corretta con il sistema di init.
+Servizio systemd che gestisce l'avvio di `Elasticsearch`, utilizzando il binario systemd-entrypoint, che supporta le notifiche a systemd (Type=notify) per un'integrazione corretta con il sistema di init.
 
-La configurazione principale del servizio si trova in ```/etc/elasticsearch```. Il servizio viene eseguito con l'utente dedicato elasticsearch per motivi di sicurezza e isolamento dei privilegi.
+La configurazione principale del servizio si trova in `/etc/elasticsearch`. Il servizio viene eseguito con l'utente dedicato elasticsearch per motivi di sicurezza e isolamento dei privilegi.
 
 Sono definiti limiti di sistema elevati (come LimitNOFILE=65535, LimitNPROC=4096, memoria e file illimitati) per garantire performance e stabilità. L'avvio del nodo può richiedere tempo: systemd è configurato per attendere fino a 900 secondi (TimeoutStartSec=900) prima di considerarlo fallito.
 
-I log iniziali vengono inviati a journalctl tramite StandardOutput=journal, ma Elasticsearch mantiene anche i propri file di log in ```/var/log/elasticsearch```.
+I log iniziali vengono inviati a journalctl tramite StandardOutput=journal, ma Elasticsearch mantiene anche i propri file di log in `/var/log/elasticsearch`.
 
 ```bash
 [Unit]
@@ -1491,12 +1461,37 @@ TimeoutStartSec=900
 
 [Install]
 WantedBy=multi-user.target
-
 ```
+
+## queue_consumer.service
+
+Percorso: `/etc/systemd/system/queue_consumer.service`
+
+Servizio systemd associato allo script `queue_consumer.py`. Viene eseguito periodicamente per la lettura e il consumo continuo dei log dalla coda `redis-queue-immudb`, con successiva scrittura su immuDB.
+
+⚠️ Assicurarsi che venv sia correttamente creato nella nuova directory `/home/vboxuser/my-venv`.
+
+```bash
+[Unit]
+Description=Servizio queue_consumer Python con virtualenv
+After=network.target
+
+[Service]
+Type=simple
+User=vboxuser
+WorkingDirectory=/var/consumer-immudb
+ExecStart=/home/vboxuser/my-venv/bin/python /var/consumer-immudb/queue_consumer.py
+Restart=on-failure
+RestartSec=5s
+
+[Install]
+WantedBy=multi-user.target
+```
+
 ## delete-old-redis.service
 Percorso: `/etc/systemd/system/delete-old-redis.service`
 
-Servizio systemd associato allo script ``delete_old_from_redis_indices.sh`` ,che ha il compito di eliminare automaticamente gli indici Elasticsearch che corrispondono al pattern `from-redis-*` e che risultano più vecchi di 24 ore.
+Servizio systemd associato allo script `delete_old_from_redis_indices.sh` ,che ha il compito di eliminare automaticamente gli indici Elasticsearch che corrispondono al pattern `from-redis-*` e che risultano più vecchi di 24 ore.
 
 ```bash
  [Unit]
@@ -1511,7 +1506,7 @@ User=root
 [Install]
 WantedBy=multi-user.target
 ```
----
+
 ## Debug
 Per monitorare il corretto funzionamento dei servizi, è possibile consultare i log nei seguenti percorsi o comandi:
 
