@@ -1,6 +1,4 @@
-
----
-# Sistema di monitoraggio Audit Logs
+# LogTrace: Sistema di monitoraggio Audit Logs Windows
 
 ## Introduzione
 Questo sistema si occupa dell'acquisizione automatica dei log di audit relativi agli accessi amministrativi ai sistemi Windows. I log vengono archiviati in un database immutabile per garantirne l’integrità e resi consultabili tramite una dashboard interattiva, pensata per facilitare l’analisi e il monitoraggio delle attività.
