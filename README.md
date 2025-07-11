@@ -898,16 +898,6 @@ Il comando:
 ```bash
 curl -u username:password -k "https://192.168.56.10:9200/_cat/indices?v&s=index"
 health status index                            uuid                   pri rep docs.count docs.deleted store.size pri.store.size
-green  open   .apm-agent-configuration         p8W4vCfETDy_etEi9ESqDw   1   0          0            0       227b           227b
-green  open   .apm-custom-link                 RXTU2DknRE6wYHE-OTLF-w   1   0          0            0       227b           227b
-green  open   .async-search                    zI3JNhfuRoeUvELma4F5wQ   1   0          3            2    226.7kb        226.7kb
-green  open   .geoip_databases                 mzuNwqTGTHi6FkeoggwnZg   1   0         40            0     38.1mb         38.1mb
-green  open   .kibana_7.17.28_001              dPWlEW1KS42vHQCsUUZZqQ   1   0       1081           10      2.8mb          2.8mb
-green  open   .kibana_task_manager_7.17.28_001 _82khgqDQ7KD06roO4u8HQ   1   0         18         5325      1.4mb          1.4mb
-green  open   .security-7                      OMGxOYQBRhOL3JOCn2dvdw   1   0         84            4    230.8kb        230.8kb
-green  open   .tasks                           fzB0isXNRJ-viwcl8N-C5w   1   0         33            1     63.6kb         63.6kb
-green  open   .triggered_watches               H8QislJWQbu8xXzfaIw4gA   1   0          0            0       251b           251b
-green  open   .watches                         DgSIY-luTraX7jSE0_NEAQ   1   0          1            0      3.8kb          3.8kb
 yellow open   from-redis-2025.07.01            ISqshOdJQTynHlVYOAB8xw   1   1       9451            0      4.4mb          4.4mb
 yellow open   from-redis-2025.07.02            LQUa1aatTnS2RpjMZnzqKA   1   1      49649            0     24.1mb         24.1mb
 yellow open   from-redis-2025.07.03            U1PF-URXSdeD98aso_3bGw   1   1        719            0   1000.5kb       1000.5kb
@@ -973,16 +963,6 @@ Come visibile, l'indice `from-redis-2025.07.11` non è stato cancellato perché 
 ```bash
 root@vbox:~# curl -u elastic:elasticsigmaspa -k "https://192.168.56.10:9200/_cat/indices?v&s=index"
 health status index                            uuid                   pri rep docs.count docs.deleted store.size pri.store.size
-green  open   .apm-agent-configuration         p8W4vCfETDy_etEi9ESqDw   1   0          0            0       227b           227b
-green  open   .apm-custom-link                 RXTU2DknRE6wYHE-OTLF-w   1   0          0            0       227b           227b
-green  open   .async-search                    zI3JNhfuRoeUvELma4F5wQ   1   0          1            0      2.3mb          2.3mb
-green  open   .geoip_databases                 mzuNwqTGTHi6FkeoggwnZg   1   0         40            0     38.1mb         38.1mb
-green  open   .kibana_7.17.28_001              dPWlEW1KS42vHQCsUUZZqQ   1   0       1089          135      2.9mb          2.9mb
-green  open   .kibana_task_manager_7.17.28_001 _82khgqDQ7KD06roO4u8HQ   1   0         18         7227      1.7mb          1.7mb
-green  open   .security-7                      OMGxOYQBRhOL3JOCn2dvdw   1   0         84            4    230.8kb        230.8kb
-green  open   .tasks                           fzB0isXNRJ-viwcl8N-C5w   1   0         33            1     63.6kb         63.6kb
-green  open   .triggered_watches               H8QislJWQbu8xXzfaIw4gA   1   0          0            0       251b           251b
-green  open   .watches                         DgSIY-luTraX7jSE0_NEAQ   1   0          1            0      3.8kb          3.8kb
 yellow open   from-redis-2025.07.11            SuODhIU2TPiLxHH2Rmd1nA   1   1      12992            0      7.1mb          7.1mb
 ```
 Come visibile dall’output, gli indici sono stati eliminati correttamente, ad eccezione di `from-redis-2025.07.11`, che è stato mantenuto in quanto non rientra nei criteri di eliminazione (essendo relativo alla data corrente).
@@ -1107,90 +1087,16 @@ File di configurazione principale per il servizio elasticsearch.
 
 ```yaml
 # ======================== Elasticsearch Configuration =========================
-#
-# NOTE: Elasticsearch comes with reasonable defaults for most settings.
-#       Before you set out to tweak and tune the configuration, make sure you
-#       understand what are you trying to accomplish and the consequences.
-#
-# The primary way of configuring a node is via this file. This template lists
-# the most important settings you may want to configure for a production cluster.
-#
-# Please consult the documentation for further information on configuration options:
-# https://www.elastic.co/guide/en/elasticsearch/reference/index.html
-#
-# ---------------------------------- Cluster -----------------------------------
-#
-# Use a descriptive name for your cluster:
-#
 cluster.name: my-audit-log
-#
 # ------------------------------------ Node ------------------------------------
-#
-# Use a descriptive name for the node:
-#
 node.name: vbox-node
-#
-# Add custom attributes to the node:
-#
-#node.attr.rack: r1
-#
 # ----------------------------------- Paths ------------------------------------
-#
-# Path to directory where to store the data (separate multiple locations by comma):
-#
 path.data: /var/lib/elasticsearch
-#
 # Path to log files:
-#
 path.logs: /var/log/elasticsearch
-#
-# ----------------------------------- Memory -----------------------------------
-#
-# Lock the memory on startup:
-#
-#bootstrap.memory_lock: true
-#
-# Make sure that the heap size is set to about half the memory available
-# on the system and that the owner of the process is allowed to use this
-# limit.
-#
-# Elasticsearch performs poorly when the system is swapping the memory.
-#
 # ---------------------------------- Network -----------------------------------
-#
-# By default Elasticsearch is only accessible on localhost. Set a different
-# address here to expose this node on the network:
-#
 network.host: 192.168.56.10
-#
-# By default Elasticsearch listens for HTTP traffic on the first free port it
-# finds starting at 9200. Set a specific HTTP port here:
-#
 http.port: 9200
-#
-# For more information, consult the network module documentation.
-#
-# --------------------------------- Discovery ----------------------------------
-#
-# Pass an initial list of hosts to perform discovery when this node is started:
-# The default list of hosts is ["127.0.0.1", "[::1]"]
-#
-discovery.type: single-node
-#
-#discovery.seed_hosts: ["host1", "host2"]
-#
-# Bootstrap the cluster using an initial set of master-eligible nodes:
-#
-#cluster.initial_master_nodes: ["node-1", "node-2"]
-#
-# For more information, consult the discovery and cluster formation module documentation.
-#
-# ---------------------------------- Various -----------------------------------
-#
-# Require explicit names when deleting indices:
-#
-#action.destructive_requires_name: true
-#
 # ---------------------------------- Security ----------------------------------
 #
 #                                 *** WARNING ***
@@ -1211,7 +1117,6 @@ xpack.security.http.ssl.enabled: true
 xpack.security.http.ssl.key: /etc/elasticsearch/certs/elasticsearch.key
 xpack.security.http.ssl.certificate: /etc/elasticsearch/certs/elasticsearch.crt
 xpack.security.http.ssl.certificate_authorities: [ "/etc/elasticsearch/certs/ca.crt" ]
-
 ```
 
 ## kibana.yml
