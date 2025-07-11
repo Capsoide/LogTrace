@@ -1,0 +1,11 @@
+[Unit]
+Description=Elimina gli indici from-redis-* più vecchi di una certa data (impostato a 24h)
+After=network.target
+
+[Service]
+Type=oneshot
+ExecStart=/usr/local/bin/delete_old_from_redis_indices.sh
+User=root
+
+[Install]
+WantedBy=multi-user.target
