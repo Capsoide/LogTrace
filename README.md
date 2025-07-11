@@ -1524,9 +1524,7 @@ Per monitorare il corretto funzionamento dei servizi, è possibile consultare i 
 
 • **delete-old-redis.service**: modalità dinamica ``journalctl -u delete-old-redis.service -f``
 
-## Author
-
-Nicola Capancioni
+---
 
 
 
