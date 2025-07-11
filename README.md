@@ -1493,6 +1493,24 @@ TimeoutStartSec=900
 WantedBy=multi-user.target
 
 ```
+## delete-old-redis.service
+Percorso: `/etc/systemd/system/delete-old-redis.service`
+
+Servizio systemd associato allo script ``delete_old_from_redis_indices.sh`` ,che ha il compito di eliminare automaticamente gli indici Elasticsearch che corrispondono al pattern `from-redis-*` e che risultano più vecchi di 24 ore.
+
+```bash
+ [Unit]
+Description=Elimina gli indici from-redis-* più vecchi di una certa data (impostato a 24h)
+After=network.target
+
+[Service]
+Type=oneshot
+ExecStart=/usr/local/bin/delete_old_from_redis_indices.sh
+User=root
+
+[Install]
+WantedBy=multi-user.target
+```
 ---
 ## Debug
 Per monitorare il corretto funzionamento dei servizi, è possibile consultare i log nei seguenti percorsi o comandi:
@@ -1508,6 +1526,8 @@ Per monitorare il corretto funzionamento dei servizi, è possibile consultare i 
 • **kibana**: modalità statica ``/var/log/kibana/kibana.log`` |  modalità dinamica ``journalctl -u kibana.service -f``
 
 • **queue_consumer.service**: modalità dinamica ``journalctl -u queue_consumer.service -f``
+
+• **delete-old-redis.service**: modalità dinamica ``journalctl -u delete-old-redis.service -f``
 
 ## Author
 
