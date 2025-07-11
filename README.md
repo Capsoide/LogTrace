@@ -1279,7 +1279,7 @@ GET .kibana/_search
 
 ## Configurazione dei servizi con systemd
 
-Per orchestrare l'intero sistema di raccolta, archiviazione e visualizzazione dei log, vengono utilizzate diverse unità systemd che automatizzano e gestiscono l'esecuzione periodica degli script, il database immutabile immuDB e la visualizzazione.
+Per orchestrare l'intero sistema di raccolta, archiviazione e visualizzazione dei log, vengono impiegate unità systemd che automatizzano l'esecuzione degli script, la gestione del database immutabile immuDB e dei componenti di visualizzazione.
 
 ## redis.service
 
@@ -1380,40 +1380,6 @@ TimeoutStopSec=infinity
 WantedBy=multi-user.target
 ```
 
-## kibana.service
-
-Percorso: `/etc/systemd/system/kibana.service `
-
-Servizio systemd che gestisce l'avvio di `Kibana` con configurazione in `/etc/kibana`, fornisce l’interfaccia web per visualizzare, analizzare e interrogare i dati presenti in Elasticsearch. Questo file systemd definisce l'avvio automatico di Kibana come processo in background, configurandone utente, percorso di esecuzione, variabili d’ambiente e log. È essenziale per rendere Kibana disponibile agli utenti tramite browser.
-
-```bash
-[Unit]
-Description=Kibana
-Documentation=https://www.elastic.co
-Wants=network-online.target
-After=network-online.target
-
-[Service]
-Type=simple
-User=kibana
-Group=kibana
-Environment=KBN_HOME=/usr/share/kibana
-Environment=KBN_PATH_CONF=/etc/kibana
-EnvironmentFile=-/etc/default/kibana
-EnvironmentFile=-/etc/sysconfig/kibana
-ExecStart=/usr/share/kibana/bin/kibana --logging.dest="/var/log/kibana/kibana.log" --pid.file="/run/kibana/kibana.pid" --deprecation.skip_d>
-Restart=on-failure
-RestartSec=3
-StartLimitBurst=3
-StartLimitInterval=60
-WorkingDirectory=/usr/share/kibana
-StandardOutput=journal
-StandardError=inherit
-
-[Install]
-WantedBy=multi-user.target
-```
-
 ## elasticsearch.service
 
 Percorso: `/lib/systemd/system/elasticsearch.service`
@@ -1458,6 +1424,40 @@ KillMode=process
 SendSIGKILL=no
 SuccessExitStatus=143
 TimeoutStartSec=900
+
+[Install]
+WantedBy=multi-user.target
+```
+
+## kibana.service
+
+Percorso: `/etc/systemd/system/kibana.service `
+
+Servizio systemd che gestisce l'avvio di `Kibana` con configurazione in `/etc/kibana`, fornisce l’interfaccia web per visualizzare, analizzare e interrogare i dati presenti in Elasticsearch. Questo file systemd definisce l'avvio automatico di Kibana come processo in background, configurandone utente, percorso di esecuzione, variabili d’ambiente e log. È essenziale per rendere Kibana disponibile agli utenti tramite browser.
+
+```bash
+[Unit]
+Description=Kibana
+Documentation=https://www.elastic.co
+Wants=network-online.target
+After=network-online.target
+
+[Service]
+Type=simple
+User=kibana
+Group=kibana
+Environment=KBN_HOME=/usr/share/kibana
+Environment=KBN_PATH_CONF=/etc/kibana
+EnvironmentFile=-/etc/default/kibana
+EnvironmentFile=-/etc/sysconfig/kibana
+ExecStart=/usr/share/kibana/bin/kibana --logging.dest="/var/log/kibana/kibana.log" --pid.file="/run/kibana/kibana.pid" --deprecation.skip_d>
+Restart=on-failure
+RestartSec=3
+StartLimitBurst=3
+StartLimitInterval=60
+WorkingDirectory=/usr/share/kibana
+StandardOutput=journal
+StandardError=inherit
 
 [Install]
 WantedBy=multi-user.target
@@ -1510,11 +1510,11 @@ WantedBy=multi-user.target
 ## Debug
 Per monitorare il corretto funzionamento dei servizi, è possibile consultare i log nei seguenti percorsi o comandi:
 
-• **logstash**: modalità statica ``/var/log/logstash/logstash-plain.log`` |  modalità dinamica ``journalctl -u logstash.service -f``
-
 • **redis**: modalità statica ``/var/log/redis/redis-server.log`` |  modalità dinamica ``journalctl -u redis-server.service -f``
 
 • **immudb**: modalità statica ``/var/lib/immudb/immulog/immudb.log`` |  modalità dinamica ``journalctl -u immudb.service -f``
+
+• **logstash**: modalità statica ``/var/log/logstash/logstash-plain.log`` |  modalità dinamica ``journalctl -u logstash.service -f``
 
 • **elasticsearch**: modalità statica ``/var/log/elasticsearch/elasticsearch.log`` |  modalità dinamica ``journalctl -u elasticsearch.service -f``
 
@@ -1523,8 +1523,6 @@ Per monitorare il corretto funzionamento dei servizi, è possibile consultare i 
 • **queue_consumer.service**: modalità dinamica ``journalctl -u queue_consumer.service -f``
 
 • **delete-old-redis.service**: modalità dinamica ``journalctl -u delete-old-redis.service -f``
-
----
 
 
 
