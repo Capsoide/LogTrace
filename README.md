@@ -1201,7 +1201,7 @@ tagline	"You Know, for Search"
 ### Kibana
 Per una consultazione semplice e interattiva dei log archiviati, il sistema utilizza **Kibana** come interfaccia di visualizzazione, collegata direttamente a **Elasticsearch**. 
 
-1. Aprire il browser e accedere all'indirizzo `https://192.168.56.10:5601`.
+1. Aprire il browser e accedere all'indirizzo `https://192.168.56.10:5601/login?next=%2F`.
 2. Inserire le credenziali di autenticazione.
 3. Se tutto è configurato correttamente (TLS e certificati), sarà possibile visualizzare dashboard, log e strumenti di analisi collegati a Elasticsearch.
 <!--  
