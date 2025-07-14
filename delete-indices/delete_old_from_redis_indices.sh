@@ -4,7 +4,7 @@ ES_HOST="https://192.168.56.10:9200"
 ES_USER="username"
 ES_PASS="password"
 
-CUTOFF_DATE=$(date -d '1 day ago' +%Y-%m-%d)
+CUTOFF_DATE=$(date -d '3 days ago' +%Y-%m-%d)
 
 echo "Rimuovo gli indici from-redis-* più vecchi di $CUTOFF_DATE"
 
