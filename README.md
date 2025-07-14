@@ -873,9 +873,10 @@ immuclient tbtree: key not found
 Questo conferma che la chiave non esiste più, perché è stata eliminata automaticamente dal sistema in base alla retention configurata.
 
 ## Gestione degli indici from-redis-* in Elasticsearch
-Nell'ambiente Elasticsearch, i dati di log vengono raccolti da Redis, tramite un processo di ingestione (Logstash). Per gestire al meglio il volume elevato e continuo di log, i dati vengono organizzati in indici Elasticsearch separati in base al giorno di raccolta.
+In Elasticsearch, i dati di log vengono raccolti da Redis, tramite Logstash. Per gestire al meglio il volume elevato e continuo di log, i dati vengono organizzati in indici Elasticsearch separati in base al giorno di raccolta.
 
-Ogni indice rappresenta quindi un “contenitore” isolato che raccoglie esclusivamente i documenti generati in una specifica data, con una nomenclatura strutturata secondo il pattern `from-redis-YYYY.MM.DD`. Questo approccio consente: 
+Ogni indice rappresenta quindi un “contenitore” isolato che raccoglie esclusivamente i documenti generati in una specifica data, con una nomenclatura strutturata secondo il pattern `from-redis-YYYY.MM.DD`. 
+Questo approccio consente: 
 
 • **Organizzazione temporale** dei dati, utile per ricerche e analisi su intervalli specifici.
 
@@ -888,7 +889,7 @@ Ogni indice rappresenta quindi un “contenitore” isolato che raccoglie esclus
 • **Nomenclatura chiara**, che identifica l’origine dei dati (Redis) e facilita l’integrazione con strumenti di analisi, automazione e visualizzazione.
 
 ### Indici giornalieri `from-redis-YYYY.MM.DD`
-Nel setup in uso, i log raccolti da Redis vengono indicizzati in Elasticsearch tramite indici giornalieri, il cui nome segue il formato `from-redis-2025.07.11`, `from-redis-2025.07.10`, e così via.
+I log raccolti da Redis vengono indicizzati in Elasticsearch tramite indici giornalieri, il cui nome segue il formato `from-redis-2025.07.11`, `from-redis-2025.07.10`, e così via.
 Ciò significa che ogni giorno viene creato un nuovo indice che contiene tutti i log relativi a quella giornata.
 
 È possibile cancellare dati storici eliminando interi indici, evitando la rimozione documento per documento.
@@ -904,21 +905,19 @@ yellow open   from-redis-2025.07.03            U1PF-URXSdeD98aso_3bGw   1   1   
 yellow open   from-redis-2025.07.10            3pJqrCOpTtaCj91inCiTow   1   1      66863            0     32.9mb         32.9mb
 yellow open   from-redis-2025.07.11            SuODhIU2TPiLxHH2Rmd1nA   1   1      12992            0      7.1mb          7.1mb
 ```
-esegue una richiesta HTTP a Elasticsearch per elencare tutti gli indici presenti nel cluster, ordinati alfabeticamente per nome (`s=index`), in formato tabellare leggibile (`_cat/indices?v`), includendo un'intestazione (`v` = verbose).
 
 ### Rotazione e cancellazione automatica
-Poiché gli indici sono creati giornalmente, per la gestione dello *storage* e la pulizia automatica degli indici troppo vecchi, viene utilizzato uno script Bash che si occupa di **eliminare tutti gli indici** `from-redis-*` più vecchi di 24 ore.
-Lo script confronta le date degli indici `from-redis-YYYY.MM.DD` con la data attuale meno un giorno, ed elimina automaticamente quelli più vecchi, mantenendo solo l'indice corrente o del giorno precedente.
+Per gestire lo *storage* ed eliminare automaticamente gli indici obsoleti, è stato implementato uno script Bash che rimuove tutti gli indici `from-redis-*` più vecchi di 72 ore. Lo script calcola la data limite, la confronta con quella contenuta nel nome degli indici ed effettua la cancellazione tramite le `API REST` di Elasticsearch autenticandosi su connessione `HTTPS`.
 
 Percorso script `/usr/local/bin/delete_old_from_redis_indices.sh`
 ```bash
 #!/bin/bash
 
 ES_HOST="https://192.168.56.10:9200"
-ES_USER="elastic"
-ES_PASS="elasticsigmaspa"
+ES_USER="user"
+ES_PASS="password"
 
-CUTOFF_DATE=$(date -d '1 day ago' +%Y-%m-%d)
+CUTOFF_DATE=$(date -d '3 days ago' +%Y-%m-%d)
 
 echo "Rimuovo gli indici from-redis-* più vecchi di $CUTOFF_DATE"
 
@@ -945,8 +944,8 @@ for INDEX in $INDICES; do
 done
 ```
 
-### Risultato
-Eseguendo lo script gli indici piu vecchi del 2025-07-10 saranno rimossi:
+### Test 
+E' stato eseguito un primo test con retention di 24h, quindi in questo caso, gli indici piu vecchi del 2025-07-10 saranno rimossi:
 ```bash
 root@vbox:~# sudo /usr/local/bin/delete_old_from_redis_indices.sh
 Rimuovo gli indici from-redis-* più vecchi di 2025-07-10
