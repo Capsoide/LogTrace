@@ -1494,7 +1494,7 @@ Servizio systemd associato allo script `delete_old_from_redis_indices.sh` ,che h
 
 ```bash
  [Unit]
-Description=Elimina gli indici from-redis-* più vecchi di una certa data (impostato a 24h)
+Description=Elimina gli indici from-redis-* più vecchi di una certa data (impostato a 72h)
 After=network.target
 
 [Service]
