@@ -1,8 +1,8 @@
 #!/bin/bash
 
 ES_HOST="https://192.168.56.10:9200"
-ES_USER="elastic"
-ES_PASS="elasticsigmaspa"
+ES_USER="username"
+ES_PASS="password"
 
 CUTOFF_DATE=$(date -d '1 day ago' +%Y-%m-%d)
 
