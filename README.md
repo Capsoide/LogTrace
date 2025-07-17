@@ -32,8 +32,6 @@ L'intero sistema è progettato per soddisfare i requisiti normativi previsti dal
   <img src="https://github.com/user-attachments/assets/35074374-ca95-4a12-97eb-0501cb1db141" alt="image" /> 
 </div>
 
-
-
 ## Mappa Servizi e Interfacce di Rete LogTrace
 
 | **Modulo**                      | **IP**           | **Porta/e**                       | **Protocollo**     | **Note**                                                                 |
@@ -601,8 +599,9 @@ output {
 Percorso: ```/etc/logstash/pipelines.yml```
 
 Definizione delle pipeline distinte per Logstash
-  - ```main```: pipeline utlizziata per immudb,
-  - ```elastic-pipeline```: utilizzata per elasticsearch.
+• ```main```: pipeline utlizziata per immudb,
+
+• ```elastic-pipeline```: utilizzata per elasticsearch.
 
 ```yaml                                                     
 # This file is where you define your pipelines. You can define multiple.
@@ -657,21 +656,22 @@ Verificare che i log siano stati inseriti correttamente nelle due code Redis:
 L'archiviazione dei log è gestita tramite immuDB, un database immutabile progettato per garantire l'integrità dei dati.
 I log vengono salvati con una struttura chiave:valore, in cui:
 
-- **Chiave**: identificatore univoco del log
-- **Valore**: contenuto JSON del log stesso
+• **Chiave**: identificatore univoco del log.
+• **Valore**: contenuto JSON del log stesso.
 
 Questa struttura consente di:
 
-- garantire l’integrità e la non modificabilità dei dati
-- effettuare ricerche e recuperi rapidi attraverso il prefisso delle chiavi log
+• garantire l’integrità e la non modificabilità dei dati;
+
+• effettuare ricerche e recuperi rapidi attraverso il prefisso delle chiavi log.
 
 
 ### Database utilizzati
 Sono presenti due database distinti all'interno di immuDB:
 
-- **defaultdb**: database di default utilizzato per testing
+• **defaultdb**: database di default utilizzato per testing
 
-- **logs_immudb**: dedicato agli audit log
+• **logs_immudb**: dedicato agli audit log
 
 ## Gerarchia directory (file configurazione di immudb)
 ```
@@ -711,8 +711,9 @@ log-level = "DEBUG"
 ```
 Nel file di configurazione ``immudb.toml``, sono specificati i path per il funzionamento del database: ``/var/lib/immudb`` è la directory principale dei dati che contiene:
 
-- I database configurati ed utilizzati (``defaultdb`` e ``logs_immudb``).
-- Le strutture immutabili dei dati (Merkle tree, indici, log transazionali).
+• I database configurati ed utilizzati (``defaultdb`` e ``logs_immudb``).
+
+• Le strutture immutabili dei dati (Merkle tree, indici, log transazionali).
   
 ```
 /var/lib/immudb
@@ -736,19 +737,19 @@ logged in
 ## Creazione di un nuovo database con retention time period
 
 ```bash
-vboxuser@vbox:~$ immuadmin database create nome_database --retention-period=24h --tokenfile ~/immuadmin_token
+vboxuser@vbox:~$ immuadmin database create nome_database --retention-period=24h
 ```
 
 ## Lista database esistenti
 
 ```bash
-vboxuser@vbox:~$ immuadmin database list --tokenfile ~/immuadmin_token
+vboxuser@vbox:~$ immuadmin database list
 2 database(s)
 -  --------------  ----------  ----------  ------  ----------  ---------  ------------
 #  Databases Name  Created At  Created By  Status  Is Replica  Disk Size  Transactions
 -  --------------  ----------  ----------  ------  ----------  ---------  ------------
 1  defaultdb       2025-06-18  systemdb    LOADED  FALSE       21.3 MB    6045
-2  logs_immudb     2025-06-17  nome_utente LOADED  FALSE       1.8 MB     184
+2  logs_immudb     2025-06-17  nome_utente LOADED  FALSE       3.9 MB     5371
 -  --------------  ----------  ----------  ------  ----------  ---------  ------------
 ```
 
@@ -758,7 +759,7 @@ Percorso: ``/var/consumer-immudb/queue_consumer.py``
 
 ## Descrizione
 
-Lo script `queue_consumer.py` consuma la coda Redis `redis-queue-immudb`, estraendo in modalità bloccante messaggi di log in formato JSON e inserendoli nel database immudb tramite il metodo `key-value` (KV).
+Lo script `queue_consumer.py` consuma la coda Redis `redis-queue-immudb`, estraendo i log in formato JSON e inserendoli nel database immudb tramite la modalità `key-value` (KV).
 
 ## Funzionamento
 
@@ -773,7 +774,6 @@ Lo script `queue_consumer.py` consuma la coda Redis `redis-queue-immudb`, estrae
 • La chiave è costruita concatenando un prefisso, il `timestamp` corrente e l’`hash calcolato`.
 
 • Il log viene memorizzato nel database immudb in modalità `key-value` (KV), con chiave e valore codificati in bytes.
-
 
 ## Funzioni principali
 
@@ -797,7 +797,7 @@ if item:
         continue
 ```
 
-Il comando `blpop` estrae un elemento dalla coda Redis in modalità bloccante con timeout di 5 secondi. Se riceve un elemento, prende il contenuto: `raw_log` e tenta di deserializzarlo in un oggetto Python: `log_data`. Se il JSON non è valido, lo ignora e continua.
+Il comando `blpop` estrae un elemento dalla coda Redis in modalità bloccante con timeout di 5 secondi. Se riceve un elemento, prende il contenuto (`raw_log`) e tenta di deserializzarlo in un oggetto `log_data`. Se il JSON non è valido, lo ignora e continua.
 
 ### Serializzazione ordinata e generazione chiave
 
@@ -851,9 +851,7 @@ La coda è stata consumata in modo corretto e i log sono salvati in immuDB.
 È stata configurata una `retention period` di 24 ore sul database `logs_immudb`, al fine di eliminare automaticamente i dati più vecchi dalla value log, riducendo lo spazio su disco e garantendo una gestione efficiente e sicura dei log. La configurazione è stata effettuata nel momento della creazione del DB tramite il comando:
 
 ```bash
-immuadmin database create logs_immudb \
-  --retention-period=24h \
-  --truncation-frequency=24h
+immuadmin database create logs_immudb --retention-period=24h 
 ```
 
 Per verificare il corretto funzionamento della `retention period` sulla tabella `logs` del database `logs_immudb`, è possibile eseguire un `get` su una chiave precedentemente inserita. Se la chiave è stata rimossa automaticamente da immudb a causa della scadenza del periodo di retention, il comando restituirà un messaggio di assenza.
@@ -896,6 +894,7 @@ yellow open   from-redis-2025.07.03            U1PF-URXSdeD98aso_3bGw   1   1   
 yellow open   from-redis-2025.07.10            3pJqrCOpTtaCj91inCiTow   1   1      66863            0     32.9mb         32.9mb
 yellow open   from-redis-2025.07.11            SuODhIU2TPiLxHH2Rmd1nA   1   1      12992            0      7.1mb          7.1mb
 ```
+permette di listare tutti gli indici.
 
 ### Rotazione e cancellazione automatica
 Per gestire lo *storage* ed eliminare automaticamente gli indici obsoleti, è stato implementato uno script Bash che rimuove tutti gli indici `from-redis-*` più vecchi di 72 ore. Lo script calcola la data limite, la confronta con quella contenuta nel nome degli indici ed effettua la cancellazione tramite le `API REST` di Elasticsearch autenticandosi su connessione `HTTPS`.
@@ -936,7 +935,7 @@ done
 ```
 
 ### Test 
-E' stato eseguito un primo test con retention di 24h, quindi in questo caso, gli indici piu vecchi del 2025-07-10 saranno rimossi:
+E' stato eseguito un test con retention di 24h, quindi in questo caso, gli indici piu vecchi del 2025-07-10 saranno rimossi:
 ```bash
 root@vbox:~# sudo /usr/local/bin/delete_old_from_redis_indices.sh
 Rimuovo gli indici from-redis-* più vecchi di 2025-07-10
@@ -947,7 +946,6 @@ Rimuovo gli indici from-redis-* più vecchi di 2025-07-10
 {"acknowledged":false}Mantengo indice from-redis-2025.07.11 (data: 2025-07-11)
 ```
 Come visibile, l'indice `from-redis-2025.07.11` non è stato cancellato perché è considerato corrente e non rientra tra quelli più vecchi della data di soglia impostata (2025-07-10).
-
 
 È possibile effettuare un’ulteriore verifica elencando tutti gli indici disponibili dopo l’eliminazione:
 ```bash
@@ -1017,6 +1015,7 @@ Kibana è utilizzato per:
 - creare dashboard personalizzate per la sicurezza e l'analisi degli audit-log;
 - configurare alert (tramite il modulo Watcher) per notificare condizioni anomale (es. tentativi di accesso sospetti).
 -->
+
 ## Certificati SSL/TLS
 
 Generazione di una Certificate Authority (CA) privata e creazione di certificati firmati per Elasticsearch e Kibana, necessari per abilitare la comunicazione sicura tramite TLS.
@@ -1088,19 +1087,6 @@ path.logs: /var/log/elasticsearch
 network.host: 192.168.56.10
 http.port: 9200
 # ---------------------------------- Security ----------------------------------
-#
-#                                 *** WARNING ***
-#
-# Elasticsearch security features are not enabled by default.
-# These features are free, but require configuration changes to enable them.
-# This means that users don't have to provide credentials and can get full access
-# to the cluster. Network connections are also not encrypted.
-#
-# To protect your data, we strongly encourage you to enable the Elasticsearch security features. 
-# Refer to the following documentation for instructions.
-#
-# https://www.elastic.co/guide/en/elasticsearch/reference/7.16/configuring-stack-security.html
-
 xpack.security.enabled: true
 
 xpack.security.http.ssl.enabled: true
@@ -1132,7 +1118,6 @@ server.ssl.key: /etc/kibana/certs/kibana.key
 elasticsearch.ssl.certificateAuthorities: ["/etc/kibana/certs/ca.crt"]
 
 elasticsearch.ssl.verificationMode: certificate
-
 ```
 
 ## Avvio e abilitazione
@@ -1157,7 +1142,6 @@ systemctl enable kibana
 
 # Avvia immediatamente il servizio Kibana
 systemctl start kibana
-
 ```
 
 ## Visualizzazione Elasticsearch/Kibana
@@ -1186,7 +1170,6 @@ version
   minimum_wire_compatibility_version	"6.8.0"
   minimum_index_compatibility_version	"6.0.0-beta1"
 tagline	"You Know, for Search"
-
 ```
 
 ### Kibana
