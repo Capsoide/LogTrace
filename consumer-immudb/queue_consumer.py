@@ -1,6 +1,6 @@
  # -----------------------------------------------------------------------------------------------
 # Script per la lettura di log da una coda Redis e l'inserimento nel database immutabile immudb.
-# Modalità KV con supporto a retention time.
+# Modalità KV.
 # -----------------------------------------------------------------------------------------------
 
 import redis
