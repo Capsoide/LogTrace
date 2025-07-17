@@ -1,4 +1,4 @@
-# -----------------------------------------------------------------------------------------------
+ # -----------------------------------------------------------------------------------------------
 # Script per la lettura di log da una coda Redis e l'inserimento nel database immutabile immudb.
 # Modalità KV con supporto a retention time.
 # -----------------------------------------------------------------------------------------------
@@ -18,14 +18,14 @@ from immudb.client import ImmudbClient
 # Parametri di connessione a Redis
 REDIS_HOST = '192.168.56.10'
 REDIS_PORT = 6379
-REDIS_PASSWORD = ''
+REDIS_PASSWORD = 'whyareyourunning?'
 REDIS_QUEUE_NAME = 'redis-queue-immudb'  # Nome della coda Redis da cui leggere i log
 
 # Parametri di connessione a immudb
 IMMUD_HOST = '127.0.0.1'
 IMMUD_PORT = 3322
-IMMUD_USER = ''
-IMMUD_PASSWORD = ''
+IMMUD_USER = 'immudb'
+IMMUD_PASSWORD = 'immudbcaps'
 IMMUD_DATABASE = 'logs_immudb'  # Nome del database immudb in cui vengono scritti i log
 
 # -------------------
