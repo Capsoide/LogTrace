@@ -294,28 +294,165 @@ Winlogbeat/
 Percorso: ```/Winlogbeat/data/winlogbeat.yml```
 
 ```yaml
+###################### Winlogbeat Configuration Example ########################
+
+# ======================== Winlogbeat specific options =========================
+
 winlogbeat.event_logs:
+  - name: Application
+    ignore_older: 4h
+    
+  # Account Management Events
+  - name: Security
+    event_id: 4720, 4722, 4723, 4724, 4725, 4726, 4727, 4728, 4729, 4730, 4731, 4732, 4733, 4734, 4735, 4737, 4738, 4740, 4741, 4742, 4743, 4754, 4755, 4756, 4757, 4758, 4780, 4782, 4798, 4799
+    ignore_older: 4h
+
+  # Account Logon and Logout Events
   - name: Security
     event_id: 4624, 4634
+    ignore_older: 4h
+    
+  # Active Directory
+  - name: Security
+    event_id: 4662, 14080, 5136, 5137, 5178, 5139, 5141, 4713, 4706, 4707, 4716, 4717, 4718, 4739, 4864, 4865, 4866, 4867
+    ignore_older: 4h
+    
+  # Registry
+  - name: Security
+    event_id: 4657, 4697
+    ignore_older: 4h
+    
+  #- name: Security
+    ignore_older: 4h
+    processors:
+      - script:
+          lang: javascript
+          id: security
+          file: ${path.home}/module/security/config/winlogbeat-security.js
+      
+  # Scheduled task activity      
+  - name: Microsoft-Windows-TaskScheduler/Operational
+    ignore_older: 4h
+    event_id: 106, 140, 141, 200, 201
+    
+  # Scheduled task activity 
+  - name: Microsoft-Windows-TaskScheduler/Operational
+    ignore_older: 4h
+    event_id: 4698, 4699, 4700, 4701, 4702
+    
+  # Object manipulation:
+  - name: Security
+    ignore_older: 4h
+    event_id: 4656, 4657, 4658, 4660, 4663
+
+  # Audit policy:
+  - name: Security
+    ignore_older: 4h
+    event_id: 4719, 1102, 1104
+
+   
+  # Services:
   - name: System
-  - name: Application
+    ignore_older: 4h
+    event_id: 6005, 6006, 7034, 7036, 7040, 7045
 
-output.redis:
-  hosts: ["192.168.56.10:6379"]
-  key: "winlogbeat"
-  db: 0
-  timeout: 5
+  - name: Microsoft-Windows-Sysmon/Operational
+    processors:
+      - script:
+          lang: javascript
+          id: sysmon
+          file: ${path.home}/module/sysmon/config/winlogbeat-sysmon.js
 
-setup.template.enabled: false
-setup.ilm.enabled: false
+  - name: Windows PowerShell
+    ignore_older: 4h
+    event_id: 400, 403, 600, 800
+    processors:
+      - script:
+          lang: javascript
+          id: powershell
+          file: ${path.home}/module/powershell/config/winlogbeat-powershell.js
 
-logging:
-  level: info
-  to_files: true
-  files:
-    path: C:/ProgramData/winlogbeat/Logs
-    name: winlogbeat.log
-    keepfiles: 7
+  - name: Microsoft-Windows-PowerShell/Operational
+    ignore_older: 4h
+    event_id: 4103, 4104, 4105, 4106
+    processors:
+      - script:
+          lang: javascript
+          id: powershell
+          file: ${path.home}/module/powershell/config/winlogbeat-powershell.js
+
+  - name: ForwardedEvents
+    tags: [forwarded]
+    processors:
+      - script:
+          when.equals.winlog.channel: Security
+          lang: javascript
+          id: security
+          file: ${path.home}/module/security/config/winlogbeat-security.js
+      - script:
+          when.equals.winlog.channel: Microsoft-Windows-Sysmon/Operational
+          lang: javascript
+          id: sysmon
+          file: ${path.home}/module/sysmon/config/winlogbeat-sysmon.js
+      - script:
+          when.equals.winlog.channel: Windows PowerShell
+          lang: javascript
+          id: powershell
+          file: ${path.home}/module/powershell/config/winlogbeat-powershell.js
+      - script:
+          when.equals.winlog.channel: Microsoft-Windows-PowerShell/Operational
+          lang: javascript
+          id: powershell
+          file: ${path.home}/module/powershell/config/winlogbeat-powershell.js
+
+  - name: Security
+    ignore_older: 4h
+    event_id: 4618, 4621, 4649, 4675, 4692, 4693, 4694, 4714, 4715, 4764, 4765, 4766, 4794, 4816,
+              4868, 4870, 4882, 4885, 4890, 4892, 4896, 4897, 4906, 4907, 4908, 4912,
+              4960, 4961, 4962, 4963, 4965, 4976, 4977, 4978, 4983, 4984,
+              5027, 5028, 5029, 5030, 5035, 5037, 5038,
+              5120, 5121, 5122, 5123, 5124,
+              5376, 5377,
+              5453,
+              5480, 5483, 5484, 5485,
+              5827, 5828,
+              6145,
+              6273, 6274, 6275, 6276, 6277, 6278, 6279, 6280,
+              24586, 24592, 24593, 24594
+
+# ====================== Elasticsearch template settings =======================
+
+setup.template.settings:
+  index.number_of_shards: 1
+  #index.codec: best_compression
+  #_source.enabled: false
+
+# ================================== Outputs ===================================
+
+# Configure what output to use when sending the data collected by the beat.
+
+# ------------------------------ Logstash Output -------------------------------
+
+output.logstash:
+  #The Logstash hosts
+    hosts: ["192.168.56.10:5044"]
+
+# ================================= Processors =================================
+
+processors:
+  - add_host_metadata:
+      when.not.contains.tags: forwarded
+  - add_cloud_metadata: ~
+
+
+
+
+
+
+
+
+
+
 ```
 
 ## Installazione come Servizio Windows
