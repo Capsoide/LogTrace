@@ -830,8 +830,13 @@ immuclient>get log:1752735391:fccfd23ab0d1853197e28b5cb3378d848df207f1f0255a2c03
 tx:       4871
 rev:      1
 key:      log:1752735391:fccfd23ab0d1853197e28b5cb3378d848df207f1f0255a2c0336ddf296c023cc
-value:    {"@timestamp": "2025-07-15T08:07:13.681Z", "@version": "1", "agent": {"ephemeral_id": "60973edc-97e2-4e08-9d4d-b8e8b7d89d60", "hostname": "WIN-S", "id": "c156a342-40dc-47ca-977a-f100ebd8e89f", "name": "WIN-S", "type": "winlogbeat", "version": "7.17.7"}, "ecs": {"version": "1.12.0"}, "event": {"action": "None", "code": "7036", "created": "2025-07-17T06:56:26.240Z", "kind": "event", "provider": "Service Control Manager"}, "host": {"name": "SGMDC33.sigmaspa.lan"}, "log": {"file": {"path": "C:\\Users\\vboxuser\\Desktop\\System_log_DC33.evtx"}, "level": "information"}, "message": "The Windows Modules Installer service entered the running state.", "tags": ["beats_input_codec_plain_applied"], "winlog": {"activity_id": "{811a6918-1b41-4753-815e-979e5d5b2bc7}", "api": "wineventlog", "channel": "System", "computer_name": "SGMDC33.sigmaspa.lan", "event_data": {"Binary": "540072007500730074006500640049006E007300740061006C006C00650072002F0034000000", "param1": "Windows Modules Installer", "param2": "running"}, "event_id": "7036", "keywords": ["Classic"], "opcode": "Info", "process": {"pid": 672, "thread": {"id": 10596}}, "provider_guid": "{555908d1-a6d7-4695-8e1e-26931d2012f4}", "provider_name": "Service Control Manager", "record_id": 795414, "task": "None"}}
-
+value:    {"@timestamp": "2025-07-15T08:07:13.681Z", "@version": "1", "agent": {"ephemeral_id": "60973edc-97e2-4e08-9d4d-b8e8b7d89d60", "hostname": "WIN-S", "id": "c156a342-40dc-47ca-977a-f100ebd8e89f",
+ "name": "WIN-S", "type": "winlogbeat", "version": "7.17.7"}, "ecs": {"version": "1.12.0"}, "event": {"action": "None", "code": "7036", "created": "2025-07-17T06:56:26.240Z", "kind": "event", "provider":
+"Service Control Manager"}, "host": {"name": "SGMDC33.sigmaspa.lan"}, "log": {"file": {"path": "C:\\Users\\vboxuser\\Desktop\\System_log_DC33.evtx"}, "level": "information"}, "message": "The Windows Modules
+Installer service entered the running state.", "tags": ["beats_input_codec_plain_applied"], "winlog": {"activity_id": "{811a6918-1b41-4753-815e-979e5d5b2bc7}", "api": "wineventlog", "channel": "System",
+"computer_name": "SGMDC33.sigmaspa.lan", "event_data": {"Binary": "540072007500730074006500640049006E007300740061006C006C00650072002F0034000000", "param1": "Windows Modules Installer", "param2": "running"},
+ "event_id": "7036", "keywords": ["Classic"], "opcode": "Info", "process": {"pid": 672, "thread": {"id": 10596}}, "provider_guid": "{555908d1-a6d7-4695-8e1e-26931d2012f4}", "provider_name": "Service Control
+Manager", "record_id": 795414, "task": "None"}}
 
 ```
 ## Verifica in redis: Consumazione coda
