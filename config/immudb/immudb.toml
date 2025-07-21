@@ -1,4 +1,4 @@
-# Porta, directory dei dati, autenticazione
+# File di configurazione di ImmuDB
 
 address = "192.168.56.10"
 admin-password = 'changeme'
@@ -7,17 +7,19 @@ certificate = ''
 clientcas = ''
 dbname = 'logs_immudb'
 detached = 'false'
-devmode = true
+#devmode = true
 dir = '/var/lib/immudb'
 network = 'tcp'
 port 3322
+
 # Log path with filename
 logfile = 'immudb.log'
+
 mtls = false
 pidfile = '/var/lib/immudb/immudb.pid'
 PKEY = ''
 log-level = "DEBUG"
-[retention]
-tables = [
-  { db = "logs_immudb", table = "logstash_logs", retentionPeriod = "24h" }
-]
+
+[database]
+gc-enabled = 'true'
+retention-period = "24h"
