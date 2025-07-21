@@ -10,7 +10,7 @@ detached = 'false'
 #devmode = true
 dir = '/var/lib/immudb'
 network = 'tcp'
-port 3322
+port = 3322
 
 # Log path with filename
 logfile = 'immudb.log'
