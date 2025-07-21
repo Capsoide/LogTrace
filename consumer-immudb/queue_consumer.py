@@ -1,32 +1,27 @@
- # -----------------------------------------------------------------------------------------------
-# Script per la lettura di log da una coda Redis e l'inserimento nel database immutabile immudb.
-# Modalità KV.
-# -----------------------------------------------------------------------------------------------
-
 import redis
 import json
 import hashlib
 import time
 import logging
 import signal
-from immudb.client import ImmudbClient
+from immudb import ImmudbClient
 
 # ----------------------
 # CONFIGURAZIONE SISTEMA
 # ----------------------
 
 # Parametri di connessione a Redis
-REDIS_HOST = '192.168.56.10'
+REDIS_HOST = 
 REDIS_PORT = 6379
-REDIS_PASSWORD = ''
+REDIS_PASSWORD = 
 REDIS_QUEUE_NAME = 'redis-queue-immudb'  # Nome della coda Redis da cui leggere i log
 
 # Parametri di connessione a immudb
 IMMUD_HOST = '127.0.0.1'
 IMMUD_PORT = 3322
-IMMUD_USER = ''
-IMMUD_PASSWORD = ''
-IMMUD_DATABASE = 'logs_immudb'  # Nome del database immudb in cui vengono scritti i log
+IMMUD_USER =            
+IMMUD_PASSWORD =    
+IMMUD_DATABASE = 'logs_immudb'   
 
 # -------------------
 # CONFIGURAZIONE LOG
@@ -56,9 +51,8 @@ def connect_redis():
     return redis.Redis(host=REDIS_HOST, port=REDIS_PORT, password=REDIS_PASSWORD, decode_responses=True)
 
 def connect_immudb():
-    client = ImmudbClient()
-    client.login(IMMUD_USER, IMMUD_PASSWORD)
-    client.useDatabase(IMMUD_DATABASE)
+    client = ImmudbClient(f"{IMMUD_HOST}:{IMMUD_PORT}")
+    client.login(IMMUD_USER, IMMUD_PASSWORD, database=IMMUD_DATABASE.encode())
     return client
 
 # -------------------
