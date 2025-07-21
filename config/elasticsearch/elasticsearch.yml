@@ -97,17 +97,6 @@ discovery.type: single-node
 #
 # https://www.elastic.co/guide/en/elasticsearch/reference/7.16/configuring-stack-security.html
 
-#xpack.notification.email.account:
-#  gmail_account: 
-#    profile: gmail 
-#    smtp: 
-#      auth: true 
-#      starttls.enable: true 
-#      host: smtp.gmail.com 
-#      port: 587 
-#      user: provoxsmtp@gmail.com 
-#      password: "${xpack.notification.email.account.gmail_account.smtp.secure_password}" 
-
 xpack.security.enabled: true
 
 xpack.security.http.ssl.enabled: true
