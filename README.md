@@ -820,17 +820,18 @@ La coppia chiave-valore viene inserita nel database immudb usando il metodo `set
 
 ### Inserimento in immudb
 ```bash
-Jul 15 08:55:50 vbox python[2449]: 2025-07-14 08:55:50,220 - INFO - [KV] Log inserito in immudb con chiave: log:1752488806:e721a405b4e0ee229b55b15b8c257d9e19a80d239355586888030beae6749267
+Jul 15 08:55:50 vbox python[2449]: 2025-07-14 08:55:50,220 - INFO - [KV] Log inserito in immudb con chiave: log:1752735391:fccfd23ab0d1853197e28b5cb3378d848df207f1f0255a2c0336ddf296c023cc
 ```
 
 ### Get Key
 
 ```bash
-immuclient get log:1752488806:e721a405b4e0ee229b55b15b8c257d9e19a80d239355586888030beae6749267
-tx:       154
+immuclient>get log:1752735391:fccfd23ab0d1853197e28b5cb3378d848df207f1f0255a2c0336ddf296c023cc
+tx:       4871
 rev:      1
-key:      log:1752488806:e721a405b4e0ee229b55b15b8c257d9e19a80d239355586888030beae6749267
-value:    {"@timestamp": "2025-07-14T08:19:34.948Z", "@version": "1", "agent": {"ephemeral_id": "a1e0f7b5-dd55-4a58-b962-64d6a2b6808a", "hostname": "WIN-S", "id": "c156a342-40dc-47ca-977a-f100ebd8e89f", "name": "WIN-S", "type": "winlogbeat", "version": "7.17.7"}, "ecs": {"version": "1.12.0"}, "event": {"action": "File System", "code": "4658", "created": "2025-07-14T08:19:38.072Z", "kind": "event", "outcome": "success", "provider": "Microsoft-Windows-Security-Auditing"}, "host": {"architecture": "x86_64", "hostname": "WIN-S", "id": "01f96cfe-269f-4a90-9547-e093ff3f1e46", "ip": ["fd00::be82:30db:2cc8:18ab", "fe80::b789:33f2:febd:1d7", "10.0.2.15", "fe80::6894:81ba:3678:5341", "192.168.56.2"], "mac": ["08:00:27:97:5f:fb", "08:00:27:e8:bf:ff"], "name": "WIN-S", "os": {"build": "26100.1742", "family": "windows", "kernel": "10.0.26100.1742 (WinBuild.160101.0800)", "name": "Windows Server 2025 Datacenter Evaluation", "platform": "windows", "type": "windows", "version": "10.0"}}, "log": {"level": "information"}, "message": "The handle to an object was closed.\n\nSubject :\n\tSecurity ID:\t\tS-1-5-18\n\tAccount Name:\t\tWIN-S$\n\tAccount Domain:\t\tWORKGROUP\n\tLogon ID:\t\t0x3E7\n\nObject:\n\tObject Server:\t\tSecurity\n\tHandle ID:\t\t0x170\n\nProcess Information:\n\tProcess ID:\t\t0xec\n\tProcess Name:\t\tC:\\Windows\\WinSxS\\amd64_microsoft-windows-servicingstack_31bf3856ad364e35_10.0.26100.1738_none_a5031b637767a4e7\\TiWorker.exe", "tags": ["beats_input_codec_plain_applied"], "winlog": {"api": "wineventlog", "channel": "Security", "computer_name": "WIN-S", "event_data": {"HandleId": "0x170", "ObjectServer": "Security", "ProcessId": "0xec", "ProcessName": "C:\\Windows\\WinSxS\\amd64_microsoft-windows-servicingstack_31bf3856ad364e35_10.0.26100.1738_none_a5031b637767a4e7\\TiWorker.exe", "SubjectDomainName": "WORKGROUP", "SubjectLogonId": "0x3e7", "SubjectUserName": "WIN-S$", "SubjectUserSid": "S-1-5-18"}, "event_id": "4658", "keywords": ["Audit Success"], "opcode": "Info", "process": {"pid": 4, "thread": {"id": 884}}, "provider_guid": "{54849625-5478-4994-a5ba-3e3b0328c30d}", "provider_name": "Microsoft-Windows-Security-Auditing", "record_id": 6959975, "task": "File System"}}
+key:      log:1752735391:fccfd23ab0d1853197e28b5cb3378d848df207f1f0255a2c0336ddf296c023cc
+value:    {"@timestamp": "2025-07-15T08:07:13.681Z", "@version": "1", "agent": {"ephemeral_id": "60973edc-97e2-4e08-9d4d-b8e8b7d89d60", "hostname": "WIN-S", "id": "c156a342-40dc-47ca-977a-f100ebd8e89f", "name": "WIN-S", "type": "winlogbeat", "version": "7.17.7"}, "ecs": {"version": "1.12.0"}, "event": {"action": "None", "code": "7036", "created": "2025-07-17T06:56:26.240Z", "kind": "event", "provider": "Service Control Manager"}, "host": {"name": "SGMDC33.sigmaspa.lan"}, "log": {"file": {"path": "C:\\Users\\vboxuser\\Desktop\\System_log_DC33.evtx"}, "level": "information"}, "message": "The Windows Modules Installer service entered the running state.", "tags": ["beats_input_codec_plain_applied"], "winlog": {"activity_id": "{811a6918-1b41-4753-815e-979e5d5b2bc7}", "api": "wineventlog", "channel": "System", "computer_name": "SGMDC33.sigmaspa.lan", "event_data": {"Binary": "540072007500730074006500640049006E007300740061006C006C00650072002F0034000000", "param1": "Windows Modules Installer", "param2": "running"}, "event_id": "7036", "keywords": ["Classic"], "opcode": "Info", "process": {"pid": 672, "thread": {"id": 10596}}, "provider_guid": "{555908d1-a6d7-4695-8e1e-26931d2012f4}", "provider_name": "Service Control Manager", "record_id": 795414, "task": "None"}}
+
 
 ```
 ## Verifica in redis: Consumazione coda
@@ -856,7 +857,7 @@ immuadmin database create logs_immudb --retention-period=24h
 
 Per verificare il corretto funzionamento della `retention period` sulla tabella `logs` del database `logs_immudb`, è possibile eseguire un `get` su una chiave precedentemente inserita. Se la chiave è stata rimossa automaticamente da immudb a causa della scadenza del periodo di retention, il comando restituirà un messaggio di assenza.
 ```bash
-immuclient get 149cf3c7024285a6539433d1f84b17411f0527b67da963ddf4b421e5ee2c540c
+immuclient get log:1752735391:fccfd23ab0d1853197e28b5cb3378d848df207f1f0255a2c0336ddf296c023cc
 immuclient tbtree: key not found
 ```
 Questo conferma che la chiave non esiste più, perché è stata eliminata automaticamente dal sistema in base alla retention configurata.
