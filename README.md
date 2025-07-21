@@ -291,158 +291,6 @@ Winlogbeat/
 
 Percorso: ```/Winlogbeat/data/winlogbeat.yml```
 
-```yaml
-###################### Winlogbeat Configuration Example ########################
-
-# ======================== Winlogbeat specific options =========================
-
-winlogbeat.event_logs:
-  - name: Application
-    ignore_older: 4h
-    
-  # Account Management Events
-  - name: Security
-    event_id: 4720, 4722, 4723, 4724, 4725, 4726, 4727, 4728, 4729, 4730, 4731, 4732, 4733, 4734, 4735, 4737, 4738, 4740, 4741, 4742, 4743, 4754, 4755, 4756, 4757, 4758, 4780, 4782, 4798, 4799
-    ignore_older: 4h
-
-  # Account Logon and Logout Events
-  - name: Security
-    event_id: 4624, 4634
-    ignore_older: 4h
-    
-  # Active Directory
-  - name: Security
-    event_id: 4662, 14080, 5136, 5137, 5178, 5139, 5141, 4713, 4706, 4707, 4716, 4717, 4718, 4739, 4864, 4865, 4866, 4867
-    ignore_older: 4h
-    
-  # Registry
-  - name: Security
-    event_id: 4657, 4697
-    ignore_older: 4h
-    
-  #- name: Security
-    ignore_older: 4h
-    processors:
-      - script:
-          lang: javascript
-          id: security
-          file: ${path.home}/module/security/config/winlogbeat-security.js
-      
-  # Scheduled task activity      
-  - name: Microsoft-Windows-TaskScheduler/Operational
-    ignore_older: 4h
-    event_id: 106, 140, 141, 200, 201
-    
-  # Scheduled task activity 
-  - name: Microsoft-Windows-TaskScheduler/Operational
-    ignore_older: 4h
-    event_id: 4698, 4699, 4700, 4701, 4702
-    
-  # Object manipulation:
-  - name: Security
-    ignore_older: 4h
-    event_id: 4656, 4657, 4658, 4660, 4663
-
-  # Audit policy:
-  - name: Security
-    ignore_older: 4h
-    event_id: 4719, 1102, 1104
-
-   
-  # Services:
-  - name: System
-    ignore_older: 4h
-    event_id: 6005, 6006, 7034, 7036, 7040, 7045
-
-  - name: Microsoft-Windows-Sysmon/Operational
-    processors:
-      - script:
-          lang: javascript
-          id: sysmon
-          file: ${path.home}/module/sysmon/config/winlogbeat-sysmon.js
-
-  - name: Windows PowerShell
-    ignore_older: 4h
-    event_id: 400, 403, 600, 800
-    processors:
-      - script:
-          lang: javascript
-          id: powershell
-          file: ${path.home}/module/powershell/config/winlogbeat-powershell.js
-
-  - name: Microsoft-Windows-PowerShell/Operational
-    ignore_older: 4h
-    event_id: 4103, 4104, 4105, 4106
-    processors:
-      - script:
-          lang: javascript
-          id: powershell
-          file: ${path.home}/module/powershell/config/winlogbeat-powershell.js
-
-  - name: ForwardedEvents
-    tags: [forwarded]
-    processors:
-      - script:
-          when.equals.winlog.channel: Security
-          lang: javascript
-          id: security
-          file: ${path.home}/module/security/config/winlogbeat-security.js
-      - script:
-          when.equals.winlog.channel: Microsoft-Windows-Sysmon/Operational
-          lang: javascript
-          id: sysmon
-          file: ${path.home}/module/sysmon/config/winlogbeat-sysmon.js
-      - script:
-          when.equals.winlog.channel: Windows PowerShell
-          lang: javascript
-          id: powershell
-          file: ${path.home}/module/powershell/config/winlogbeat-powershell.js
-      - script:
-          when.equals.winlog.channel: Microsoft-Windows-PowerShell/Operational
-          lang: javascript
-          id: powershell
-          file: ${path.home}/module/powershell/config/winlogbeat-powershell.js
-
-  - name: Security
-    ignore_older: 4h
-    event_id: 4618, 4621, 4649, 4675, 4692, 4693, 4694, 4714, 4715, 4764, 4765, 4766, 4794, 4816,
-              4868, 4870, 4882, 4885, 4890, 4892, 4896, 4897, 4906, 4907, 4908, 4912,
-              4960, 4961, 4962, 4963, 4965, 4976, 4977, 4978, 4983, 4984,
-              5027, 5028, 5029, 5030, 5035, 5037, 5038,
-              5120, 5121, 5122, 5123, 5124,
-              5376, 5377,
-              5453,
-              5480, 5483, 5484, 5485,
-              5827, 5828,
-              6145,
-              6273, 6274, 6275, 6276, 6277, 6278, 6279, 6280,
-              24586, 24592, 24593, 24594
-
-# ====================== Elasticsearch template settings =======================
-
-setup.template.settings:
-  index.number_of_shards: 1
-  #index.codec: best_compression
-  #_source.enabled: false
-
-# ================================== Outputs ===================================
-
-# Configure what output to use when sending the data collected by the beat.
-
-# ------------------------------ Logstash Output -------------------------------
-
-output.logstash:
-  #The Logstash hosts
-    hosts: ["192.168.56.10:5044"]
-
-# ================================= Processors =================================
-
-processors:
-  - add_host_metadata:
-      when.not.contains.tags: forwarded
-  - add_cloud_metadata: ~
-```
-
 ## Installazione come Servizio Windows
 
 ```powershell
@@ -837,7 +685,6 @@ Installer service entered the running state.", "tags": ["beats_input_codec_plain
 "computer_name": "SGMDC33.sigmaspa.lan", "event_data": {"Binary": "540072007500730074006500640049006E007300740061006C006C00650072002F0034000000", "param1": "Windows Modules Installer", "param2": "running"},
  "event_id": "7036", "keywords": ["Classic"], "opcode": "Info", "process": {"pid": 672, "thread": {"id": 10596}}, "provider_guid": "{555908d1-a6d7-4695-8e1e-26931d2012f4}", "provider_name": "Service Control
 Manager", "record_id": 795414, "task": "None"}}
-
 ```
 ## Verifica in redis: Consumazione coda
 
@@ -892,7 +739,8 @@ Questo approccio garantisce un controllo granulare sul periodo di retention dei 
 
 Il comando: 
 ```bash
-curl -u username:password -k "https://192.168.56.10:9200/_cat/indices?v&s=index"
+curl -u user:password --cacert /etc/elasticsearch/certs/ca.crt -X GET "https://192.168.56.10:9200/_cat/indices?v"
+
 health status index                            uuid                   pri rep docs.count docs.deleted store.size pri.store.size
 yellow open   from-redis-2025.07.01            ISqshOdJQTynHlVYOAB8xw   1   1       9451            0      4.4mb          4.4mb
 yellow open   from-redis-2025.07.02            LQUa1aatTnS2RpjMZnzqKA   1   1      49649            0     24.1mb         24.1mb
