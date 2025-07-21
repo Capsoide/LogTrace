@@ -556,6 +556,11 @@ pidfile = '/var/lib/immudb/immudb.pid'
 PKEY = ''
 log-level = "DEBUG"
 
+[database]
+gc-enabled = 'true'
+retention-period = "24h"
+
+
 ```
 Nel file di configurazione ``immudb.toml``, sono specificati i path per il funzionamento del database: ``/var/lib/immudb`` è la directory principale dei dati che contiene:
 
