@@ -9,7 +9,7 @@ L'obiettivo è verificare la corretta configurazione, il corretto invio e la cor
 
 ## Configurazione Winlogbeat (`winlogbeat_security.yml`)
 
-```text
+```yaml
 evtx_path: &evtx_path "C:\\Users\\vboxuser\\Desktop\\Security_log_DC33.evtx"
 
 winlogbeat.event_logs:
@@ -24,7 +24,7 @@ logging.level: info
 
 ## Configurazione Winlogbeat (`winlogbeat_system.yml`)
 
-```text
+```yaml
 evtx_path: &evtx_path "C:\\Users\\vboxuser\\Desktop\\Sistem_log_DC33.evtx"
 
 winlogbeat.event_logs:
@@ -36,3 +36,15 @@ output.logstash:
 
 logging.level: info
 ```
+• `evtx_path`: percorso del file .evtx esportato da Windows.
+• `no_more_events: stop`: fa terminare Winlogbeat quando tutti gli eventi del file sono stati elaborati.
+• `output.logstash`: indirizzo del nodo Logstash destinatario.
+
+## Esecuzione
+Da povershell, nella cartella Winlogbeat:
+
+```powershell
+PS C:\Users\vboxuser\Desktop\Winlogbeat_712x\Winlogbeat> .\winlogbeat.exe -e -c .\winlogbeat.yml -E EVTX_FILE="C:\Users\vboxuser\Desktop\Security_log_DC33.evtx"
+```
+• L'opzione `-e` abilita la stampa dei log su console.
+• `-E EVTX_FILE=...` consente di forzare il percorso del file `.evtx`.
