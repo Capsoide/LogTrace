@@ -1,12 +1,5 @@
 # Analisi dati 
 
-## ⚠️ Premessa
-
-Si precisa che in questa sezione **non verrà descritto nuovamente il funzionamento complessivo del sistema di raccolta e gestione dei log**, in quanto già trattato nella prima parte del file **README.md**.
-È quindi assunto che il processo **end-to-end** — dall’acquisizione tramite **Winlogbeat**, al trasferimento verso **Logstash**, alla duplicazione su **code Redis** (`redis-queue-immudb` e `redis-queue-elastic`), alla **consumazione dei log** verso **immudb**, nonché **l’indicizzazione e visualizzazione tramite Logstash, Elasticsearch e Kibana** — sia correttamente configurato e operativo.
-
-Di conseguenza, questa sezione si concentra esclusivamente sull’**analisi statistica** dei dati estratti dai file `.evtx`. In particolare, vengono esaminati aspetti quali la **frequenza** e la **distribuzione percentuale** degli eventi, la **classificazione dei log** per livello di severità (*Information, Warning, Error*) e la rappresentazione grafica di tali metriche, al fine di ottenere una panoramica chiara e dettagliata del contenuto dei log esportati.
-
 ## Introduzione
 In questa sezione viene illustrato il processo di verifica del corretto invio e della ricezione dei dati significativi provenienti da file di log esportati. In particolare, vengono utilizzati:
 
@@ -17,8 +10,12 @@ In questa sezione viene illustrato il processo di verifica del corretto invio e 
 L’esempio mostra come inviare i log di Windows a Logstash tramite Winlogbeat: Winlogbeat legge i file `.evtx` e li inoltra all’istanza Logstash in ascolto su `192.168.56.10:5044`.
 L’obiettivo principale è validare la configurazione, garantendo il trasferimento corretto e l’integrità degli eventi contenuti nei file `.evtx`.
 
-## Invio log da file .evtx a Logstash con Winlogbeat
+Si precisa che in questa sezione **non verrà descritto nuovamente il funzionamento complessivo del sistema di raccolta e gestione dei log**, in quanto già trattato nella prima parte del file **README.md**.
+È quindi assunto che il processo **end-to-end** — dall’acquisizione tramite **Winlogbeat**, al trasferimento verso **Logstash**, alla duplicazione su **code Redis** (`redis-queue-immudb` e `redis-queue-elastic`), alla **consumazione dei log** verso **immudb**, nonché **l’indicizzazione e visualizzazione tramite Logstash, Elasticsearch e Kibana** — sia correttamente configurato e operativo.
 
+Di conseguenza, questa sezione si concentra esclusivamente sull’**analisi statistica** dei dati estratti dai file `.evtx`. In particolare, vengono esaminati aspetti quali la **frequenza** e la **distribuzione percentuale** degli eventi, la **classificazione dei log** per livello di severità (*Information, Warning, Error*) e la rappresentazione grafica di tali metriche, al fine di ottenere una panoramica chiara e dettagliata del contenuto dei log esportati.
+
+## Invio log da file .evtx a Logstash con Winlogbeat
 
 ## Configurazione Winlogbeat (`winlogbeat_security.yml`)
 
