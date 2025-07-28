@@ -70,14 +70,19 @@ fcc527df985a","uptime":{"ms":423969},"version":"7.17.7"},"memstats":{"gc_next":2
 2025-07-28T10:00:22.848+0200    INFO    instance/beat.go:461    winlogbeat stopped.
 ```
 E' possibile verificare che Winlobeat ha:
+
 • letto tutti gli eventi dal file `Security_log_DC33.evtx`,
 
 • inviato 185.827 eventi a Logstash (questo è corretto proprio perchè il file `Security_log_DC33.evtx` conteneva esattamente 185.827 logs),
 
 • terminato l'esecuzione senza errori.
 
-La conferma del completamente è evidenziata dalla riga:
+La conferma della lettura di tutti i logs è evidenziata dalla riga:
+```powershell
+events":{"active":0,"dropped":0,"failed":0,"filtered":0,"published":185827,"retry":200,"total":185827}
+```
+
+La conferma del completamento è evidenziata dalla riga:
 ```powershell
 Stop processing. {"id": "C:\\Users\\vboxuser\\Desktop\\Security_log_DC33.evtx"}
-
 ```
