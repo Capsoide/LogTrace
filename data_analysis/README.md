@@ -69,7 +69,7 @@ fcc527df985a","uptime":{"ms":423969},"version":"7.17.7"},"memstats":{"gc_next":2
 2025-07-28T10:00:22.847+0200    INFO    [monitoring]    log/log.go:160  Stopping metrics logging.
 2025-07-28T10:00:22.848+0200    INFO    instance/beat.go:461    winlogbeat stopped.
 ```
-E' possibile verificare che Winlobeat ha:
+E' possibile verificare che Winlogbeat ha:
 
 • letto tutti gli eventi dal file `Security_log_DC33.evtx`,
 
@@ -86,3 +86,7 @@ La conferma del completamento è evidenziata dalla riga:
 ```powershell
 Stop processing. {"id": "C:\\Users\\vboxuser\\Desktop\\Security_log_DC33.evtx"}
 ```
+
+## Analisi dei logs
+
+
