@@ -1,0 +1,10 @@
+evtx_path: &evtx_path "C:\\Users\\vboxuser\\Desktop\\Security_log_DC33.evtx"
+
+winlogbeat.event_logs:
+  - name: *evtx_path
+    no_more_events: stop
+
+output.logstash:
+  hosts: ["192.168.56.10:5044"]
+
+logging.level: info
