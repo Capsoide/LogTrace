@@ -687,7 +687,7 @@ value:    {"@timestamp": "2025-07-15T08:07:13.681Z", "@version": "1", "agent": {
  "name": "WIN-S", "type": "winlogbeat", "version": "7.17.7"}, "ecs": {"version": "1.12.0"}, "event": {"action": "None", "code": "7036", "created": "2025-07-17T06:56:26.240Z", "kind": "event", "provider":
 "Service Control Manager"}, "host": {"name": "xxxxx"}, "log": {"file": {"path": "C:\\Users\\vboxuser\\Desktop\\System_log_DC33.evtx"}, "level": "information"}, "message": "The Windows Modules
 Installer service entered the running state.", "tags": ["beats_input_codec_plain_applied"], "winlog": {"activity_id": "{811a6918-1b41-4753-815e-979e5d5b2bc7}", "api": "wineventlog", "channel": "System",
-"computer_name": "SGMDC33.sigmaspa.lan", "event_data": {"Binary": "540072007500730074006500640049006E007300740061006C006C00650072002F0034000000", "param1": "Windows Modules Installer", "param2": "running"},
+"computer_name": "XXX.YYY.lan", "event_data": {"Binary": "540072007500730074006500640049006E007300740061006C006C00650072002F0034000000", "param1": "Windows Modules Installer", "param2": "running"},
  "event_id": "7036", "keywords": ["Classic"], "opcode": "Info", "process": {"pid": 672, "thread": {"id": 10596}}, "provider_guid": "{555908d1-a6d7-4695-8e1e-26931d2012f4}", "provider_name": "Service Control
 Manager", "record_id": 795414, "task": "None"}}
 ```
