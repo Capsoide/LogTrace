@@ -9,7 +9,7 @@ L'obiettivo è verificare la corretta configurazione, il corretto invio e la cor
 
 ## Configurazione Winlogbeat (`winlogbeat_security.yml`)
 
-```bash
+```text
 evtx_path: &evtx_path "C:\\Users\\vboxuser\\Desktop\\Security_log_DC33.evtx"
 
 winlogbeat.event_logs:
@@ -24,7 +24,7 @@ logging.level: info
 
 ## Configurazione Winlogbeat (`winlogbeat_system.yml`)
 
-```bash
+```text
 evtx_path: &evtx_path "C:\\Users\\vboxuser\\Desktop\\Sistem_log_DC33.evtx"
 
 winlogbeat.event_logs:
