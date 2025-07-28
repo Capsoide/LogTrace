@@ -1,4 +1,4 @@
-# Invio log Windows Security e System a Logstash con Winlogbeat
+# Invio log da un file .evtx a Logstash con Winlogbeat
 
 Questo esempio mostra come inviare i log dei file **Security_log_DC33.evtx** e **System_log_DC33.evtx** di Windows a **Logstash** utilizzando **Winlogbeat**.  
 In particolare, Winlogbeat legge i file `.evtx` esportati e li invia all'istanza Logstash in ascolto su `192.168.56.10:5044`.
