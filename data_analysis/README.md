@@ -73,7 +73,7 @@ PS C:\Users\vboxuser\Desktop\Winlogbeat_712x\Winlogbeat> .\winlogbeat.exe -e -c 
 • L'opzione `-e` abilita la stampa dei log su console.
 
 
-## Risultato
+### Risultato
 
 Analizzando l'estratto del log in modalità INFO:
 
@@ -230,7 +230,7 @@ Per ogni giorno dell’intervallo: calcola il numero totale di eventi, determina
 
 I risultati vengono mostrati a video in forma tabellare e salvati in un report Excel (.xlsx) contenente, per ogni giorno, i conteggi e le percentuali di eventi per livello.
 
-## Output
+### Output
 
 ``` powershell
  === 2025-05-05 ===
@@ -338,7 +338,7 @@ Gli eventi filtrati vengono raggruppati per: giorno di occorrenza, livello (Info
 
 Per ciascun giorno nell’intervallo, lo script calcola il numero di occorrenze per ogni ID evento e produce un output a console strutturato per livello e salvati in un report Excel (.xlsx)
 
-## Output
+### Output
 ```powershell
  === 2025-07-01 ===
  Information:
