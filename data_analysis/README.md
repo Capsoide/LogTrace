@@ -258,13 +258,16 @@ I risultati, esportati in un report Excel, hanno costituito la base per successi
 
 ##
 
+La tabella seguente riassume la distribuzione complessiva degli eventi estratti dal file di log analizzato, distinguendoli in base al livello di gravità. I dati rappresentano il totale degli eventi registrati nell’intero intervallo temporale considerato:  `05-05-2025` - `15-07-2025`.
 
 |               | Information Level | Error Level | Warning Level |
 |---------------|-------------------|-------------|---------------|
 |Total Count    | 55345             | 4994        | 2186          |
 |Total %        | 88,517%           | 7,987%      | 3,496         |
 
-
+Dalla fase di elaborazione è emerso che la maggior parte degli eventi appartiene al livello Information, con un totale di 55 345 eventi, pari a circa 88,5% del totale.
+Gli eventi di livello Error sono 4 994 (7,99%), mentre quelli di livello Warning sono 2 186 (3,50%).
+Questa distribuzione evidenzia come la maggior parte dei log raccolti rappresenti informazioni di routine, con una percentuale relativamente contenuta di eventi che segnalano errori o condizioni potenzialmente problematiche.
 
 
 
