@@ -267,12 +267,7 @@ I dati rappresentano il totale degli eventi registrati nell’intero intervallo 
 |Total Count    | 55345             | 4994        | 2186          |
 |Total %        | 88,517%           | 7,987%      | 3,496         |
 
-
-
-<div align="center" style="border:1px solid #ccc; padding:30px; display: inline-block;"> 
-  <img width="785" height="420" alt="image" src="https://github.com/user-attachments/assets/784b7167-1e2a-41a8-8cef-f1d7dc209a00" />
-</div>
-
+##
 
 Dalla fase di elaborazione è emerso che:
 
@@ -282,7 +277,16 @@ Dalla fase di elaborazione è emerso che:
 
 • gli eventi di livello **Warning** sono **2186**, pari al  **3,496%** del totale.
 
+##
+
 Questa distribuzione evidenzia come la maggior parte dei log raccolti rappresenti informazioni di routine, con una percentuale relativamente contenuta di eventi che segnalano errori o condizioni potenzialmente problematiche.
+
+<div align="center" style="border:1px solid #ccc; padding:30px; display: inline-block;"> 
+  <img width="785" height="420" alt="image" src="https://github.com/user-attachments/assets/784b7167-1e2a-41a8-8cef-f1d7dc209a00" />
+</div>
+
+##
+
 
 
 
