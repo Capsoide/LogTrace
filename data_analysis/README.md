@@ -447,6 +447,14 @@ Da questi dati si evince che:
 In generale, il volume totale degli eventi giornalieri oscilla tra circa 700 e oltre 1100, senza trend di aumento o diminuzione netta evidente, ma con variazioni giornaliere che possono riflettere la normale attività di sistema o specifici eventi episodici.
 
 
+### Conteggio giornaliero degli eventi di sistema
 
+In seguito, viene mostrata una rappresentazione grafica dei conteggi giornalieri degli eventi di sistema raccolti nel corso di maggio 2025, realizzata attraverso un line plot su scala logaritmica. L’asse verticale riporta il numero di occorrenze di ongi Event ID, quello orizzontale i singoli giorni del mese, mentre ogni curva identifica un distinto Event ID, permettendo di evidenziare le differenze di frequenza e le eventuali variazioni nel tempo.
 
+##
 
+<div align="center" style="border:1px solid #ccc; padding:30px; display: inline-block;"> 
+  <img width="1512" height="676" alt="image" src="https://github.com/user-attachments/assets/67468d83-002e-423c-8697-05ee4c4c2f59" />
+</div>
+
+##
