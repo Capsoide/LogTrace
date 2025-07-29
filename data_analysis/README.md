@@ -427,12 +427,13 @@ I dati riportano le occorrenze giornaliere degli eventi di sistema, distinti per
 | 30/05/2025 | 1007          | 886               | 87,98         | 48            | 4,77      | 73          | 7,25    |
 | 31/05/2025 | 795           | 744               | 93,58         | 1             | 0,13      | 50          | 6,29    |
 
+##
 
 <div align="center" style="border:1px solid #ccc; padding:30px; display: inline-block;"> 
   <img width="2209" height="999" alt="image" src="https://github.com/user-attachments/assets/e9de7a94-8514-4f46-a65b-a50e4c22eff9" />
 </div>
 
-
+##
 
 
 Da questi dati si evince che:
