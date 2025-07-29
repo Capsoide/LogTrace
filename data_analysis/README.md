@@ -128,6 +128,7 @@ Un aspetto fondamentale dei log analizzati è la presenza di campi chiave associ
 • **ID evento**: un identificativo univoco che rappresenta il tipo specifico di evento;
 
 • **Categoria attività**: la classificazione funzionale dell’evento (ad esempio sicurezza, sistema, applicazione).
+
 --
 
 <div align="center" style="border:1px solid #ccc; padding:10px; display: inline-block;"> 
@@ -135,6 +136,7 @@ Un aspetto fondamentale dei log analizzati è la presenza di campi chiave associ
 </div>
 
 --
+
 Nel file `Security_log_DC33.evtx` sono presenti principalmente tre livelli di evento: 
 
 • **Information**: Indica un evento normale e di successo, come l'avvio di un'applicazione o un accesso riuscito. Questo livello fornisce informazioni utili sullo stato del sistema e delle sue componenti, ma non indica necessariamente un problema.
