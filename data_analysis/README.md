@@ -270,7 +270,7 @@ I dati rappresentano il totale degli eventi registrati nell’intero intervallo 
 
 
 <div align="center" style="border:1px solid #ccc; padding:30px; display: inline-block;"> 
-  <img width="785" height="220" alt="image" src="https://github.com/user-attachments/assets/784b7167-1e2a-41a8-8cef-f1d7dc209a00" />
+  <img width="785" height="420" alt="image" src="https://github.com/user-attachments/assets/784b7167-1e2a-41a8-8cef-f1d7dc209a00" />
 </div>
 
 
