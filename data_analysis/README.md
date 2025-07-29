@@ -429,7 +429,7 @@ I dati riportano le occorrenze giornaliero degli eventi di sistema, distinti per
 
 
 <div align="center" style="border:1px solid #ccc; padding:30px; display: inline-block;"> 
-  <img width="2209" height="899" alt="image" src="https://github.com/user-attachments/assets/e9de7a94-8514-4f46-a65b-a50e4c22eff9" />
+  <img width="2209" height="999" alt="image" src="https://github.com/user-attachments/assets/e9de7a94-8514-4f46-a65b-a50e4c22eff9" />
 </div>
 
 
