@@ -449,7 +449,14 @@ In generale, il volume totale degli eventi giornalieri oscilla tra circa 700 e o
 
 ### Conteggio giornaliero degli eventi di sistema
 
-In seguito, viene mostrata una rappresentazione grafica dei conteggi giornalieri degli eventi di sistema raccolti nel corso di maggio 2025, realizzata attraverso un line plot su scala logaritmica. L’asse verticale riporta il numero di occorrenze di ongi Event ID, quello orizzontale i singoli giorni del mese, mentre ogni curva identifica un distinto Event ID, permettendo di evidenziare le differenze di frequenza e le eventuali variazioni nel tempo.
+In seguito, viene mostrata una rappresentazione grafica dei conteggi giornalieri degli eventi di sistema raccolti durante maggio 2025, realizzata con un grafico a linee su scala logaritmica. L’asse verticale indica il numero di occorrenze (count), mentre quello orizzontale rappresenta i singoli giorni del mese. Ogni linea corrisponde a un diverso Event ID, selezionati come segue: 
+
+• per gli eventi di tipo **Information** sono stati presi i due più ricorrenti, `7036` e `14554`; 
+
+• per gli eventi di tipo **Warning** sono stati presi i due più ricorrenti, `150` e `50`; 
+
+• per gli eventi di tipo **Error** sono stati presi i tre più ricorrenti, `1058`, `5805` e `5723`. 
+
 
 ##
 
@@ -458,3 +465,32 @@ In seguito, viene mostrata una rappresentazione grafica dei conteggi giornalieri
 </div>
 
 ##
+
+Le interruzioni nelle linee indicano i giorni in cui un determinato Event ID non è stato registrato, permettendo così di evidenziare chiaramente differenze di frequenza e variazioni nel tempo.
+
+
+Andamento generale:
+
+Eventi Informativi (ID 7036 e 14554) sono i più frequenti, tipicamente tra 300 e 450 eventi al giorno.
+
+ID 7036 – “Service Control Manager: il servizio ha cambiato stato”.
+
+ID 14554 – probabilmente relativo ad un'applicazione o un driver specifico (frequenza stabile).
+
+Warning (ID 140 e 50) hanno un andamento intermittente:
+
+Nei giorni centrali (9–12 maggio, 17–18 maggio, 24–25 maggio, 31 maggio) non si registrano Warning.
+
+In altri giorni variano da 4 a 65 eventi, con picchi il 13/05 (65) e il 26/05 (62).
+
+Errori (ID 1058, 5723, 5805) mostrano oscillazioni:
+
+ID 1058 (Group Policy processing error) è il più frequente, da 26 a 86 eventi/giorno, con picchi il 22/05 e 24/05 (86).
+
+ID 5723 (problemi di trust con il dominio) e ID 5805 (machine account non trovato nel dominio) sono costanti, tipicamente 10–12 eventi/giorno.
+
+Pattern evidente:
+
+L’assenza di Warning coincide con un aumento marcato degli Errori 1058 (ad esempio 9–12 maggio e 24–25 maggio).
+
+Alcuni giorni (13/05, 26/05, 29/05) presentano picchi contemporanei di Warning ed Errori, indicando possibili disservizi o modifiche infrastrutturali.
