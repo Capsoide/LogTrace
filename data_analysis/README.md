@@ -111,5 +111,26 @@ La conferma del completamento della lettura è evidenziata dalla riga:
 Stop processing. {"id": "C:\\Users\\vboxuser\\Desktop\\Security_log_DC33.evtx"}
 ```
 
+## Analisi
+
+Dopo aver verificato in Elasticsearch la corretta ricezione e indicizzazione dei dati, si è proceduto con l’analisi dei log.
+
+In primo luogo, sono stati analizzati i log relativi al file di sistema `Security_log_DC33.evtx`. Poiché gli eventi coprivano un periodo di circa **tre mesi**, i dati sono stati suddivisi per mese al fine di consentire una rappresentazione grafica più chiara e un’analisi temporale più efficace.
+
+Un aspetto fondamentale dei log analizzati è la presenza di campi chiave associati a ciascun evento:
+
+• **Livello**: indica la gravità o la natura dell’evento ( Information, Verbose, Warning, Error and Critical).
+
+• **Data e ora**: timestamp di quando si è verificato l’evento;
+
+• **Origine**: il componente o il sistema che ha generato l’evento;
+
+• **ID evento**: un identificativo univoco che rappresenta il tipo specifico di evento;
+
+• **Categoria attività**: la classificazione funzionale dell’evento (ad esempio sicurezza, sistema, applicazione).
+
+<img width="681" height="107" alt="image" src="https://github.com/user-attachments/assets/2e3a5bf7-976c-4bed-9121-b878dac2096f" />
+
+
 
 
