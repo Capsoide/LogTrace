@@ -147,7 +147,7 @@ Nel file `Security_log_DC33.evtx` sono presenti principalmente tre livelli di ev
 
 ## Catalogazione dei dati
 
-L’analisi dei log di sistema è stata condotta seguendo una metodologia precisa basata sulla catalogazione dei dati. 
+L’analisi dei log di sistema è stata condotta seguendo una metodologia rigorosa basata sulla catalogazione dei dati, resa possibile attraverso l’utilizzo di script in PowerShell sviluppati per automatizzare il processo di estrazione, conteggio e organizzazione degli eventi, successivamente analizzati e rappresentati graficamente in Microsoft Excel.
 
 ## system_logs_journal_percentage.ps1
 
