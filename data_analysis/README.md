@@ -154,22 +154,6 @@ L’analisi dei log di sistema è stata condotta seguendo una metodologia precis
 Percorso: `
 
 ``` powershell
-<#
-
- Lo script analizza un file di log eventi Windows in formato .evtx filtrando gli eventi in un intervallo di date definito dall’utente ($startDate e $endDate). 
-
- Per ogni giorno dell’intervallo: calcola il numero totale di eventi, determina la distribuzione per livello di severità (Information, Warning, Error) ,calcola le percentuali di ciascun livello rispetto al totale giornaliero.
-
- I risultati vengono mostrati a video in forma tabellare e salvati in un report Excel (.xlsx) contenente, per ogni giorno, i conteggi e le percentuali di eventi per livello.
-
- Esempio di output:
-
- === 2025-05-05 ===
- Information: 432 eventi (82,15%)
- Warning    :  39 eventi (7,42%)
- Error      :  55 eventi (10,43%)
-
-#>
 
 # Installare il modulo ImportExcel con il comando: Install-Module -Name ImportExcel -Force
 
@@ -238,6 +222,26 @@ $excelData | Export-Excel -Path $outputXlsx -AutoSize -AutoFilter -BoldTopRow -F
 
 # Messaggio di fine generazione
 Write-Host "nReport Excel salvato in: $outputXlsx"
+
+```
+Lo script analizza un file di log eventi Windows in formato .evtx filtrando gli eventi in un intervallo di date definito dall’utente ($startDate e $endDate). 
+
+Per ogni giorno dell’intervallo: calcola il numero totale di eventi, determina la distribuzione per livello di severità (Information, Warning, Error) ,calcola le percentuali di ciascun livello rispetto al totale giornaliero.
+
+I risultati vengono mostrati a video in forma tabellare e salvati in un report Excel (.xlsx) contenente, per ogni giorno, i conteggi e le percentuali di eventi per livello.
+
+## Output
+
+``` powershell
+ === 2025-05-05 ===
+ Information: 795 eventi (89,73%)
+ Warning    :  41 eventi (4,63%)
+ Error      :  50 eventi (5,64%)
+
+  === 2025-05-06 ===
+ Information: 769 eventi (89,52%)
+ Warning    :  40 eventi (4,66%)
+ Error      :  50 eventi (5,82%)
 
 ```
 
