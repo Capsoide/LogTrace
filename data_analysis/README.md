@@ -449,13 +449,13 @@ In generale, il volume totale degli eventi giornalieri oscilla tra circa 700 e o
 
 ### Conteggio giornaliero degli eventi di sistema
 
-In seguito, viene mostrata una rappresentazione grafica dei conteggi giornalieri degli eventi di sistema raccolti durante maggio 2025, realizzata con un grafico a linee su scala logaritmica. L’asse verticale indica il numero di occorrenze (count), mentre quello orizzontale rappresenta i singoli giorni del mese. Ogni linea corrisponde a un diverso Event ID, selezionati come segue: 
+Di seguito è mostrata una rappresentazione grafica dei conteggi giornalieri degli eventi di sistema raccolti durante il periodo di maggio 2025, realizzata con un grafico di tipo **plot line** su **scala logaritmica**. L’asse verticale indica il numero di occorrenze,  quello orizzontale rappresenta i singoli giorni del mese. Le linee corrispondono a diversi Event ID, scelti tra i più ricorrenti per ciascun tipo: 
 
-• per gli eventi di tipo **Information** sono stati presi i due più ricorrenti, `7036` e `14554`; 
+• **Information**: `7036` e `14554`; 
 
-• per gli eventi di tipo **Warning** sono stati presi i due più ricorrenti, `150` e `50`; 
+• **Warning**: `150` e `50`; 
 
-• per gli eventi di tipo **Error** sono stati presi i tre più ricorrenti, `1058`, `5805` e `5723`. 
+• **Error**: `1058`, `5805` e `5723`. 
 
 
 ##
