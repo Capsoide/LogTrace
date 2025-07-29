@@ -66,13 +66,17 @@ PS C:\WINDOWS\system32> cd Winlogbeat
 
 PS C:\Users\vboxuser\Desktop\Winlogbeat_712x\Winlogbeat> .\winlogbeat.exe -e -c .\winlogbeat.yml -E EVTX_FILE="C:\Users\vboxuser\Desktop\Security_log_DC33.evtx"
 ```
+• Winlogbeat legge il file di log `.evtx` specificato tramite l’opzione `-E EVTX_FILE`.
+
+• I dati contenuti nel file vengono inviati a Logstash, come definito nella configurazione `winlogbeat_system.yml` e `winlogbeat_security.yml`.
+
 • L'opzione `-e` abilita la stampa dei log su console.
 
-• `-E EVTX_FILE=...` consente di forzare il percorso del file `.evtx`.
 
 ## Risultato
 
-Analizzando l'estratto del log di INFO:
+Analizzando l'estratto del log in modalità INFO:
+
 ```powershell
 2025-07-28T10:00:22.795+0200    INFO    [winlogbeat]    beater/eventlogger.go:124    Stop processing. {"id": "C:\\Users\\vboxuser\\Desktop\\Security_log_DC33.evtx"}
 2025-07-28T10:00:22.843+0200    INFO    [monitoring]    log/log.go:192  Total metrics {"monitoring": {"metrics": {"beat":{"cpu":{"system":{"ticks":168125,"time":{"ms":168125}},"total":
@@ -87,20 +91,22 @@ fcc527df985a","uptime":{"ms":423969},"version":"7.17.7"},"memstats":{"gc_next":2
 2025-07-28T10:00:22.847+0200    INFO    [monitoring]    log/log.go:160  Stopping metrics logging.
 2025-07-28T10:00:22.848+0200    INFO    instance/beat.go:461    winlogbeat stopped.
 ```
-E' possibile verificare che Winlogbeat ha:
+Si può verificare che Winlogbeat ha:
 
 • letto tutti gli eventi dal file `Security_log_DC33.evtx`,
 
-• inviato 185.827 eventi a Logstash (questo è corretto proprio perchè il file `Security_log_DC33.evtx` conteneva esattamente 185.827 logs),
+• inviato 185.827 eventi a Logstash (numero corrispondente esattamente agli eventi presenti nel file),
 
 • terminato l'esecuzione senza errori.
 
-La conferma della lettura di tutti i logs è evidenziata dalla riga:
+La conferma che tutti gli eventi sono stati letti è evidenziata dalla riga:
+
 ```powershell
 events":{"active":0,"dropped":0,"failed":0,"filtered":0,"published":185827,"retry":200,"total":185827}
 ```
 
-La conferma del completamento è evidenziata dalla riga:
+La conferma del completamento della lettura è evidenziata dalla riga:
+
 ```powershell
 Stop processing. {"id": "C:\\Users\\vboxuser\\Desktop\\Security_log_DC33.evtx"}
 ```
