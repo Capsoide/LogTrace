@@ -147,7 +147,7 @@ Nel file `Security_log_DC33.evtx` sono presenti principalmente tre livelli di ev
 
 ## Catalogazione dei dati
 
-L’analisi dei log di sistema è stata condotta seguendo una metodologia precisa basata sulla catalogazione dei dati. In particolare, con lo script `system_logs_journal_percentage.ps1` sono stati processati i log giorno per giorno, suddividendoli in base al livello di gravità.
+L’analisi dei log di sistema è stata condotta seguendo una metodologia precisa basata sulla catalogazione dei dati. 
 
 ## system_logs_journal_percentage.ps1
 
@@ -224,7 +224,7 @@ $excelData | Export-Excel -Path $outputXlsx -AutoSize -AutoFilter -BoldTopRow -F
 Write-Host "nReport Excel salvato in: $outputXlsx"
 
 ```
-Lo script analizza un file di log eventi Windows in formato .evtx filtrando gli eventi in un intervallo di date definito dall’utente ($startDate e $endDate). 
+Lo script analizza un file di log eventi Windows in formato .evtx filtrando gli eventi in un intervallo di date definito dall’utente (`$startDate` e `$endDate`). 
 
 Per ogni giorno dell’intervallo: calcola il numero totale di eventi, determina la distribuzione per livello di severità (Information, Warning, Error), calcola le percentuali di ciascun livello rispetto al totale giornaliero.
 
@@ -252,33 +252,11 @@ I risultati vengono mostrati a video in forma tabellare e salvati in un report E
             .
 ```
 
-##
+## system_logs_information_warning_error.ps1
+
+Percorso: `data_analysis/script_4_analysis/system_logs_information_warning_error.ps1`
 
 ``` powershell
-<#
-
-Lo script analizza un file di log eventi di Windows in formato .evtx, applicando un filtro su un intervallo di date definito dall’utente nel codice ($startDate e $endDate).  
-
-Gli eventi filtrati vengono raggruppati per: giorno di occorrenza, livello (Information, Warning, Error), ID evento.
-
-Per ciascun giorno nell’intervallo, lo script calcola il numero di occorrenze per ogni ID evento e produce un output a console strutturato per livello e salvati in un report Excel (.xlsx)
-
- === 2025-07-01 ===
- Information:
-   ID 7036   :   432
-   ID 14554  :   363
-   ID 33     :    10
-   ...
- Warning:
-   ID 140    :    39
-   ID 50     :     5
-   ...
- Error:
-   ID 5805   :    12
-   ID 5723   :    11
-   ...
-
-#>
 
 # Installare il modulo ImportExcel con il comando: Install-Module -Name ImportExcel -Force
 
@@ -352,6 +330,30 @@ $excelData | Export-Excel -Path $outputXlsx -AutoSize -AutoFilter -BoldTopRow -F
 
 # Messaggio di fine generazione
 Write-Host "`nReport Excel salvato in: $outputXlsx"
+```
+
+Lo script analizza un file di log eventi di Windows in formato .evtx, applicando un filtro su un intervallo di date definito dall’utente nel codice (`$startDate` e `$endDate`).  
+
+Gli eventi filtrati vengono raggruppati per: giorno di occorrenza, livello (Information, Warning, Error), ID evento.
+
+Per ciascun giorno nell’intervallo, lo script calcola il numero di occorrenze per ogni ID evento e produce un output a console strutturato per livello e salvati in un report Excel (.xlsx)
+
+## Output
+```powershell
+ === 2025-07-01 ===
+ Information:
+   ID 7036   :   432
+   ID 14554  :   363
+   ID 33     :    10
+   ...
+ Warning:
+   ID 140    :    39
+   ID 50     :     5
+   ...
+ Error:
+   ID 5805   :    12
+   ID 5723   :    11
+   ...
 ```
 
 ## Dati
