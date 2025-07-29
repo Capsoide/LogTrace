@@ -362,7 +362,7 @@ I risultati, prodotti sia come output in console sia in un report Excel generato
 
 ##
 
-La tabella seguente riassume la distribuzione complessiva degli eventi estratti dal file di log analizzato, distinguendoli in base al livello di gravità. 
+I seguenti dati mostrano la distribuzione complessiva degli eventi estratti dal file di log analizzato, distinguendoli in base al **livello di gravità**. 
 
 I dati rappresentano il totale degli eventi registrati nell’intero intervallo temporale considerato, compreso tra `2025-05-05` – `2025-07-15`.
 
