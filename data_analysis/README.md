@@ -255,7 +255,9 @@ I risultati vengono mostrati a video in forma tabellare e salvati in un report E
 ## Dati
 
 I risultati, esportati in un report Excel, hanno costituito la base per successive analisi grafiche. Da tali dati sono stati prodotti schemi e rappresentazioni grafiche che hanno permesso di evidenziare l’andamento giornaliero degli eventi e di identificare eventuali anomalie o picchi significativi.
+
 --
+
 Dalla fase di elaborazione è emerso che la maggior parte degli eventi appartiene al livello Information, con un totale di 55 345 eventi, pari a circa 88,5% del totale.
 Gli eventi di livello Error sono 4 994 (7,99%), mentre quelli di livello Warning sono 2 186 (3,50%).
 Questa distribuzione evidenzia come la maggior parte dei log raccolti rappresenti informazioni di routine, con una percentuale relativamente contenuta di eventi che segnalano errori o condizioni potenzialmente problematiche.
