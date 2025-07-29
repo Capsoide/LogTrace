@@ -472,15 +472,15 @@ Di seguito è mostrata una rappresentazione grafica dei conteggi giornalieri deg
 
 • Gli eventi di tipo **Warning** (ID 140 e 50) hanno un **andamento intermittente**:
 
-  ■ Nei giorni: 9–12 maggio, 17–18 maggio, 24–25 maggio, 31 maggio, **non si registrano Warning**.
+    ■ Nei giorni: 9–12 maggio, 17–18 maggio, 24–25 maggio, 31 maggio, **non si registrano Warning**.
 
-  ■ In altri giorni variano da 4 a 65 eventi, con picchi il 13/05 (65) e il 26/05 (62).
+    ■ In altri giorni variano da 4 a 65 eventi, con picchi il 13/05 (65) e il 26/05 (62).
 
 • Gli eventi di tipo **Error** (ID 1058, 5723, 5805) **mostrano oscillazioni**:
 
-  ■ **ID 1058** (Group Policy processing error) è il **più frequente**, da 26 a 86 eventi al giorno, con picchi il 22/05 e 24/05 (86).
+    ■ **ID 1058** (Group Policy processing error) è il **più frequente**, da 26 a 86 eventi al giorno, con picchi il 22/05 e 24/05 (86).
 
-  ■ **ID 5723** (problemi di trust con il dominio) e **ID 5805** (machine account non trovato nel dominio) **sono costanti**, tipicamente 10–12 eventi/giorno.
+    ■ **ID 5723** (problemi di trust con il dominio) e **ID 5805** (machine account non trovato nel dominio) **sono costanti**, tipicamente 10–12 eventi/giorno.
 
 Si osserva un pattern evidente: nei giorni in cui mancano i Warning, come ad esempio dal 9 al 12 maggio e tra il 24 e il 25 maggio, si registra un aumento marcato degli Error 1058. Inoltre, in alcune giornate specifiche (13, 26 e 29 maggio) si manifestano picchi contemporanei sia di Warning sia di Errori, suggerendo la possibilità di disservizi o modifiche infrastrutturali.
 
