@@ -137,9 +137,11 @@ Nel file `Security_log_DC33.evtx` sono presenti principalmente tre livelli di ev
 
 • **Error**: Indica un problema che impedisce il completamento di un'attività. Questo livello segnala un malfunzionamento che richiede attenzione e può portare a conseguenze più gravi se non risolto.
 
-<img width="665" height="110" alt="image" src="https://github.com/user-attachments/assets/138ef7f4-841b-4f31-a7cb-98791ac69740" />
 
 
+<div align="center" style="border:1px solid #ccc; padding:10px; display: inline-block;"> 
+  <img width="665" height="110" alt="image" src="https://github.com/user-attachments/assets/138ef7f4-841b-4f31-a7cb-98791ac69740" />
+</div>
 
 
 
