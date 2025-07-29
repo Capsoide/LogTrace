@@ -151,7 +151,7 @@ L’analisi dei log di sistema è stata condotta seguendo una metodologia precis
 
 ## system_logs_journal_percentage.ps1
 
-Percorso: `
+Percorso: `data_analysis/script_4_analysis/system_logs_journal_percentage.ps1`
 
 ``` powershell
 
@@ -226,7 +226,7 @@ Write-Host "nReport Excel salvato in: $outputXlsx"
 ```
 Lo script analizza un file di log eventi Windows in formato .evtx filtrando gli eventi in un intervallo di date definito dall’utente ($startDate e $endDate). 
 
-Per ogni giorno dell’intervallo: calcola il numero totale di eventi, determina la distribuzione per livello di severità (Information, Warning, Error) ,calcola le percentuali di ciascun livello rispetto al totale giornaliero.
+Per ogni giorno dell’intervallo: calcola il numero totale di eventi, determina la distribuzione per livello di severità (Information, Warning, Error), calcola le percentuali di ciascun livello rispetto al totale giornaliero.
 
 I risultati vengono mostrati a video in forma tabellare e salvati in un report Excel (.xlsx) contenente, per ogni giorno, i conteggi e le percentuali di eventi per livello.
 
@@ -252,7 +252,15 @@ I risultati vengono mostrati a video in forma tabellare e salvati in un report E
             .
 ```
 
-Da 
+I risultati, esportati in un report Excel, hanno costituito la base per successive analisi grafiche. Da tali dati sono stati prodotti schemi e rappresentazioni grafiche che hanno permesso di evidenziare l’andamento giornaliero degli eventi e di identificare eventuali anomalie o picchi significativi.
+
+Information Level	Error Level	Warning Level
+55345	4994	2186
+88,517%	7,987%	3,496%
+<img width="539" height="61" alt="image" src="https://github.com/user-attachments/assets/84de2777-8de3-4c40-bd3a-665f27439048" />
+
+
+
 
 
 
