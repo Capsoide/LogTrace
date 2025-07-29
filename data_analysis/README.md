@@ -432,6 +432,9 @@ I dati riportano le occorrenze giornaliere degli eventi di sistema, distinti per
   <img width="2209" height="999" alt="image" src="https://github.com/user-attachments/assets/e9de7a94-8514-4f46-a65b-a50e4c22eff9" />
 </div>
 
+
+
+
 Da questi dati si evince che:
 
 • La maggior parte degli eventi registrati quotidianamente rientra nella categoria **Information**, con **percentuali generalmente comprese tra l'82% e il 94%**, indicando che **la maggior parte dei log sono di natura informativa e presumibilmente non critica**.
