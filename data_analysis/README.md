@@ -358,7 +358,7 @@ Per ciascun giorno nell’intervallo, lo script calcola il numero di occorrenze 
 
 ## Dati
 
-I risultati, esportati in un report Excel, hanno costituito la base per successive analisi grafiche. Da tali dati sono stati prodotti schemi e rappresentazioni grafiche che hanno permesso di evidenziare l’andamento giornaliero degli eventi e di identificare eventuali anomalie o picchi significativi.
+I risultati, prodotti sia come output in console sia in un report Excel generato tramite il modulo `ImportExcel`, hanno costituito la base per le analisi grafiche successive. Tali elaborazioni hanno consentito di rappresentare l’andamento giornaliero e mensile degli eventi, individuando possibili anomalie o picchi di attività.
 
 ##
 
