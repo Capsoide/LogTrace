@@ -1,22 +1,25 @@
 # Analisi dati 
 
 ## Introduzione
-In questa sezione viene illustrato il processo di verifica del corretto invio e della ricezione dei dati significativi provenienti da file di log esportati. 
+In questa sezione viene descritto il processo di verifica dell’invio e della corretta ricezione dei dati reali estratti dai file di log esportati, per consentire un’analisi precisa e affidabile su informazioni significative.
 
-In particolare, vengono utilizzati:
+In particolare, vengono analizzati:
 
-• **Security_log_DC33.evtx**, contenente eventi di sicurezza registrati tra il 14-07-2025 alle 22:43:58 e il 15-07-2025 alle 10:12:49;
+• **Security_log_DC33.evtx**, contenente eventi di sicurezza registrati tra il `14-07-2025` e il `15-07-2025`;
 
-• **System_log_DC33.evtx**, contenente eventi di sistema registrati tra il 05-05-2025 e il 15-07-2025.
-
-L’esempio mostra come Winlogbeat invii i file `.evtx` a Logstash su `192.168.56.10:5044`, permettendo di verificare la corretta ricezione degli eventi.
+• **System_log_DC33.evtx**, contenente eventi di sistema registrati tra il `05-05-2025` e il `15-07-2025`.
 
 ⚠️ Si precisa che in questa sezione **non verrà descritto nuovamente il funzionamento complessivo del sistema di raccolta e gestione dei log**, in quanto già trattato nella prima parte del file **README.md**.
-È quindi assunto che il processo **end-to-end** — dall’acquisizione tramite **Winlogbeat**, al trasferimento verso **Logstash**, alla duplicazione su **code Redis** (`redis-queue-immudb` e `redis-queue-elastic`), alla **consumazione dei log** verso **immudb**, nonché **l’indicizzazione e visualizzazione tramite Logstash, Elasticsearch e Kibana** — sia correttamente configurato e operativo.
+È quindi assunto che il processo **end-to-end** — dall’acquisizione tramite **Winlogbeat**, al trasferimento verso **Logstash**, alla duplicazione su **code Redis** (`redis-queue-immudb` e `redis-queue-elastic`), alla **consumazione dei log** verso **immudb**, nonché **l’indicizzazione e visualizzazione tramite Elasticsearch e Kibana** — è correttamente configurato e operativo.
 
 ## Invio log da file .evtx a Logstash con Winlogbeat
+L’esempio mostra come Winlogbeat invii i file `.evtx` a Logstash su `192.168.56.10:5044`, permettendo di verificare la corretta ricezione degli eventi.
+
+L’esempio mostra il processo mediante il quale Winlogbeat invia i file `.evtx` a Logstash, in ascolto all’indirizzo `192.168.56.10:5044`. Questo permette di verificare la corretta ricezione degli eventi di log e, successivamente, di effettuare un’analisi dettagliata e dei dati acquisiti, utilizzando sia l’interfaccia grafica di Elasticsearch sia script appositamente sviluppati.
 
 ## Configurazione Winlogbeat (`winlogbeat_security.yml`)
+
+File di configurazione per l’invio dei log di audit di sicurezza.
 
 ```yaml
 evtx_path: &evtx_path "C:\\Users\\vboxuser\\Desktop\\Security_log_DC33.evtx"
@@ -32,6 +35,8 @@ logging.level: info
 ```
 
 ## Configurazione Winlogbeat (`winlogbeat_system.yml`)
+
+File di configurazione per l’invio dei log di audit di sistema.
 
 ```yaml
 evtx_path: &evtx_path "C:\\Users\\vboxuser\\Desktop\\Sistem_log_DC33.evtx"
@@ -52,7 +57,7 @@ logging.level: info
 • `output.logstash`: indirizzo del nodo Logstash destinatario.
 
 ## Esecuzione
-Da povershell, nella cartella Winlogbeat:
+Da powershell, nella cartella Winlogbeat:
 
 ```powershell
 PS C:\WINDOWS\system32> cd "$env:USERPROFILE\Desktop\Winlogbeat_712x"
