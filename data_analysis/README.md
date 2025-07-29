@@ -243,7 +243,16 @@ I risultati vengono mostrati a video in forma tabellare e salvati in un report E
  Warning    :  40 eventi (4,66%)
  Error      :  50 eventi (5,82%)
 
+  === 2025-05-07 ===
+ Information: 853 eventi (89,98%)
+ Warning    :  41 eventi (4,32%)
+ Error      :  54 eventi (5,70%)
+            .
+            .
+            .
 ```
+
+Da 
 
 
 
