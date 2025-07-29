@@ -130,6 +130,7 @@ Un aspetto fondamentale dei log analizzati è la presenza di campi chiave associ
 • **Categoria attività**: la classificazione funzionale dell’evento (ad esempio sicurezza, sistema, applicazione).
 
 ##
+
 <div align="center" style="border:1px solid #ccc; padding:30px; display: inline-block;"> 
   <img width="665" height="110" alt="image" src="https://github.com/user-attachments/assets/138ef7f4-841b-4f31-a7cb-98791ac69740" />
 </div>
@@ -143,6 +144,12 @@ Nel file `Security_log_DC33.evtx` sono presenti principalmente tre livelli di ev
 • **Warning**: Indica un problema che potrebbe causare problemi futuri. Questo livello avvisa di situazioni che potrebbero portare a errori o malfunzionamenti se non corrette.
 
 • **Error**: Indica un problema che impedisce il completamento di un'attività. Questo livello segnala un malfunzionamento che richiede attenzione e può portare a conseguenze più gravi se non risolto.
+
+## Catalogazione dei dati
+
+L’analisi dei log di sistema è stata condotta seguendo una metodologia precisa basata sulla catalogazione dei dati. In particolare, tramite lo script `system_logs_journal_percentage.ps1` è stato possibile elaborare i log giorno per giorno, suddividendoli in base al livello di gravità. Lo script powershell estrae il conteggio delle occorrenze di ciascun evento e calcola la percentuale relativa giornaliera, permettendo così di ottenere una visione quantitativa e temporale della distribuzione degli eventi.
+
+## system_logs_journal_percentage.ps1
 
 
 
