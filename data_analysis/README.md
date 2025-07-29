@@ -129,11 +129,11 @@ Un aspetto fondamentale dei log analizzati è la presenza di campi chiave associ
 
 • **Categoria attività**: la classificazione funzionale dell’evento (ad esempio sicurezza, sistema, applicazione).
 
-
+##
 <div align="center" style="border:1px solid #ccc; padding:30px; display: inline-block;"> 
   <img width="665" height="110" alt="image" src="https://github.com/user-attachments/assets/138ef7f4-841b-4f31-a7cb-98791ac69740" />
 </div>
-
+##
 
 Nel file `Security_log_DC33.evtx` sono presenti principalmente tre livelli di evento: 
 
