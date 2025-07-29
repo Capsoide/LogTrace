@@ -395,7 +395,7 @@ Questa distribuzione evidenzia come la maggior parte dei log raccolti rappresent
 
 ### Maggio
 
-I dati riportano le occorrenze giornaliero degli eventi di sistema, distinti per livello di gravità (Information, Warning, Error), corredati dalla percentuale relativa rispetto al totale degli eventi registrati per ciascuna giornata nel periodo considerato, dal 5 al 31 maggio 2025.
+I dati riportano le occorrenze giornaliere degli eventi di sistema, distinti per livello di gravità (Information, Warning, Error), corredati dalla percentuale relativa rispetto al totale degli eventi registrati per ciascuna giornata nel periodo considerato, dal `05/05/2025` al `05/31/2025`.
 
 | Data       | Totale Eventi | Information Count | Information % | Warning Count | Warning % | Error Count | Error % |
 |------------|---------------|-------------------|---------------|---------------|-----------|-------------|---------|
@@ -431,6 +431,16 @@ I dati riportano le occorrenze giornaliero degli eventi di sistema, distinti per
 <div align="center" style="border:1px solid #ccc; padding:30px; display: inline-block;"> 
   <img width="2209" height="999" alt="image" src="https://github.com/user-attachments/assets/e9de7a94-8514-4f46-a65b-a50e4c22eff9" />
 </div>
+
+Da questi dati si evince che:
+
+• La maggior parte degli eventi registrati quotidianamente rientra nella categoria **Information**, con **percentuali generalmente comprese tra l'82% e il 94%**, indicando che **la maggior parte dei log sono di natura informativa e presumibilmente non critica**.
+
+• Gli eventi di tipo **Warning** risultano **generalmente bassi**, spesso **sotto il 5%**, ma con **qualche picco significativo in alcune giornate** (ad esempio il 13/05/2025 e il 26/05/2025) dove superano il **7-8%**, segnalando possibili situazioni da monitorare.
+
+• Gli eventi di tipo **Error** mostrano **percentuali variabili**, spesso **tra il 6% e il 15%**, con alcuni giorni (come il 10, 11 e 15 maggio) in cui gli errori sono più rilevanti in termini relativi e assoluti, suggerendo la presenza di anomalie o problemi più seri in quei giorni.
+
+In generale, il volume totale degli eventi giornalieri oscilla tra circa 700 e oltre 1100, senza trend di aumento o diminuzione netta evidente, ma con variazioni giornaliere che possono riflettere la normale attività di sistema o specifici eventi episodici.
 
 
 
