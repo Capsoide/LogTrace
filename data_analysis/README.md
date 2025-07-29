@@ -483,7 +483,7 @@ Di seguito è mostrata una rappresentazione grafica dei conteggi giornalieri deg
   - **ID 5723** (problemi di trust con il dominio) e **ID 5805** (machine account non trovato nel dominio) **sono costanti**, tipicamente 10–12 eventi/giorno.
 
 
-Si osserva un pattern evidente: nei giorni in cui mancano i Warning, come ad esempio dal 9 al 12 maggio e tra il 24 e il 25 maggio, si registra un aumento marcato degli Error 1058. Inoltre, in alcune giornate specifiche (13, 26 e 29 maggio) si manifestano picchi contemporanei sia di Warning sia di Errori, suggerendo la possibilità di disservizi o modifiche infrastrutturali.
+Si osserva un pattern evidente, ovvero che nei giorni in cui mancano i Warning, come ad esempio dal 9 al 12 maggio e tra il 24 e il 25 maggio, si registra un aumento marcato degli Error 1058. Inoltre, in alcune giornate specifiche (13, 26 e 29 maggio) si manifestano picchi contemporanei sia di Warning sia di Errori, suggerendo la possibilità di disservizi o modifiche infrastrutturali.
 
 Le interruzioni nelle linee indicano i giorni in cui un determinato Event ID non è stato registrato, permettendo così di evidenziare chiaramente differenze di frequenza e variazioni nel tempo.
 
