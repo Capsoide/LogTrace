@@ -466,31 +466,23 @@ Di seguito è mostrata una rappresentazione grafica dei conteggi giornalieri deg
 
 ##
 
+### Andamento
+
+• Gli eventi di tipo **Information** (ID 7036 e 14554) sono i **più frequenti**, tipicamente tra 300 e 450 eventi al giorno.
+
+• Gli eventi di tipo **Warning** (ID 140 e 50) hanno un **andamento intermittente**:
+
+  ■ Nei giorni: 9–12 maggio, 17–18 maggio, 24–25 maggio, 31 maggio, **non si registrano Warning**.
+
+  ■ In altri giorni variano da 4 a 65 eventi, con picchi il 13/05 (65) e il 26/05 (62).
+
+• Gli eventi di tipo **Error** (ID 1058, 5723, 5805) **mostrano oscillazioni**:
+
+  ■ **ID 1058** (Group Policy processing error) è il **più frequente**, da 26 a 86 eventi al giorno, con picchi il 22/05 e 24/05 (86).
+
+  ■ **ID 5723** (problemi di trust con il dominio) e **ID 5805** (machine account non trovato nel dominio) **sono costanti**, tipicamente 10–12 eventi/giorno.
+
+Si osserva un pattern evidente: nei giorni in cui mancano i Warning, come ad esempio dal 9 al 12 maggio e tra il 24 e il 25 maggio, si registra un aumento marcato degli Error 1058. Inoltre, in alcune giornate specifiche (13, 26 e 29 maggio) si manifestano picchi contemporanei sia di Warning sia di Errori, suggerendo la possibilità di disservizi o modifiche infrastrutturali.
+
 Le interruzioni nelle linee indicano i giorni in cui un determinato Event ID non è stato registrato, permettendo così di evidenziare chiaramente differenze di frequenza e variazioni nel tempo.
 
-
-Andamento generale:
-
-Eventi Informativi (ID 7036 e 14554) sono i più frequenti, tipicamente tra 300 e 450 eventi al giorno.
-
-ID 7036 – “Service Control Manager: il servizio ha cambiato stato”.
-
-ID 14554 – probabilmente relativo ad un'applicazione o un driver specifico (frequenza stabile).
-
-Warning (ID 140 e 50) hanno un andamento intermittente:
-
-Nei giorni centrali (9–12 maggio, 17–18 maggio, 24–25 maggio, 31 maggio) non si registrano Warning.
-
-In altri giorni variano da 4 a 65 eventi, con picchi il 13/05 (65) e il 26/05 (62).
-
-Errori (ID 1058, 5723, 5805) mostrano oscillazioni:
-
-ID 1058 (Group Policy processing error) è il più frequente, da 26 a 86 eventi/giorno, con picchi il 22/05 e 24/05 (86).
-
-ID 5723 (problemi di trust con il dominio) e ID 5805 (machine account non trovato nel dominio) sono costanti, tipicamente 10–12 eventi/giorno.
-
-Pattern evidente:
-
-L’assenza di Warning coincide con un aumento marcato degli Errori 1058 (ad esempio 9–12 maggio e 24–25 maggio).
-
-Alcuni giorni (13/05, 26/05, 29/05) presentano picchi contemporanei di Warning ed Errori, indicando possibili disservizi o modifiche infrastrutturali.
