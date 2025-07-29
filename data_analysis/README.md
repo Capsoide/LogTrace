@@ -119,7 +119,7 @@ In primo luogo, sono stati analizzati i log relativi al file di sistema `Securit
 
 Un aspetto fondamentale dei log analizzati è la presenza di campi chiave associati a ciascun evento:
 
-• **Livello**: indica la gravità o la natura dell’evento ( Information, Verbose, Warning, Error and Critical).
+• **Livello**: indica la gravità o la natura dell’evento (Information, Verbose, Warning, Error and Critical).
 
 • **Data e ora**: timestamp di quando si è verificato l’evento;
 
@@ -129,7 +129,16 @@ Un aspetto fondamentale dei log analizzati è la presenza di campi chiave associ
 
 • **Categoria attività**: la classificazione funzionale dell’evento (ad esempio sicurezza, sistema, applicazione).
 
-<img width="681" height="107" alt="image" src="https://github.com/user-attachments/assets/2e3a5bf7-976c-4bed-9121-b878dac2096f" />
+Nel file `Security_log_DC33.evtx` sono presenti principalmente tre livelli di evento: 
+
+• **Information**: Indica un evento normale e di successo, come l'avvio di un'applicazione o un accesso riuscito. Questo livello fornisce informazioni utili sullo stato del sistema e delle sue componenti, ma non indica necessariamente un problema.
+
+• **Warning**: Indica un problema che potrebbe causare problemi futuri. Questo livello avvisa di situazioni che potrebbero portare a errori o malfunzionamenti se non corrette.
+
+• **Error**: Indica un problema che impedisce il completamento di un'attività. Questo livello segnala un malfunzionamento che richiede attenzione e può portare a conseguenze più gravi se non risolto.
+
+<img width="665" height="110" alt="image" src="https://github.com/user-attachments/assets/138ef7f4-841b-4f31-a7cb-98791ac69740" />
+
 
 
 
