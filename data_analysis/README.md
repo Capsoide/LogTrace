@@ -389,7 +389,7 @@ Dalla fase di elaborazione è emerso che:
 
 • gli eventi di livello **Warning** sono **2186**, pari al  **3,496%** del totale.
 
-##
+## Eventi giornalieri per categoria
 
 Questa distribuzione evidenzia come la maggior parte dei log raccolti rappresenti informazioni di routine, con una percentuale relativamente contenuta di eventi che segnalano errori o condizioni potenzialmente problematiche.
 
