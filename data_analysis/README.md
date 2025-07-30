@@ -143,7 +143,7 @@ Un aspetto fondamentale dei log analizzati è la presenza di campi chiave associ
 
 ##
 
-## System Logs
+# System Logs
 
 Nel file `System_log_DC33.evtx` sono presenti principalmente tre livelli di evento: 
 
