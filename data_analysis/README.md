@@ -111,11 +111,17 @@ La conferma del completamento della lettura è evidenziata dalla riga:
 Stop processing. {"id": "C:\\Users\\vboxuser\\Desktop\\Security_log_DC33.evtx"}
 ```
 
-## Analisi
+# Analisi dati
 
-Dopo aver verificato in Elasticsearch la corretta ricezione e indicizzazione dei dati, si è proceduto con l’analisi dei log.
+## Introduzione
 
-In primo luogo, sono stati analizzati i log relativi al file di sistema `Security_log_DC33.evtx`. Poiché gli eventi coprivano un periodo di circa **tre mesi**, i dati sono stati suddivisi per mese al fine di consentire una rappresentazione grafica più chiara e un’analisi temporale più efficace.
+Questa sezione è dedicata all’analisi di due file di log generati da un sistema Windows: `System_log_DC33.evtx`, che raccoglie i log di sistema, e `Security_log_DC33.evtx`, che contiene i log di sicurezza.
+
+I **log di sistema** raccolgono informazioni relative al funzionamento generale del sistema operativo e dei componenti hardware e software. Tali log documentano eventi come l’avvio e l’arresto dei servizi, errori critici, warning e altre notifiche emesse dai driver o dal kernel. Sono fondamentali per **diagnosticare malfunzionamenti** e **monitorare la stabilità del sistema**.
+
+I **log di sicurezza**, invece, registrano eventi relativi alla sicurezza informatica, come i tentativi di accesso (riusciti o falliti), le modifiche ai privilegi utente, le operazioni di accesso ai file protetti, le policy applicate e le attività legate all’autenticazione. Questi log sono cruciali per il **rilevamento di comportamenti sospetti**, per la **verifica della conformità** e per **l’analisi forense**.
+
+Per favorire una lettura più immediata e una maggiore efficacia interpretativa, i dati analizzati saranno rappresentati graficamente mediante line plot, in orientamento sia verticale che orizzontale. Tali rappresentazioni consentono di evidenziare con chiarezza l’andamento temporale degli eventi, l’occorrenza di anomalie e la distribuzione dei fenomeni rilevati nei log.
 
 Un aspetto fondamentale dei log analizzati è la presenza di campi chiave associati a ciascun evento:
 
@@ -137,7 +143,9 @@ Un aspetto fondamentale dei log analizzati è la presenza di campi chiave associ
 
 ##
 
-Nel file `Security_log_DC33.evtx` sono presenti principalmente tre livelli di evento: 
+## System Logs
+
+Nel file `System_log_DC33.evtx` sono presenti principalmente tre livelli di evento: 
 
 • **Information**: Indica un evento normale e di successo, come l'avvio di un'applicazione o un accesso riuscito. Questo livello fornisce informazioni utili sullo stato del sistema e delle sue componenti, ma non indica necessariamente un problema.
 
