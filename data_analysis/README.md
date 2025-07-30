@@ -412,12 +412,12 @@ I dati riportano le occorrenze giornaliere degli eventi di sistema, distinti per
 | 07/05/2025 | 948           | 853               | 89,98%         | 41            | 4,32%      | 54          | 5,70%    |
 | 08/05/2025 | 892           | 776               | 87,00%         | 46            | 5,15%      | 70          | 7,85%    |
 | 09/05/2025 | 814           | 720               | 88,45%         | 2             | 0,25%      | 92          | 11,30%   |
-| 10/05/2025 | 665           | 561               | 84,36%         | 0             | -          | 104         | 15,64%   |
-| 11/05/2025 | 703           | 598               | 85,07%         | 1             | 0,14%      | 104         | 14,79%   |
+| 10/05/2025 | 665           | 561               | 84,36%         | 0             | -          | 104         | 15,64%   | 
+| 11/05/2025 | 703           | 598               | 85,07%         | 1             | 0,14%      | 104         | 14,79%   | 
 | 12/05/2025 | 895           | 804               | 89,84%         | 2             | 0,22%      | 89          | 9,94%    |
 | 13/05/2025 | 993           | 810               | 81,57%         | 82            | 8,26%      | 101         | 10,17%   |
 | 14/05/2025 | 974           | 856               | 87,89%         | 42            | 4,31%      | 76          | 7,80%    |
-| 15/05/2025 | 1138          | 944               | 82,95%         | 42            | 3,69%      | 152         | 13,36%   |
+| 15/05/2025 | 1138          | 944               | 82,95%         | 42            | 3,69%      | 152         | 13,36%   | 
 | 16/05/2025 | 992           | 882               | 88,91%         | 41            | 4,13%      | 69          | 6,96%    |
 | 17/05/2025 | 772           | 691               | 89,51%         | 1             | 0,13%      | 80          | 10,36%   |
 | 18/05/2025 | 748           | 672               | 89,84%         | 0             | -          | 76          | 10,16%   |
@@ -426,10 +426,10 @@ I dati riportano le occorrenze giornaliere degli eventi di sistema, distinti per
 | 21/05/2025 | 1004          | 876               | 87,26%         | 40            | 3,98%      | 88          | 8,76%    |
 | 22/05/2025 | 1016          | 867               | 85,33%         | 41            | 4,04%      | 108         | 10,63%   |
 | 23/05/2025 | 901           | 755               | 83,80%         | 41            | 4,55%      | 105         | 11,65%   |
-| 24/05/2025 | 843           | 732               | 86,83%         | 1             | 0,12%      | 110         | 13,05%   |
-| 25/05/2025 | 726           | 621               | 85,53%         | 1             | 0,14%      | 104         | 14,33%   |
-| 26/05/2025 | 1032          | 849               | 82,27%         | 78            | 7,56%      | 105         | 10,17%   |
-| 27/05/2025 | 1061          | 915               | 86,24%         | 40            | 3,77%      | 106         | 9,99%    |
+| 24/05/2025 | 843           | 732               | 86,83%         | 1             | 0,12%      | 110         | 13,05%   | 
+| 25/05/2025 | 726           | 621               | 85,53%         | 1             | 0,14%      | 104         | 14,33%   | 
+| 26/05/2025 | 1032          | 849               | 82,27%         | 78            | 7,56%      | 105         | 10,17%   | 
+| 27/05/2025 | 1061          | 915               | 86,24%         | 40            | 3,77%      | 106         | 9,99%    | 
 | 28/05/2025 | 1036          | 909               | 87,74%         | 40            | 3,86%      | 87          | 8,40%    |
 | 29/05/2025 | 1040          | 909               | 87,40%         | 61            | 5,87%      | 70          | 6,73%    |
 | 30/05/2025 | 1007          | 886               | 87,98%         | 48            | 4,77%      | 73          | 7,25%    |
@@ -448,9 +448,19 @@ Da questi dati si evince che:
 
 • La maggior parte degli eventi registrati quotidianamente rientra nella categoria **Information**, con **percentuali generalmente comprese tra l'82% e il 94%**, indicando che **la maggior parte dei log sono di natura informativa e presumibilmente non critica**.
 
-• Gli eventi di tipo **Warning** risultano **generalmente bassi**, spesso **sotto il 5%**, ma con **qualche picco significativo in alcune giornate** (ad esempio il 13/05/2025 e il 26/05/2025) dove superano il **10%**, segnalando possibili situazioni da monitorare.
+• Gli eventi di tipo **Warning** risultano **generalmente bassi**, spesso **sotto il 5%**, ma con **qualche picco significativo in alcune giornate** (ad esempio il 13/05/2025 e il 26/05/2025) dove superano il **10%**, segnalando possibili situazioni da monitorare. n altri casi, come il **10/05** o il **18/05**, non vengono segnalati warning rilevanti.
 
-• Gli eventi di tipo **Error** mostrano **percentuali variabili**, spesso **tra il 6% e il 16%**, con alcuni giorni (come il 10, 11, 15 e 25 maggio) in cui gli errori sono più rilevanti in termini relativi e assoluti, suggerendo la presenza di anomalie o problemi più seri in quei giorni.
+• Gli eventi di tipo **Error** mostrano una **variabilità più marcata**, oscillando generalmente tra il **6%** e il **16%**, con alcuni picchi evidenti:
+
+  - **24/05**: 13,05% di errori;
+
+  - **15/05**: 13,36% di errori;
+
+  - **25/05**: 14,33% di errori;
+
+  - **11/05**: 14,79% di errori;
+
+  - **10/05**: 15,64%, il valore più alto del mese, suggerendo la presenza di una **anomalia** o **criticità significativa** in quella giornata.
 
 In generale, il volume totale degli eventi giornalieri oscilla tra circa **700 e oltre 1100 al giorno**, senza un trend di crescita o decrescita costante, ma con variazioni che **potrebbero riflettere la normale attività del sistema o eventi specifici di rilievo**.
 
@@ -552,11 +562,11 @@ Da questi dati si evince che:
 
   - **15/06**: 15,41% di errori;
 
-  - **14/06**: 13,98%;
+  - **14/06**: 13,98% di errori;
 
-  - **08/06**: 14,0%;
+  - **08/06**: 14,0% di errori;
 
-  - **07/06**: 13,05%;
+  - **07/06**: 13,05% di errori;
 
   - **19/06**: 19,02%, il valore più alto del mese, suggerendo la presenza di una **anomalia** o **criticità significativa** in quella giornata.
 
