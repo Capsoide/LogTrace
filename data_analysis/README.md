@@ -443,9 +443,6 @@ I dati riportano le occorrenze giornaliere degli eventi di sistema, distinti per
   <img width="2210" height="931" alt="image" src="https://github.com/user-attachments/assets/5849821b-e4b9-4f05-97fe-81f6a4ceee55" />  
 </div>
 
-
-
-
 ##
 
 
@@ -470,7 +467,7 @@ Da questi dati si evince che:
 In generale, il volume totale degli eventi giornalieri oscilla tra circa **700 e oltre 1100 al giorno**, senza un trend di crescita o decrescita costante, ma con variazioni che **potrebbero riflettere la normale attività del sistema o eventi specifici di rilievo**.
 
 
-### Conteggio giornaliero degli eventi di sistema
+### Andamento giornaliero degli eventi di sistema
 
 Di seguito è mostrata una rappresentazione grafica dei conteggi giornalieri degli eventi di sistema raccolti durante il periodo di maggio 2025, realizzata con un grafico di tipo **plot line** su **scala logaritmica**. L’asse verticale indica il numero di occorrenze,  quello orizzontale rappresenta i singoli giorni del mese. Le linee corrispondono ai più ricorenti Event ID per ciascun tipo: 
 
@@ -582,7 +579,7 @@ Da questi dati si evince che:
 In generale, il volume totale degli eventi giornalieri oscilla tra circa **590 e oltre 1040 eventi al giorno**, senza un trend di crescita o decrescita costante, ma con variazioni che **potrebbero riflettere la normale attività del sistema o eventi specifici di rilievo**.
 
 
-### Conteggio giornaliero degli eventi di sistema
+### Andamento giornaliero degli eventi di sistema
 
 Di seguito è mostrata una rappresentazione grafica dei conteggi giornalieri degli eventi di sistema raccolti durante il periodo di maggio 2025, realizzata con un grafico di tipo **plot line** su **scala logaritmica**. L’asse verticale indica il numero di occorrenze,  quello orizzontale rappresenta i singoli giorni del mese. Le linee corrispondono ai più ricorenti Event ID per ciascun tipo: 
 
@@ -596,7 +593,7 @@ Di seguito è mostrata una rappresentazione grafica dei conteggi giornalieri deg
 ##
 
 <div align="center" style="border:1px solid #ccc; padding:30px; display: inline-block;"> 
-  <img width="1512" height="676" alt="image" src="https://github.com/user-attachments/assets/67468d83-002e-423c-8697-05ee4c4c2f59" />
+  <img width="2210" height="931" alt="image" src="https://github.com/user-attachments/assets/f065ac24-4102-423e-a00d-9a8dbeb497ab" />
 </div>
 
 Le interruzioni nelle linee indicano i giorni in cui un determinato Event ID non è stato registrato, permettendo così di evidenziare chiaramente differenze di frequenza e variazioni nel tempo.
