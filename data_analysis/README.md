@@ -138,7 +138,7 @@ Un aspetto fondamentale dei log analizzati è la presenza di campi chiave associ
 ##
 
 <div align="center" style="border:1px solid #ccc; padding:30px; display: inline-block;"> 
-  <img width="826" height="439" alt="image" src="https://github.com/user-attachments/assets/e39a955a-048b-40c9-8f1b-1066e4a4806a" />
+  
 </div>
 
 ##
@@ -394,8 +394,10 @@ Dalla fase di elaborazione è emerso che:
 Questa distribuzione evidenzia come la maggior parte dei log raccolti rappresenti informazioni di routine, con una percentuale relativamente contenuta di eventi che segnalano errori o condizioni potenzialmente problematiche.
 
 <div align="center" style="border:1px solid #ccc; padding:30px; display: inline-block;"> 
-  <img width="685" height="420" alt="image" src="https://github.com/user-attachments/assets/784b7167-1e2a-41a8-8cef-f1d7dc209a00" />
+  <img width="685" height="420" alt="image" src="https://github.com/user-attachments/assets/e39a955a-048b-40c9-8f1b-1066e4a4806a" />
 </div>
+
+
 
 ##
 
