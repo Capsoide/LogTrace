@@ -449,7 +449,7 @@ I dati riportano le occorrenze giornaliere degli eventi di sistema, distinti per
 
 Da questi dati si evince che:
 
-• La maggior parte degli eventi registrati quotidianamente rientra nella categoria **Information**, con **percentuali generalmente comprese tra l'82% e il 94%**, indicando che **la maggior parte dei log sono di natura informativa e presumibilmente non critica**.
+• La maggior parte degli eventi registrati quotidianamente rientra nella categoria **Information**, con **percentuali generalmente comprese tra l'82% e il 94%**, indicando che **la maggior parte dei log sono di natura informativa e quindi non critici**.
 
 • Gli eventi di tipo **Warning** risultano **generalmente bassi**, spesso **sotto il 5%**, ma con **qualche picco significativo in alcune giornate** (ad esempio il 13/05/2025 e il 26/05/2025) dove superano il **10%**, segnalando possibili situazioni da monitorare. n altri casi, come il **10/05** o il **18/05**, non vengono segnalati warning rilevanti.
 
@@ -561,9 +561,9 @@ I dati riportano le occorrenze giornaliere degli eventi di sistema, distinti per
 
 Da questi dati si evince che:
 
-• La maggior parte degli eventi registrati quotidianamente rientra nella categoria **Information**, con **percentuali generalmente comprese tra l'85% e il 96%**, indicando che **la maggior parte dei log** **sono di natura informativa e presumibilmente non critica**.
+• La maggior parte degli eventi registrati quotidianamente rientra nella categoria **Information**, con **percentuali generalmente comprese tra l'85% e il 96%**, indicando che **la maggior parte dei log** **sono di natura informativa e quindi non critici**.
 
-• Gli eventi di tipo **Warning** risultano **generalmente bassi**, spesso al di sotto del **5%**, con alcune eccezioni che raggiungono o superano tale soglia (ad esempio il **09/06**, **26/06** e il **27/06**, dove si registrano rispettivamente **5,36%** ,**5,64%** e **5,22%**). In altri casi, come l’**08/06** o il **28/06**, non vengono segnalati warning rilevanti.
+• Gli eventi di tipo **Warning** risultano **generalmente bassi**, spesso al di sotto del **5%**, con alcune eccezioni che raggiungono o superano tale soglia (ad esempio il **09/06**, **26/06** e il **27/06**, dove si registrano rispettivamente **5,36%** ,**5,64%** e **5,22%**). In altri casi, come l’**08/06** o il **28/06**, non vengono segnalati warning.
 
 • Gli eventi di tipo **Error** mostrano una **variabilità più marcata**, oscillando generalmente tra il **6%** e il **15%**, con alcuni picchi evidenti:
 
@@ -596,6 +596,95 @@ Di seguito è mostrata una rappresentazione grafica dei conteggi giornalieri deg
 <div align="center" style="border:1px solid #ccc; padding:30px; display: inline-block;"> 
   <img width="2210" height="931" alt="image" src="https://github.com/user-attachments/assets/f065ac24-4102-423e-a00d-9a8dbeb497ab" />
 </div>
+
+Le interruzioni nelle linee indicano i giorni in cui un determinato Event ID non è stato registrato, permettendo così di evidenziare chiaramente differenze di frequenza e variazioni nel tempo.
+
+##
+
+### Studio della distribuzione temporale
+
+- Gli eventi di tipo **Information** (ID 7036 e 14554) sono i **più frequenti**, mediamente tra 250 e 450 eventi al giorno.
+
+- Gli eventi di tipo **Warning** (ID 140 e 50) hanno un **andamento intermittente**:
+
+  - Nei giorni: 9–12 maggio, 17–18 maggio, 24–25 maggio, 31 maggio, **non si registrano Warning**.
+
+  - In altri giorni variano da 4 a 65 eventi, con picchi il 13/05 (65) e il 26/05 (62).
+
+- Gli eventi di tipo **Error** (ID 1058, 5723, 5805) **mostrano oscillazioni**:
+
+  - **ID 1058** (Group Policy processing error) è il **più frequente**, da 26 a 86 eventi al giorno, con picchi il 22/05 e 24/05 (86).
+
+  - **ID 5723** (problemi di trust con il dominio) e **ID 5805** (machine account non trovato nel dominio) **sono costanti**, tipicamente 10–12 eventi/giorno.
+
+
+Si osserva un **pattern evidente**, ovvero che nei giorni in cui mancano i Warning, come ad esempio dal 9 al 12 maggio e tra il 24 e il 25 maggio, si registra un aumento marcato degli Error 1058. Inoltre, in alcune giornate specifiche (13, 26 e 29 maggio) si manifestano picchi contemporanei sia di Warning sia di Errori, suggerendo la possibilità di disservizi o modifiche infrastrutturali.
+
+### Luglio
+
+I dati riportano le occorrenze giornaliere degli eventi di sistema, distinti per livello di gravità (Information, Warning, Error), corredati dalla percentuale relativa rispetto al totale degli eventi registrati per ciascuna giornata nel periodo considerato, dal `07/01/2025` al `07/15/2025`.
+
+| Data       | Totale Eventi | Information Count | Information ID %   | Warning Count  | Warning ID %   | Error Count  | Error ID %   |
+|------------|----------------|-------------------|-------------------|----------------|----------------|--------------|--------------|
+| 01/07/2025 | 899            | 829               | 92,21%            | 46             | 5,12%          | 24           | 2,67%        |
+| 02/07/2025 | 849            | 785               | 92,47%            | 39             | 4,59%          | 25           | 2,94%        |
+| 03/07/2025 | 842            | 777               | 92,28%            | 42             | 4,99%          | 23           | 2,73%        |
+| 04/07/2025 | 803            | 740               | 92,15%            | 42             | 5,23%          | 21           | 2,62%        |
+| 05/07/2025 | 658            | 633               | 96,20%            | 1              | 0,15%          | 24           | 3,65%        |
+| 06/07/2025 | 657            | 631               | 96,05%            | 2              | 0,30%          | 24           | 3,65%        |
+| 07/07/2025 | 936            | 870               | 92,95%            | 41             | 4,38%          | 25           | 2,67%        |
+| 08/07/2025 | 965            | 888               | 92,02%            | 54             | 5,60%          | 23           | 2,38%        |
+| 09/07/2025 | 920            | 855               | 92,93%            | 41             | 4,46%          | 24           | 2,61%        |
+| 10/07/2025 | 807            | 743               | 92,07%            | 38             | 4,71%          | 26           | 3,22%        |
+| 11/07/2025 | 833            | 769               | 92,32%            | 42             | 5,04%          | 22           | 2,64%        |
+| 12/07/2025 | 751            | 722               | 96,14%            | 5              | 0,66%          | 24           | 3,20%        |
+| 13/07/2025 | 661            | 637               | 96,37%            | 2              | 0,30%          | 22           | 3,33%        |
+| 14/07/2025 | 921            | 855               | 92,83%            | 42             | 4,56%          | 24           | 2,61%        |
+| 15/07/2025 | 320            | 309               | 96,57%            | 1              | 0,31%          | 10           | 3,12%        |
+
+
+
+##
+
+<div align="center" style="border:1px solid #ccc; padding:30px; display: inline-block;"> 
+  <img width="2210" height="931" alt="image" src="https://github.com/user-attachments/assets/d096bce9-b8b2-4f71-9ab9-3df283ca8100" />
+</div>
+
+
+##
+
+
+Da questi dati si evince che:
+
+• La maggior parte degli eventi registrati quotidianamente rientra nella categoria **Information**, con **percentuali generalmente comprese tra il 92% e il 96%**, indicando log **prevalentemente di natura informativa** e quindi non critici**.
+
+• Gli eventi di tipo **Warning** risultano **generalmente bassi**, con valori che si mantengono tra il **4%** e il **5%**, ma che **si riducono quasi allo 0** in giornate come il **05/07**, **06/07**, **12/07**, **13/07** e **15/07** (da 0,15% a 0,66%).
+
+• Gli eventi di tipo **Error** mostrano una **presenza costante ma moderata**, con percentuali che oscillano  generalmente tra il 2,5% e il 3,6%, **senza variazioni significative nè anomalie evidenti**.
+
+In generale, i dati mostrano una situazione **tendenzialmente stabile**, in cui **gli eventi critici sono rari** e le lievi oscillazioni risultano coerenti con la normale attività operativa. 
+Il volume totale degli eventi giornalieri oscilla tra un minimo di **320** e un massimo di **965**,  suggerendo una **normale variabilità operativa**, senza evidenti trend di crescita o decrescita.
+
+
+### Andamento giornaliero degli eventi di sistema
+
+Di seguito è mostrata una rappresentazione grafica dei conteggi giornalieri degli eventi di sistema raccolti durante il periodo di luglio 2025, realizzata con un grafico di tipo **plot line** su **scala logaritmica**. L’asse verticale indica il numero di occorrenze,  quello orizzontale rappresenta i singoli giorni del mese. Le linee corrispondono ai più ricorenti Event ID per ciascun tipo: 
+
+• **Information**: `7036` e `14554`; 
+
+• **Warning**: `140` e `50`; 
+
+• **Error**: `5805` e `5723`. 
+
+⚠️ Si precisa che, data la scarsa presenza di eventi di tipo Error con ID 1058 nel periodo considerato, i dati relativi sono stati esclusi dalla rappresentazione grafica per focalizzare l’analisi su valori e percentuali più significativi.
+
+##
+
+<div align="center" style="border:1px solid #ccc; padding:30px; display: inline-block;"> 
+  <img width="2210" height="931" alt="image" src="https://github.com/user-attachments/assets/52e6abb7-f8e9-4c1e-b148-0db193865f3a" />
+</div>
+
+
 
 Le interruzioni nelle linee indicano i giorni in cui un determinato Event ID non è stato registrato, permettendo così di evidenziare chiaramente differenze di frequenza e variazioni nel tempo.
 
