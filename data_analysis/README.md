@@ -138,7 +138,7 @@ Un aspetto fondamentale dei log analizzati è la presenza di campi chiave associ
 ##
 
 <div align="center" style="border:1px solid #ccc; padding:30px; display: inline-block;"> 
-  <img width="785" height="220" alt="image" src="https://github.com/user-attachments/assets/138ef7f4-841b-4f31-a7cb-98791ac69740" />
+  <img width="785" height="220" alt="image" src="https://github.com/user-attachments/assets/6875961c-32d9-47f7-aa73-1262f5735cb5" />
 </div>
 
 ##
