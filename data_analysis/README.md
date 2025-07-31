@@ -7,8 +7,7 @@ In particolare, vengono analizzati:
 
 • **System_log_DC33.evtx**, contenente eventi di sistema registrati tra il `05-05-2025` e il `15-07-2025`.
 
-• **Security_log_DC33.evtx**, contenente eventi di sicurezza registrati tra il `14-07-2025` e il `15-07-2025`;
-
+• **Security_log_DC33.evtx**, contenente eventi di sicurezza registrati tra il `14-07-2025` e il `15-07-2025`.
 
 
 ⚠️ Si precisa che in questa sezione **non verrà descritto nuovamente il funzionamento complessivo del sistema di raccolta e gestione dei log**, in quanto già trattato nella prima parte del file **README.md**.
