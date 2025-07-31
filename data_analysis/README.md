@@ -1,4 +1,4 @@
-# Interpretazione dei log: System_log_DC33.evtx e Security_log_DC33.evtx
+# Studio e analisi dei Windows XML Event Log
 
 ## Introduzione
 In questa sezione viene descritto il processo di verifica dell’invio e della corretta ricezione dei dati reali estratti dai file di log esportati, per consentire un’analisi precisa e affidabile su informazioni significative.
