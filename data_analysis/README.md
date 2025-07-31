@@ -476,7 +476,7 @@ Di seguito è mostrata una rappresentazione grafica dei conteggi giornalieri deg
 
 • **Information**: `7036` e `14554`; 
 
-• **Warning**: `150` e `50`; 
+• **Warning**: `140` e `50`; 
 
 • **Error**: `1058`, `5805` e `5723`. 
 
@@ -484,7 +484,7 @@ Di seguito è mostrata una rappresentazione grafica dei conteggi giornalieri deg
 ##
 
 <div align="center" style="border:1px solid #ccc; padding:30px; display: inline-block;"> 
-  <img width="2210" height="931" alt="image" src="https://github.com/user-attachments/assets/37076a28-5eb0-4fe8-bc6d-ec5cbfe875e4" />>
+  <img width="2210" height="931" alt="image" src="https://github.com/user-attachments/assets/37076a28-5eb0-4fe8-bc6d-ec5cbfe875e4" />
 </div>
 
 
@@ -554,8 +554,9 @@ I dati riportano le occorrenze giornaliere degli eventi di sistema, distinti per
 ##
 
 <div align="center" style="border:1px solid #ccc; padding:30px; display: inline-block;"> 
-  <img width="2209" height="999" alt="image" src="https://github.com/user-attachments/assets/dbdbe513-3528-4b76-9fae-22f4f8d2282d" />
+  <img width="2210" height="931" alt="image" src="https://github.com/user-attachments/assets/60a9b352-fd26-44da-831f-4368e6bd6972" />
 </div>
+
 
 ##
 
@@ -587,7 +588,7 @@ Di seguito è mostrata una rappresentazione grafica dei conteggi giornalieri deg
 
 • **Information**: `7036` e `14554`; 
 
-• **Warning**: `150` e `50`; 
+• **Warning**: `140` e `50`; 
 
 • **Error**: `1058`, `5805` e `5723`. 
 
