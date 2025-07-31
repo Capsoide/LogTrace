@@ -692,22 +692,22 @@ Le interruzioni nelle linee indicano i giorni in cui un determinato Event ID non
 
 ### Studio della distribuzione temporale
 
-- Gli eventi di tipo **Information** (ID 7036 e 14554) sono i **più frequenti**, mediamente tra 250 e 450 eventi al giorno.
+- Gli eventi di tipo **Information** (ID 7036 e 14554) sono i **più frequenti**, mediamente tra 140 e 480 eventi al giorno.
 
 - Gli eventi di tipo **Warning** (ID 140 e 50) hanno un **andamento intermittente**:
 
-  - Nei giorni: 9–12 maggio, 17–18 maggio, 24–25 maggio, 31 maggio, **non si registrano Warning**.
+  - In particolare, nei giorni **5**, **6**, **12**, **13** e **15 luglio** **non si registrano Warning**.
 
-  - In altri giorni variano da 4 a 65 eventi, con picchi il 13/05 (65) e il 26/05 (62).
+  - In altri giorni variano da 5 a 47 eventi, con picchi il  01/07 (39) e il 08/07 (47).
 
-- Gli eventi di tipo **Error** (ID 1058, 5723, 5805) **mostrano oscillazioni**:
+- Gli eventi di tipo **Error** (ID 5723, 5805) **mostrano un andamento regolare** e privo di picchi anomali:
 
-  - **ID 1058** (Group Policy processing error) è il **più frequente**, da 26 a 86 eventi al giorno, con picchi il 22/05 e 24/05 (86).
+  - **ID 5723**  si mantiene **costante**, con **valori giornalieri tra 10 e 13 eventi**, per un totale di **164 eventi nel mese**. Le giornate con il numero massimo (13) e minimo (5) sono, rispettivamente, il 10/07 e il 15/07.
+ 
+  - **ID 5805** presenta una distribuzione **molto simile**, con **valori giornalieri sempre tra 10 e 12 eventi**, salvo un'unica eccezione il 15/07, in cui scende a **5 eventi**. Il totale mensile è di **165 eventi**.
 
-  - **ID 5723** (problemi di trust con il dominio) e **ID 5805** (machine account non trovato nel dominio) **sono costanti**, tipicamente 10–12 eventi/giorno.
 
-
-Si osserva un **pattern evidente**, ovvero che nei giorni in cui mancano i Warning, come ad esempio dal 9 al 12 maggio e tra il 24 e il 25 maggio, si registra un aumento marcato degli Error 1058. Inoltre, in alcune giornate specifiche (13, 26 e 29 maggio) si manifestano picchi contemporanei sia di Warning sia di Errori, suggerendo la possibilità di disservizi o modifiche infrastrutturali.
+Nel complesso, si evidenzia una **situazione stabile**, con una distribuzione degli eventi coerente con una normale attività di sistema. Le giornate senza Warning non sono accompagnate da aumenti significativi di Error. Tuttavia, le variazioni nel volume totale (tra 307 e 928 eventi/giorno) suggeriscono una normale variabilità giornaliera, priva di segnali riconducibili a malfunzionamenti o eventi critici sistematici.
 
 
 
