@@ -491,7 +491,7 @@ Le interruzioni nelle linee indicano i giorni in cui un determinato Event ID non
 
 ##
 
-### Andamento
+### Studio della distribuzione temporale
 
 - Gli eventi di tipo **Information** (ID 7036 e 14554) sono i **più frequenti**, mediamente tra 250 e 450 eventi al giorno.
 
@@ -600,7 +600,7 @@ Le interruzioni nelle linee indicano i giorni in cui un determinato Event ID non
 
 ##
 
-### Andamento
+### Studio della distribuzione temporale
 
 - Gli eventi di tipo **Information** (ID 7036 e 14554) sono i **più frequenti**, mediamente tra 250 e 450 eventi al giorno.
 
