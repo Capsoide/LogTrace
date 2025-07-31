@@ -115,7 +115,7 @@ Stop processing. {"id": "C:\\Users\\vboxuser\\Desktop\\Security_log_DC33.evtx"}
 
 ## Introduzione
 
-Questa sezione è dedicata all’analisi di due file di log generati da un sistema Windows: `System_log_DC33.evtx`, che raccoglie i log di sistema, e `Security_log_DC33.evtx`, che contiene i log di sicurezza.
+Questa sezione è dedicata all’analisi di due file di log generati da un sistema Windows: `System_log_DC33.evtx` e `Security_log_DC33.evtx`, i quali rispettivamente raccolgono eventi di sistema e di sicurezza.
 
 I **log di sistema** raccolgono informazioni relative al funzionamento generale del sistema operativo e dei componenti hardware e software. Tali log documentano eventi come l’avvio e l’arresto dei servizi, errori critici, warning e altre notifiche emesse dai driver o dal kernel. Sono fondamentali per **diagnosticare malfunzionamenti** e **monitorare la stabilità del sistema**.
 
