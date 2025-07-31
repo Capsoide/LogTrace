@@ -594,8 +594,8 @@ Di seguito è mostrata una rappresentazione grafica dei conteggi giornalieri deg
 ##
 
 <div align="center" style="border:1px solid #ccc; padding:30px; display: inline-block;"> 
-  <img width="2210" height="931" alt="image" src="https://github.com/user-attachments/assets/f065ac24-4102-423e-a00d-9a8dbeb497ab" />
-</div>
+  <img width="2210" height="931"alt="image" src="https://github.com/user-attachments/assets/97f25645-f4a7-45af-9411-750d78b9496b" />
+
 
 Le interruzioni nelle linee indicano i giorni in cui un determinato Event ID non è stato registrato, permettendo così di evidenziare chiaramente differenze di frequenza e variazioni nel tempo.
 
